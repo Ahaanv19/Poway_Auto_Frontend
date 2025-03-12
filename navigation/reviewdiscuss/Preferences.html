@@ -1,0 +1,157 @@
+---
+toc: true
+layout: post
+description: Page Preferences
+title: Preferences
+permalink: /preferences_2
+comments: true
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Preferences</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #5D82B3 !important;
+      color: #ffffff;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    h1 {
+      color: #ffffff;
+      text-align: center;
+    }
+
+    .preferences-container {
+      background: rgba(44, 62, 80, 0.9);
+      padding: 20px;
+      border-radius: 12px;
+      width: 400px;
+      box-shadow: 0 4px 20px rgba(115, 158, 231, 1);
+      text-align: center;
+    }
+
+    .menu-item {
+      background-color: #A0C4FF;
+      color: white;
+      padding: 10px;
+      margin: 5px 0;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .menu-item:hover {
+      background-color: #87BFFF;
+    }
+
+    .color-button {
+      background-color: #4A7A8C;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      margin: 5px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .color-button:hover {
+      background-color: #A2A378;
+    }
+
+    a {
+      color: #A0C4FF;
+      text-decoration: none;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Preferences Page</h1>
+  <a href="https://ahaanv19.github.io/LitConnect/">Back to Home</a>
+
+  <div class="preferences-container">
+    <h3>Preferences:</h3>
+    <p id="menu"></p>
+    <p id="text"></p>
+    <div class="menu-item">Home</div>
+    <div class="menu-item">About</div>
+    <div class="menu-item">Contact</div>
+    
+    <p>Change Text Color:</p>
+    <button class="color-button" id="white">White</button>
+    <button class="color-button" id="black">Black</button>
+    <button class="color-button" id="changeMenu">Change Menu Color</button>
+  </div>
+
+  <script>
+    const apiUrl = "https://litconnect.stu.nighthawkcodingsociety.com/api/preferences";
+    
+    function loadPreferences() {
+      fetch(apiUrl)
+        .then(response => response.json())
+        .then(data => {
+          document.getElementById('menu').innerText = `Menu Color: ${data.menu}`;
+          document.getElementById('text').innerText = `Text Color: ${data.text}`;
+          
+          let pColors = document.querySelectorAll('p');
+          pColors.forEach(p => {
+            p.style.color = data.text;
+          });
+
+          let menuItems = document.querySelectorAll('.menu-item');
+          menuItems.forEach(item => {
+            item.style.backgroundColor = data.menu;
+          });
+        })
+        .catch(error => {
+          console.error('Error fetching preferences:', error);
+        });
+    }
+
+    function updatePreferences(updatedData) {
+      fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(updatedData)
+      })
+      .then(response => response.json())
+      .then(() => {
+        loadPreferences();
+      })
+      .catch(error => {
+        console.error('Error updating preferences:', error);
+      });
+    }
+
+    document.getElementById('white').addEventListener('click', function() {
+      updatePreferences({ text: 'white' });
+    });
+
+    document.getElementById('black').addEventListener('click', function() {
+      updatePreferences({ text: 'black' });
+    });
+
+    document.getElementById('changeMenu').addEventListener('click', function() {
+      const newMenuColor = prompt('Enter a new menu color (e.g., "green")');
+      if (newMenuColor) {
+        updatePreferences({ menu: newMenuColor });
+      }
+    });
+
+    window.onload = loadPreferences;
+  </script>
+</body>
+</html>

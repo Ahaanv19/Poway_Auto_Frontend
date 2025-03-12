@@ -1,0 +1,210 @@
+---
+layout: post
+title: Favorite Books
+permalink: /favBooks
+comments: true
+---
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Favorite Books</title>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #5D82B3 !important;
+            color: #2c3e50;
+        }
+
+        h1 {
+            text-align: center;
+            color: #ffffff;
+            margin-bottom: 20px;
+            font-size: 2rem;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            background: rgba(44, 62, 80, 0.9) !important;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        input {
+            padding: 12px;
+            border: 1px solid #dcdde1;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background-color: #f9f9f9;
+        }
+
+        input:focus {
+            border-color: #74b9ff;
+            outline: none;
+            box-shadow: 0 0 8px rgba(116, 185, 255, 0.5);
+        }
+
+        button {
+            padding: 12px;
+            font-size: 16px;
+            color: #ffffff;
+            background: linear-gradient(135deg, #74b9ff, #0984e3) !important;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background: linear-gradient(135deg, #6c5ce7, #0984e3) !important;
+            box-shadow: 0 4px 8px rgba(108, 92, 231, 0.4);
+        }
+
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+            background: white !important;
+            border-radius: 10px;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #0984e3 !important;
+            color: white;
+        }
+
+        .button.edit {
+            background: rgba(44, 62, 80, 0.9) !important;
+            color: black;
+        }
+
+        .button.delete {
+            background: rgba(44, 62, 80, 0.9) !important;
+            color: white;
+        }
+
+        .button:hover {
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <h1>Manage Favorite Books</h1>
+    <div class="container">
+        <input type="text" id="bookTitle" placeholder="Enter book title" />
+        <button class="button" onclick="addBook()">Add Book</button>
+    </div>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="booksTable"></tbody>
+    </table>
+
+    <script>
+        const apiUrl = 'https://litconnect.stu.nighthawkcodingsociety.com/api/favorite_books';
+
+        function fetchBooks() {
+            fetch(apiUrl)
+                .then(response => response.json())
+                .then(data => {
+                    const tableBody = document.getElementById('booksTable');
+                    tableBody.innerHTML = '';
+
+                    data.books.forEach(book => {
+                        const row = `<tr>
+                            <td>${book.id}</td>
+                            <td>${book.title}</td>
+                            <td>
+                                <button class="button edit" onclick="editBook(${book.id}, '${book.title}')">Edit</button>
+                                <button class="button delete" onclick="deleteBook(${book.id})">Delete</button>
+                            </td>
+                        </tr>`;
+                        tableBody.innerHTML += row;
+                    });
+                })
+                .catch(error => console.error('Error fetching books:', error));
+        }
+
+
+        function addBook() {
+            const title = document.getElementById('bookTitle').value.trim();
+            if (!title) {
+                alert('Book title is required!');
+                return;
+            }
+
+            fetch(apiUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ title })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert(data.error);
+                } else {
+                    fetchBooks();
+                }
+            });
+        }
+
+        function deleteBook(bookId) {
+            fetch(`${apiUrl}/${bookId}`, { method: 'DELETE' })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        alert(data.error);
+                    } else {
+                        fetchBooks();
+                    }
+                });
+        }
+
+        function editBook(bookId, currentTitle) {
+            const newTitle = prompt('Enter new book title:', currentTitle);
+            if (!newTitle || newTitle === currentTitle) return;
+
+            fetch(`${apiUrl}/${bookId}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ title: newTitle })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert(data.error);
+                } else {
+                    fetchBooks();
+                }
+            });
+        }
+
+        window.onload = fetchBooks;
+    </script>
+</body>
+</html>

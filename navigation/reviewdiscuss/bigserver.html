@@ -1,0 +1,145 @@
+---
+toc: true
+layout: post
+description: Backend Big Server
+title: About Creators
+permalink: /backend_s
+comments: true
+---
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Big Server Info</title>
+  <style>
+    body {
+      background-color: #5D82B3 !important;
+      color: #f1f1f1;
+      font-family: Arial, sans-serif;
+    }
+    h1 {
+      color: #f9c74f;
+    }
+    .info-container {
+      margin-top: 20px;
+      padding: 10px;
+      background-color: rgba(44, 62, 80, 0.9);
+      border-radius: 8px;
+      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
+    }
+    .info-container ul {
+      list-style-type: none;
+      padding: 0;
+    }
+    .info-container li {
+      padding: 8px;
+      border-bottom: 1px solid #f1f1f1;
+    }
+    .info-container li:last-child {
+      border-bottom: none;
+    }
+  </style>
+</head>
+<body>
+  <h1 class="menu-item">Welcome to the Big Server</h1>
+  <div class="info-container">
+    <h2 class="menu-item">About Creator & Others</h2>
+    <ul id="userInfo">
+      <!-- User information for all 5 people will be dynamically inserted here -->
+    </ul>
+  </div>
+
+  <script type="module">
+    import { pythonURI } from './assets/js/api/config.js'; // Ensure this path matches your project structure
+
+    // Function to fetch user data for all 5 people from the API
+    async function fetchUserData() {
+      try {
+        // API URLs for all 5 people
+        const apiUrls = [
+          `${pythonURI}/api/ahaan`,
+          `${pythonURI}/api/noah`,
+          `${pythonURI}/api/arnav`,
+          `${pythonURI}/api/jacob`,
+          `${pythonURI}/api/james`
+        ];
+
+        // Start building the display string for all people
+        const userInfo = document.getElementById('userInfo');
+        userInfo.innerHTML = ''; // Clear any existing content
+
+        // Loop through all API URLs and fetch data
+        for (const url of apiUrls) {
+          const response = await fetch(url);
+          const data = await response.json();
+
+          // Loop through each key-value pair and create list items
+          for (const [key, value] of Object.entries(data)) {
+            const listItem = document.createElement('li');
+            listItem.innerHTML = `<strong>${key}:</strong> ${Array.isArray(value) ? value.join(', ') : value}`;
+            userInfo.appendChild(listItem);
+          }
+          // Add a separator after each person's info
+          const separator = document.createElement('hr');
+          userInfo.appendChild(separator);
+        }
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
+    }
+
+    // Fetch and display user data for all 5 people immediately
+    fetchUserData();
+
+    // Function to fetch preferences from the backend
+    function loadPreferences() {
+      fetch('https://litconnect.stu.nighthawkcodingsociety.com/api/preferences')  // Adjust URL dynamically using pythonURI
+        .then(response => response.json())
+        .then(data => {
+          // Update the page with the preferences
+          const menuElement = document.getElementById('menu');
+          const textElement = document.getElementById('text');
+
+          if (menuElement) {
+            menuElement.innerText = `Menu: ${data.menu}`;
+          }
+
+          if (textElement) {
+            textElement.innerText = `Text: ${data.text}`;
+          }
+
+          // Apply text color to <p> elements
+          let pColors = document.querySelectorAll('p');
+          pColors.forEach(p => {
+            p.style.color = data.text;
+          });
+
+          // Change menu text color
+          let menuItems = document.querySelectorAll('.menu-item');
+          menuItems.forEach(item => {
+            item.style.color = data.menu;  // Apply menu color to each item
+          });
+
+          let ulItems = document.querySelectorAll('.ul-item');
+          ulItems.forEach(item => {
+            item.style.color = data.text;
+          });
+
+          let liItems = document.querySelectorAll('li');
+          liItems.forEach(item => {
+            item.style.color = data.text;
+          });
+
+        })
+        .catch(error => {
+          console.error('Error fetching preferences:', error);
+        });
+    }
+
+    // Load preferences when the page is loaded
+    window.onload = loadPreferences;
+  </script>
+</body>
+</html>
+

@@ -1,0 +1,31 @@
+---
+layout: post 
+search_exclude: true
+permalink: /relaxing
+menu: nav/shared_interests.html
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="{{ site.baseurl }}/static/js/three.r119.min.js"></script>
+    <script src="{{ site.baseurl }}/static/js/vanta.clouds2.min.js"></script>
+</head>
+<body>
+    <script>
+        VANTA.CLOUDS2({
+            el: "#monitor",
+            mouseControls: true,
+            touchControls: true,
+            gyroControls: false,
+            minHeight: 200.00,
+            minWidth: 200.00,
+            scale: 1.00,
+            skyColor: 0x4087af,
+        });
+    </script>
+</body>
+</html>
