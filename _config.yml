@@ -1,9 +1,9 @@
-title: LitConnect
-description: "Social Media for Del Norte High School"
+title: best Route
+description: "An online app to find the best route for autonomous driving in Poway"
 owner_name: Ahaan Vaidyanathan
 github_username: Ahaanv19
-github_repo: "LitConnect" 
-baseurl: "/LitConnect"
+github_repo: "Qualcomm_Autonomous_Vehicle_Frontend" 
+baseurl: "/bestRoute"
 future: true
 remote_theme: jekyll/minima
 minima:
