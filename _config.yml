@@ -1,9 +1,9 @@
-title: best Route
-description: "An online app to find the best route for autonomous driving in Poway"
+title: Qualcomm Autonomous Vehicle Navigation Enhancement
+description: "An online program to find the best and most optimible route for traveling to Qualcomm"
 owner_name: Ahaan Vaidyanathan
 github_username: Ahaanv19
 github_repo: "Qualcomm_Autonomous_Vehicle_Frontend" 
-baseurl: "/bestRoute"
+baseurl: "/Qualcomm_Autonomous_Vehicle_Frontend"
 future: true
 remote_theme: jekyll/minima
 minima:
