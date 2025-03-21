@@ -8,5 +8,5 @@ menu: nav/home.html
 
 <table>
     <tr>
-        <td><a href="{{site.baseurl}}/traf/">Traffic Data</a></td>
+        <td><a href="{{site.baseurl}}/graph/">Traffic Data</a></td>
 </table>
