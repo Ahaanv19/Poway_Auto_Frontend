@@ -8,7 +8,7 @@ menu: nav/home.html
 
 <table>
     <tr>
-        <td><a href="{{site.baseurl}}/traf/">Traffic Data</a></td>
+        <td><a href="{{site.baseurl}}/route/">Traffic Data</a></td>
         <td><a href="{{site.baseurl}}/avgspeed/">Average Road Speeds</a></td>
         <td><a href="{{site.baseurl}}/bestRoute/">Find Best Route</a></td>
     </tr>
