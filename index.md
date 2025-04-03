@@ -1,5 +1,5 @@
 ---
-layout: page
+layout: base
 title: Best Route
 search_exclude: true
 hide: true
