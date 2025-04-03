@@ -10,81 +10,68 @@ permalink: /route/
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Route Finder</title>
+    <title>Traffic-Aware Route Finder</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            margin: 20px;
-        }
-        input {
-            padding: 10px;
-            margin: 5px;
-            width: 250px;
-        }
-        button {
-            padding: 10px 20px;
-            cursor: pointer;
-        }
-        .route-container {
-            margin-top: 20px;
-            text-align: left;
-            display: inline-block;
-        }
+        body { font-family: Arial, sans-serif; text-align: center; background-color: black; color: white; }
+        input, button { margin: 10px; padding: 10px; font-size: 16px; }
+        .error { color: red; }
     </style>
 </head>
 <body>
 
-    <h2>Route Finder</h2>
-    <input type="text" id="origin" placeholder="Enter origin">
-    <input type="text" id="destination" placeholder="Enter destination">
+    <h1>Traffic-Aware Route Finder</h1>
+    <input type="text" id="origin" placeholder="Enter Origin" value="16601 Nighthawk Ln, San Diego, CA">
+    <input type="text" id="destination" placeholder="Enter Destination" value="15936 Atkins Place, San Diego, CA">
     <button onclick="getRoutes()">Get Routes</button>
-
-    <div id="routes" class="route-container"></div>
+    
+    <p id="error" class="error"></p>
+    <div id="results"></div>
 
     <script>
         async function getRoutes() {
+            document.getElementById("error").innerText = "";
+            document.getElementById("results").innerHTML = "";
+
             const origin = document.getElementById("origin").value;
             const destination = document.getElementById("destination").value;
-            const routesDiv = document.getElementById("routes");
-            routesDiv.innerHTML = "";
 
-            if (!origin || !destination) {
-                alert("Please enter both origin and destination!");
-                return;
-            }
+            const requestData = { origin, destination };
 
             try {
                 const response = await fetch("http://localhost:8888/api/get_routes", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ origin, destination })
+                    body: JSON.stringify(requestData),
                 });
 
-                const data = await response.json();
+                if (!response.ok) throw new Error("Failed to fetch routes. Is the backend running?");
 
-                if (data.error) {
-                    routesDiv.innerHTML = `<p style="color: red;">${data.error}</p>`;
-                    return;
-                }
+                const routes = await response.json();
+                displayRoutes(routes);
 
-                data.forEach((route, index) => {
-                    const routeHTML = `
-                        <div>
-                            <h3>Route ${index + 1} (Traffic Score: ${route.traffic_score})</h3>
-                            <p><strong>Distance:</strong> ${route.total_distance}</p>
-                            <p><strong>Duration:</strong> ${route.total_duration}</p>
-                            <ul>
-                                ${route.details.map(step => `<li>${step.instruction} - ${step.distance} (${step.duration})</li>`).join('')}
-                            </ul>
-                        </div>
-                        <hr>
-                    `;
-                    routesDiv.innerHTML += routeHTML;
-                });
             } catch (error) {
-                routesDiv.innerHTML = `<p style="color: red;">Failed to fetch routes. Is the backend running?</p>`;
+                document.getElementById("error").innerText = error.message;
             }
+        }
+
+        function displayRoutes(routes) {
+            const resultsDiv = document.getElementById("results");
+            if (routes.length === 0) {
+                resultsDiv.innerHTML = "<p>No routes found.</p>";
+                return;
+            }
+
+            routes.forEach((route, index) => {
+                const routeInfo = `
+                    <div>
+                        <h3>Route ${index + 1} (Traffic Score: ${route.traffic_score})</h3>
+                        <p><strong>Total Distance:</strong> ${route.total_distance}</p>
+                        <p><strong>Total Duration:</strong> ${route.total_duration}</p>
+                    </div>
+                    <hr>
+                `;
+                resultsDiv.innerHTML += routeInfo;
+            });
         }
     </script>
 
