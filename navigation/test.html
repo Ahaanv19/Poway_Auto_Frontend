@@ -12,68 +12,52 @@ permalink: /route/
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Traffic-Aware Route Finder</title>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; background-color: black; color: white; }
-        input, button { margin: 10px; padding: 10px; font-size: 16px; }
-        .error { color: red; }
+        body { font-family: Arial, sans-serif; text-align: center; }
+        input, button { margin: 10px; padding: 10px; }
+        #output { margin-top: 20px; white-space: pre-wrap; text-align: left; }
     </style>
 </head>
 <body>
-
     <h1>Traffic-Aware Route Finder</h1>
-    <input type="text" id="origin" placeholder="Enter Origin" value="16601 Nighthawk Ln, San Diego, CA">
-    <input type="text" id="destination" placeholder="Enter Destination" value="15936 Atkins Place, San Diego, CA">
-    <button onclick="getRoutes()">Get Routes</button>
-    
-    <p id="error" class="error"></p>
-    <div id="results"></div>
+    <label for="origin">Origin:</label>
+    <input type="text" id="origin" placeholder="Enter starting location">
+    <label for="destination">Destination:</label>
+    <input type="text" id="destination" placeholder="Enter destination">
+    <button onclick="fetchRoutes()">Get Routes</button>
+
+    <h3>Routes:</h3>
+    <pre id="output">No routes fetched yet.</pre>
 
     <script>
-        async function getRoutes() {
-            document.getElementById("error").innerText = "";
-            document.getElementById("results").innerHTML = "";
-
+        async function fetchRoutes() {
             const origin = document.getElementById("origin").value;
             const destination = document.getElementById("destination").value;
+            const output = document.getElementById("output");
 
-            const requestData = { origin, destination };
+            if (!origin || !destination) {
+                alert("Please enter both origin and destination.");
+                return;
+            }
 
             try {
                 const response = await fetch("http://localhost:8888/api/get_routes", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(requestData),
+                    body: JSON.stringify({ origin, destination })
                 });
 
-                if (!response.ok) throw new Error("Failed to fetch routes. Is the backend running?");
+                if (!response.ok) {
+                    throw new Error(`Server error: ${response.status}`);
+                }
 
-                const routes = await response.json();
-                displayRoutes(routes);
-
+                const data = await response.json();
+                output.textContent = JSON.stringify(data, null, 2);
             } catch (error) {
-                document.getElementById("error").innerText = error.message;
+                console.error("Fetch error:", error);
+                output.textContent = "Failed to fetch routes.";
             }
-        }
-
-        function displayRoutes(routes) {
-            const resultsDiv = document.getElementById("results");
-            if (routes.length === 0) {
-                resultsDiv.innerHTML = "<p>No routes found.</p>";
-                return;
-            }
-
-            routes.forEach((route, index) => {
-                const routeInfo = `
-                    <div>
-                        <h3>Route ${index + 1} (Traffic Score: ${route.traffic_score})</h3>
-                        <p><strong>Total Distance:</strong> ${route.total_distance}</p>
-                        <p><strong>Total Duration:</strong> ${route.total_duration}</p>
-                    </div>
-                    <hr>
-                `;
-                resultsDiv.innerHTML += routeInfo;
-            });
         }
     </script>
-
 </body>
 </html>
+
