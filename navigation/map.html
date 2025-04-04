@@ -1,0 +1,50 @@
+---
+toc: true
+layout: post
+title: Traffic-Aware Route Finder
+permalink: /route/
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Directions Finder</title>
+</head>
+<body>
+  <h1>Get Directions</h1>
+  <input id="origin" placeholder="Origin address">
+  <input id="destination" placeholder="Destination address">
+  <button id="get-btn">Get Directions</button>
+
+  <ul id="directions-list"></ul>
+
+  <script>
+    document.getElementById("get-btn").onclick = () => {
+      const origin = document.getElementById("origin").value;
+      const destination = document.getElementById("destination").value;
+
+      fetch('http://localhost:8888/get_routes', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ origin, destination })
+      })
+      .then(res => res.json())
+      .then(data => {
+        const list = document.getElementById("directions-list");
+        list.innerHTML = "";
+
+        if (Array.isArray(data)) {
+          data[0].details.forEach(step => {
+            const li = document.createElement("li");
+            li.innerHTML = step.instruction;
+            list.appendChild(li);
+          });
+        } else {
+          list.innerHTML = `<li>Error: ${data.error}</li>`;
+        }
+      });
+    };
+  </script>
+</body>
+</html>
