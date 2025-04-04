@@ -115,9 +115,28 @@
 
   <!-- Dark Mode Toggle -->
   <script>
+    window.onload = function() {
+      if (localStorage.getItem('theme') === 'dark') {
+        document.documentElement.classList.add('dark');
+      } 
+      
+      else {
+        document.documentElement.classList.remove('dark');
+      }
+    }
+
+
     const toggle = document.getElementById('theme-toggle');
     toggle.addEventListener('click', () => {
       document.documentElement.classList.toggle('dark');
+
+      if (document.documentElement.classList.contains('dark')) {
+        localStorage.setItem('theme', 'dark');
+      } 
+      
+      else {
+        localStorage.setItem('theme', 'light');
+      }
     });
   </script>
 </body>

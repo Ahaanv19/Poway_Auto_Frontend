@@ -12,7 +12,6 @@ menu: nav/home.html
   <div class="absolute top-[-100px] left-[-100px] w-[500px] h-[500px] bg-purple-300 dark:bg-purple-700 opacity-20 rounded-full blur-3xl animate-pulse"></div>
 
   <div class="relative z-10 max-w-7xl mx-auto px-6 py-24 flex flex-col md:flex-row items-center justify-between gap-12">
-
     <!-- Text Content -->
     <div class="flex-1 text-center md:text-left space-y-8">
       <h1 class="text-5xl md:text-6xl font-extrabold bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent animate-gradient-x">
@@ -29,8 +28,7 @@ menu: nav/home.html
           Learn More
         </a>
       </div>
-    </div>
-
+    </div>  
     <!-- Lottie Animation -->
     <div class="flex-1">
       <lottie-player
