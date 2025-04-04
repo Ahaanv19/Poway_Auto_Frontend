@@ -16,11 +16,15 @@ permalink: /route/
       padding: 20px;
       max-width: 600px;
     }
-    input, select, button {
+    input {
       display: block;
       width: 100%;
       padding: 10px;
       margin: 10px 0;
+    }
+    button {
+      padding: 10px 20px;
+      cursor: pointer;
     }
     li {
       margin-bottom: 10px;
@@ -29,31 +33,17 @@ permalink: /route/
 </head>
 <body>
   <h1>Get Directions</h1>
-  
   <input id="origin" placeholder="Enter starting address" />
   <input id="destination" placeholder="Enter destination address" />
-
-  <h3>Select Travel Mode:</h3>
-  <select id="mode">
-    <option value="driving">Driving</option>
-    <option value="walking">Walking</option>
-    <option value="bicycling">Bicycling</option>
-    <option value="transit">Transit</option>
-  </select>
-
   <button id="get-btn">Get Directions</button>
 
-  <h2>Step-by-step Directions:</h2>
+  <h2>Step-by-step:</h2>
   <ul id="directions-list"></ul>
-
-  <h2>Route Comparison (ETA & Distance):</h2>
-  <ul id="route-comparison-list"></ul>
 
   <script>
     document.getElementById("get-btn").onclick = () => {
       const origin = document.getElementById("origin").value.trim();
       const destination = document.getElementById("destination").value.trim();
-      const mode = document.getElementById("mode").value;
 
       if (!origin || !destination) {
         alert("Please enter both origin and destination.");
@@ -63,36 +53,21 @@ permalink: /route/
       fetch('http://localhost:8888/get_routes', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ origin, destination, mode })
+        body: JSON.stringify({ origin, destination })
       })
       .then(res => res.json())
       .then(data => {
-        const directionsList = document.getElementById("directions-list");
-        const comparisonList = document.getElementById("route-comparison-list");
-
-        directionsList.innerHTML = "";
-        comparisonList.innerHTML = "";
+        const list = document.getElementById("directions-list");
+        list.innerHTML = "";
 
         if (Array.isArray(data) && data.length > 0) {
-          data.forEach((route, index) => {
-            // Add step-by-step directions to the list
-            route.details.forEach(step => {
-              const li = document.createElement("li");
-              li.innerHTML = `${step.instruction} (${step.distance}, ${step.duration})`;
-              directionsList.appendChild(li);
-            });
-
-            // Add route comparison (ETA and Distance)
-            const comparisonItem = document.createElement("li");
-            comparisonItem.innerHTML = `
-              <strong>Route ${index + 1}</strong><br>
-              Duration: ${route.total_duration}<br>
-              Distance: ${route.total_distance}
-            `;
-            comparisonList.appendChild(comparisonItem);
+          data[0].details.forEach(step => {
+            const li = document.createElement("li");
+            li.innerHTML = step.instruction;
+            list.appendChild(li);
           });
         } else {
-          directionsList.innerHTML = `<li>Error: ${data.error || 'Unknown error'}</li>`;
+          list.innerHTML = `<li>Error: ${data.error || 'Unknown error'}</li>`;
         }
       })
       .catch(err => {
@@ -103,4 +78,5 @@ permalink: /route/
   </script>
 </body>
 </html>
+
 
