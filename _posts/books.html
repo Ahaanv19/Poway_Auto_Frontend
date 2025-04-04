@@ -6,101 +6,66 @@ title: Backend Testing
 permalink: /backend
 comments: true
 ---
-<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Directions Finder</title>
-  <style>
-    body {
-      font-family: sans-serif;
-      padding: 20px;
-      max-width: 600px;
-    }
-    input, select, button {
-      display: block;
-      width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-    }
-    li {
-      margin-bottom: 10px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reading Book List</title>
 </head>
 <body>
-  <h1>Get Directions</h1>
-  
-  <input id="origin" placeholder="Enter starting address" />
-  <input id="destination" placeholder="Enter destination address" />
+    <h1>Reading Book List</h1>
+    <ul id="book-list"></ul>
 
-  <h3>Select Travel Mode:</h3>
-  <select id="mode">
-    <option value="driving">Driving</option>
-    <option value="walking">Walking</option>
-    <option value="bicycling">Bicycling</option>
-    <option value="transit">Transit</option>
-  </select>
+    <h2>Add a New Book</h2>
+    <form id="book-form">
+        <input type="text" id="title" placeholder="Book Title" required>
+        <input type="text" id="author" placeholder="Author" required>
+        <button type="submit">Add Book</button>
+    </form>
 
-  <button id="get-btn">Get Directions</button>
+    <script>
+        const apiBaseUrl = 'http://127.0.0.1:3000/api/books';
 
-  <h2>Step-by-step Directions:</h2>
-  <ul id="directions-list"></ul>
+        // Function to fetch and display the book list
+        async function fetchBooks() {
+            const response = await fetch(apiBaseUrl);
+            const books = await response.json();
+            const bookList = document.getElementById('book-list');
+            bookList.innerHTML = ''; // Clear the list
+            books.forEach(book => {
+                const li = document.createElement('li');
+                li.textContent = `${book.title} by ${book.author}`;
+                bookList.appendChild(li);
+            });
+        }
 
-  <h2>Route Comparison (ETA & Distance):</h2>
-  <ul id="route-comparison-list"></ul>
+        // Add a new book via the API
+        document.getElementById('book-form').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const title = document.getElementById('title').value;
+            const author = document.getElementById('author').value;
 
-  <script>
-    document.getElementById("get-btn").onclick = () => {
-      const origin = document.getElementById("origin").value.trim();
-      const destination = document.getElementById("destination").value.trim();
-      const mode = document.getElementById("mode").value;
+            const newBook = { title, author };
 
-      if (!origin || !destination) {
-        alert("Please enter both origin and destination.");
-        return;
-      }
-
-      fetch('http://localhost:8888/get_routes', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ origin, destination, mode })
-      })
-      .then(res => res.json())
-      .then(data => {
-        const directionsList = document.getElementById("directions-list");
-        const comparisonList = document.getElementById("route-comparison-list");
-
-        directionsList.innerHTML = "";
-        comparisonList.innerHTML = "";
-
-        if (Array.isArray(data) && data.length > 0) {
-          data.forEach((route, index) => {
-            // Add step-by-step directions to the list
-            route.details.forEach(step => {
-              const li = document.createElement("li");
-              li.innerHTML = `${step.instruction} (${step.distance}, ${step.duration})`;
-              directionsList.appendChild(li);
+            // Send the new book to the backend
+            await fetch(apiBaseUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(newBook),
             });
 
-            // Add route comparison (ETA and Distance)
-            const comparisonItem = document.createElement("li");
-            comparisonItem.innerHTML = `
-              <strong>Route ${index + 1}</strong><br>
-              Duration: ${route.total_duration}<br>
-              Distance: ${route.total_distance}
-            `;
-            comparisonList.appendChild(comparisonItem);
-          });
-        } else {
-          directionsList.innerHTML = `<li>Error: ${data.error || 'Unknown error'}</li>`;
-        }
-      })
-      .catch(err => {
-        console.error(err);
-        document.getElementById("directions-list").innerHTML = `<li>Error fetching directions.</li>`;
-      });
-    };
-  </script>
+            // Clear the input fields
+            document.getElementById('title').value = '';
+            document.getElementById('author').value = '';
+
+            // Refresh the book list
+            fetchBooks();
+        });
+
+        // Load the book list on page load
+        fetchBooks();
+    </script>
 </body>
 </html>
