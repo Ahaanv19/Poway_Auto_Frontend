@@ -64,3 +64,34 @@ menu: nav/home.html
   </section>
 
 </main>
+
+<!-- Add these in your HTML head section -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+
+<!-- Add this where you want the map to appear -->
+<div id="map" style="height: 400px; margin-top: 20px; border-radius: 10px;"></div>
+
+<script>
+// Initialize the map
+document.addEventListener('DOMContentLoaded', function() {
+    // Create map centered on Paris
+    const map = L.map('map').setView([48.8566, 2.3522], 13);
+
+    // Add the OpenStreetMap tiles
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+});
+</script>
+
+<style>
+#map {
+    height: 400px;
+    margin-top: 20px;
+    border-radius: 10px;
+    border: 2px solid #add8e6;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+</style>
