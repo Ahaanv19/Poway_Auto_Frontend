@@ -70,19 +70,37 @@ menu: nav/home.html
 <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
 
 <!-- Add this where you want the map to appear -->
-<div id="map" style="height: 400px; margin-top: 20px; border-radius: 10px;"></div>
+<div id="map"></div>
 
 <script>
-// Initialize the map
 document.addEventListener('DOMContentLoaded', function() {
-    // Create map centered on Paris
-    const map = L.map('map').setView([48.8566, 2.3522], 13);
+    // Initialize the map
+    const map = L.map('map');
 
-    // Add the OpenStreetMap tiles
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
-        attribution: '© OpenStreetMap contributors'
-    }).addTo(map);
+    // Ask for user's location
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                const { latitude, longitude } = position.coords;
+                map.setView([latitude, longitude], 13);
+
+                // Add the OpenStreetMap tiles
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    maxZoom: 19,
+                    attribution: '© OpenStreetMap contributors'
+                }).addTo(map);
+
+                // Add a marker at the user's location
+                L.marker([latitude, longitude]).addTo(map)
+                    .bindPopup('You are here!')
+                    .openPopup();
+            },
+            () => alert('Location access denied. Defaulting to Paris.'),
+            { enableHighAccuracy: true }
+        );
+    } else {
+        alert('Geolocation is not supported by your browser.');
+    }
 });
 </script>
 
