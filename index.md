@@ -64,38 +64,32 @@ menu: nav/home.html
 </main>
 
 <!-- Add these in your HTML head section -->
-<!-- Leaflet CSS & JS -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
 
-<!-- Add input box for destination -->
-<input type="text" id="destination" placeholder="Enter destination (e.g., Eiffel Tower)" />
-<button onclick="getDirections()">Get Directions</button>
-
-<!-- Map container -->
+<!-- Add this where you want the map to appear -->
 <div id="map"></div>
 
 <script>
-let map, userMarker, routeLayer;
-const apiKey = 'YOUR_OPENROUTESERVICE_API_KEY'; // Get from OpenRouteService
-
 document.addEventListener('DOMContentLoaded', function() {
-    map = L.map('map').setView([48.8566, 2.3522], 13);
+    // Initialize the map
+    const map = L.map('map');
 
-    // Add OpenStreetMap tiles
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
-        attribution: '© OpenStreetMap contributors'
-    }).addTo(map);
-
-    // Get user's location
+    // Ask for user's location
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
             (position) => {
                 const { latitude, longitude } = position.coords;
                 map.setView([latitude, longitude], 13);
 
-                userMarker = L.marker([latitude, longitude]).addTo(map)
+                // Add the OpenStreetMap tiles
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    maxZoom: 19,
+                    attribution: '© OpenStreetMap contributors'
+                }).addTo(map);
+
+                // Add a marker at the user's location
+                L.marker([latitude, longitude]).addTo(map)
                     .bindPopup('You are here!')
                     .openPopup();
             },
@@ -106,58 +100,6 @@ document.addEventListener('DOMContentLoaded', function() {
         alert('Geolocation is not supported by your browser.');
     }
 });
-
-// Function to get directions
-async function getDirections() {
-    const destination = document.getElementById('destination').value;
-    if (!destination) {
-        alert('Please enter a destination!');
-        return;
-    }
-
-    // Convert destination name to coordinates using OpenRouteService
-    const geocodeUrl = `https://api.openrouteservice.org/geocode/search?api_key=${apiKey}&text=${destination}`;
-    const geocodeRes = await fetch(geocodeUrl);
-    const geocodeData = await geocodeRes.json();
-    
-    if (!geocodeData.features.length) {
-        alert('Location not found! Try a different name.');
-        return;
-    }
-
-    const destCoords = geocodeData.features[0].geometry.coordinates;
-    const destLat = destCoords[1], destLng = destCoords[0];
-
-    // Get user's location
-    navigator.geolocation.getCurrentPosition(async (position) => {
-        const { latitude, longitude } = position.coords;
-
-        // Request route
-        const routeUrl = `https://api.openrouteservice.org/v2/directions/driving-car?api_key=${apiKey}&start=${longitude},${latitude}&end=${destLng},${destLat}`;
-        const routeRes = await fetch(routeUrl);
-        const routeData = await routeRes.json();
-
-        if (!routeData.routes) {
-            alert('Could not get directions.');
-            return;
-        }
-
-        // Remove old route
-        if (routeLayer) map.removeLayer(routeLayer);
-
-        // Draw new route
-        const routeCoords = routeData.routes[0].geometry.coordinates.map(coord => [coord[1], coord[0]]);
-        routeLayer = L.polyline(routeCoords, { color: 'blue', weight: 5 }).addTo(map);
-
-        // Fit map to route
-        map.fitBounds(routeLayer.getBounds());
-
-        // Add destination marker
-        L.marker([destLat, destLng]).addTo(map)
-            .bindPopup(`Destination: ${destination}`)
-            .openPopup();
-    }, () => alert('Location access denied.'));
-}
 </script>
 
 <style>
@@ -167,20 +109,5 @@ async function getDirections() {
     border-radius: 10px;
     border: 2px solid #add8e6;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-input {
-    padding: 10px;
-    margin: 10px;
-    width: 250px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
-button {
-    padding: 10px 15px;
-    border: none;
-    background: #007bff;
-    color: white;
-    cursor: pointer;
-    border-radius: 5px;
 }
 </style>
