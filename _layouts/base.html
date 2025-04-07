@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{{ page.title | default: "QCOMM Auto" }}</title>
 
-  <!-- Tailwind CSS CDN -->
+  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -28,16 +28,19 @@
     };
   </script>
 
-  <!-- Inter Font -->
+  <!-- Google Font: Inter -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 
-  <!-- Alpine.js for dropdowns -->
+  <!-- Alpine.js for mobile nav -->
   <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
-  <!-- Lottie -->
+  <!-- Lottie Player (optional) -->
   <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
 
-  <!-- Custom Scrollbar & Animations -->
+  <!-- Simple Jekyll Search -->
+  <script src="https://unpkg.com/simple-jekyll-search@1.10.0/dest/simple-jekyll-search.min.js"></script>
+
+  <!-- Custom Styles -->
   <style>
     ::selection {
       background-color: #6366f1;
@@ -70,6 +73,7 @@
     }
   </style>
 </head>
+
 <body class="bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-800 text-gray-800 dark:text-gray-100 font-sans transition-colors duration-300">
 
   <!-- Navbar -->
@@ -85,11 +89,12 @@
         <a href="/QAV_Frontend/route/" class="hover:text-primary transition duration-200">Find Best Route</a>
       </div>
 
+      <!-- Actions -->
       <div class="flex items-center gap-4">
-        <a href="login" class="hidden md:inline-block px-4 py-2 bg-primary text-white rounded-xl shadow-md hover:bg-secondary transition duration-300 text-sm">Sign In</a>
+        <a href="/QAV_Frontend/login" class="hidden md:inline-block px-4 py-2 bg-primary text-white rounded-xl shadow-md hover:bg-secondary transition duration-300 text-sm">Sign In</a>
         <button id="theme-toggle" class="text-xl focus:outline-none">🌙</button>
 
-        <!-- Mobile Nav Button + Menu -->
+        <!-- Mobile Nav -->
         <div x-data="{ open: false }" class="relative md:hidden">
           <button @click="open = !open" class="text-2xl">☰</button>
           <div x-show="open" @click.outside="open = false" class="absolute right-0 top-14 bg-white dark:bg-gray-800 shadow-xl rounded-lg p-4 space-y-2 z-50">
@@ -103,6 +108,12 @@
     </div>
   </header>
 
+  <!-- Search -->
+  <section class="max-w-3xl mx-auto px-4 mt-10">
+    <input type="text" id="search-input" placeholder="Search..." class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm dark:bg-gray-900 dark:border-gray-700 dark:text-white">
+    <ul id="results-container" class="mt-2 space-y-2 text-sm"></ul>
+  </section>
+
   <!-- Main Content -->
   <main class="max-w-6xl mx-auto px-4 py-16">
     {{ content }}
@@ -113,30 +124,27 @@
     © 2025 QCOMM Auto. Built by <span class="text-primary font-medium">Manas & Team</span> 🚀
   </footer>
 
-  <!-- Dark Mode Toggle -->
+  <!-- Dark Mode Script -->
   <script>
-    window.onload = function() {
+    window.onload = function () {
       if (localStorage.getItem('theme') === 'dark') {
         document.documentElement.classList.add('dark');
-      } 
-      
-      else {
+      } else {
         document.documentElement.classList.remove('dark');
       }
-    }
+    };
 
-
-    const toggle = document.getElementById('theme-toggle');
-    toggle.addEventListener('click', () => {
+    document.getElementById('theme-toggle').addEventListener('click', () => {
       document.documentElement.classList.toggle('dark');
+      localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+    });
 
-      if (document.documentElement.classList.contains('dark')) {
-        localStorage.setItem('theme', 'dark');
-      } 
-      
-      else {
-        localStorage.setItem('theme', 'light');
-      }
+    SimpleJekyllSearch({
+      searchInput: document.getElementById('search-input'),
+      resultsContainer: document.getElementById('results-container'),
+      json: '/search.json',
+      searchResultTemplate: '<li><a class="text-primary hover:underline" href="{url}">{title}</a></li>',
+      noResultsText: 'No results found'
     });
   </script>
 </body>
