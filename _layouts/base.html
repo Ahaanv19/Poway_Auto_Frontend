@@ -72,6 +72,38 @@
 </head>
 <body class="bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-800 text-gray-800 dark:text-gray-100 font-sans transition-colors duration-300">
 
+  <!-- Navbar -->
+  <header class="sticky top-0 z-50 bg-white/60 dark:bg-gray-900/60 backdrop-blur-md shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+      <a href="/" class="text-2xl font-bold text-primary tracking-tight hover:opacity-80 transition">Ahaan</a>
+
+      <!-- Desktop Nav -->
+      <div class="hidden md:flex gap-6 text-sm font-medium">
+        {% for page in site.header_pages %}
+          <a href="{{ site.baseurl }}/{{ page | replace: '.md', '' }}" class="hover:text-primary transition duration-200">
+            {{ page | split: '/' | last | replace: '.md', '' | replace: '-', ' ' | capitalize }}
+          </a>
+        {% endfor %}
+      </div>
+
+      <div class="flex items-center gap-4">
+        <a href="login" class="hidden md:inline-block px-4 py-2 bg-primary text-white rounded-xl shadow-md hover:bg-secondary transition duration-300 text-sm">Sign In</a>
+        <button id="theme-toggle" class="text-xl focus:outline-none">🌙</button>
+
+        <!-- Mobile Nav Button + Menu -->
+        <div x-data="{ open: false }" class="relative md:hidden">
+          <button @click="open = !open" class="text-2xl">☰</button>
+          <div x-show="open" @click.outside="open = false" class="absolute right-0 top-14 bg-white dark:bg-gray-800 shadow-xl rounded-lg p-4 space-y-2 z-50">
+            {% for page in site.header_pages %}
+              <a href="{{ site.baseurl }}/{{ page | replace: '.md', '' }}" class="block hover:text-primary">
+                {{ page | split: '/' | last | replace: '.md', '' | replace: '-', ' ' | capitalize }}
+              </a>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
 
   <!-- Main Content -->
   <main class="max-w-6xl mx-auto px-4 py-16">
@@ -80,7 +112,7 @@
 
   <!-- Footer -->
   <footer class="mt-20 text-sm text-gray-500 text-center py-6 border-t border-gray-200 dark:border-gray-700">
-    © 2025 QCOMM Auto. Built by <span class="text-primary font-medium">Manas & Team</span> 🚀
+    © 2025 Ahaan. Built by <span class="text-primary font-medium">Ahaan</span> 🚀
   </footer>
 
   <!-- Dark Mode Toggle -->
@@ -88,23 +120,17 @@
     window.onload = function() {
       if (localStorage.getItem('theme') === 'dark') {
         document.documentElement.classList.add('dark');
-      } 
-      
-      else {
+      } else {
         document.documentElement.classList.remove('dark');
       }
     }
 
-
     const toggle = document.getElementById('theme-toggle');
     toggle.addEventListener('click', () => {
       document.documentElement.classList.toggle('dark');
-
       if (document.documentElement.classList.contains('dark')) {
         localStorage.setItem('theme', 'dark');
-      } 
-      
-      else {
+      } else {
         localStorage.setItem('theme', 'light');
       }
     });
