@@ -72,36 +72,6 @@
 </head>
 <body class="bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-800 text-gray-800 dark:text-gray-100 font-sans transition-colors duration-300">
 
-  <!-- Navbar -->
-  <header class="sticky top-0 z-50 bg-white/60 dark:bg-gray-900/60 backdrop-blur-md shadow-sm">
-    <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-      <a href="/" class="text-2xl font-bold text-primary tracking-tight hover:opacity-80 transition">QCOMM Auto</a>
-
-      <!-- Desktop Nav -->
-      <div class="hidden md:flex gap-6 text-sm font-medium">
-        <a href="/QAV_Frontend/" class="hover:text-primary transition duration-200">Home</a>
-        <a href="/QAV_Frontend/traf/" class="hover:text-primary transition duration-200">Traffic Data</a>
-        <a href="/QAV_Frontend/avgspeed/" class="hover:text-primary transition duration-200">Average Road Speeds</a>
-        <a href="/QAV_Frontend/route/" class="hover:text-primary transition duration-200">Find Best Route</a>
-      </div>
-
-      <div class="flex items-center gap-4">
-        <a href="login" class="hidden md:inline-block px-4 py-2 bg-primary text-white rounded-xl shadow-md hover:bg-secondary transition duration-300 text-sm">Sign In</a>
-        <button id="theme-toggle" class="text-xl focus:outline-none">🌙</button>
-
-        <!-- Mobile Nav Button + Menu -->
-        <div x-data="{ open: false }" class="relative md:hidden">
-          <button @click="open = !open" class="text-2xl">☰</button>
-          <div x-show="open" @click.outside="open = false" class="absolute right-0 top-14 bg-white dark:bg-gray-800 shadow-xl rounded-lg p-4 space-y-2 z-50">
-            <a href="/" class="block hover:text-primary">Home</a>
-            <a href="/traf/" class="block hover:text-primary">Traffic Data</a>
-            <a href="/avgspeed/" class="block hover:text-primary">Average Road Speeds</a>
-            <a href="/route/" class="block hover:text-primary">Find Best Route</a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </header>
 
   <!-- Main Content -->
   <main class="max-w-6xl mx-auto px-4 py-16">
