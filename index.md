@@ -44,6 +44,30 @@ menu: nav/home.html
 
   </div>
 
+  <div x-data="{ open: false }" class="relative inline-block text-left my-8">
+  <button @click="open = !open" class="inline-flex justify-center w-full px-6 py-3 text-sm font-medium bg-primary text-white rounded-xl shadow-md hover:bg-secondary focus:outline-none transition">
+    🚗 Explore Tools
+  </button>
+
+  <div x-show="open" @click.outside="open = false" x-transition 
+       class="absolute z-10 mt-2 w-80 origin-top-right bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg p-4">
+    <div class="grid grid-cols-1 gap-3 text-sm text-gray-700 dark:text-gray-200">
+      <a href="/QAV_Frontend/" class="block px-4 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition">
+        🏠 Home
+      </a>
+      <a href="/QAV_Frontend/traf/" class="block px-4 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition">
+        🚦 Traffic Data
+      </a>
+      <a href="/QAV_Frontend/avgspeed/" class="block px-4 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition">
+        🛣️ Average Road Speeds
+      </a>
+      <a href="/QAV_Frontend/route/" class="block px-4 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition">
+        🧭 Find Best Route
+      </a>
+    </div>
+  </div>
+</div>
+
   <!-- Stats Section -->
   <section class="bg-white dark:bg-gray-900 py-12 border-t border-gray-200 dark:border-gray-700">
     <div class="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-3 text-center gap-8 px-6">
