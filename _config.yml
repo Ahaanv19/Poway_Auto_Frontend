@@ -3,7 +3,7 @@ description: "An online program to find the best and most optimible route for tr
 owner_name: Ahaan Vaidyanathan
 github_username: Ahaanv19
 github_repo: "QAV_Frontend" 
-baseurl: "/QAV_Frontend"
+baseurl: "/"
 future: true
 remote_theme: jekyll/minima
 minima:
