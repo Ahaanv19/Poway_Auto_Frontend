@@ -44,10 +44,6 @@ menu: nav/home.html
 
   </div>
 
-  <div x-data="{ open: false }" class="relative inline-block text-left my-8">
-  <button @click="open = !open" class="inline-flex justify-center w-full px-6 py-3 text-sm font-medium bg-primary text-white rounded-xl shadow-md hover:bg-secondary focus:outline-none transition">
-    🚗 Explore Tools
-  </button>
 
   <div x-show="open" @click.outside="open = false" x-transition 
        class="absolute z-10 mt-2 w-80 origin-top-right bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg p-4">
