@@ -18,6 +18,6 @@ plugins:
 header_pages:
   - navigation/toolsetup.md
   - navigation/search.md
-  - navigation/about.md
+  - /about
   - navigation/blogs.md
   - README4YML.md

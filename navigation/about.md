@@ -3,6 +3,7 @@ layout: post
 title: About
 nav: true
 description: My name is John, often referred to as "Mr M(ort)" in my CompSci classes. I am primary author and keeper of these CompSci materials.
+permalink: /about/
 menu: nav/home.html
 ---
 
