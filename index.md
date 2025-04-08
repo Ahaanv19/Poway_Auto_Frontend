@@ -59,8 +59,6 @@ menu: nav/home.html
       <a href="/QAV_Frontend/route/" class="block px-4 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition">
         🧭 Find Best Route
       </a>
-    </div>
-  </div>
 </div>
 
   <!-- Stats Section -->
