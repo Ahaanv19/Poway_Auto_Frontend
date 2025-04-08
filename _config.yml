@@ -16,8 +16,8 @@ minima:
 plugins:
   - jekyll-remote-theme
 header_pages:
-  - navigation/toolsetup.md
-  - navigation/search.md
+  - /toolsetup
+  - /search
   - /about
-  - navigation/blogs.md
+  - /blogs
   - README4YML.md
