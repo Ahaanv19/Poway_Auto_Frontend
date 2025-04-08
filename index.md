@@ -2,6 +2,7 @@
 layout: base
 title: Best Route
 search_exclude: true
+nav: true
 hide: true
 menu: nav/home.html
 ---

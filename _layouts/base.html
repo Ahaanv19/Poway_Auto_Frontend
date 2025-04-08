@@ -28,22 +28,15 @@
     };
   </script>
 
-  <!-- Inter Font -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-
-  <!-- Alpine.js for dropdowns -->
   <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
-
-  <!-- Lottie -->
   <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
 
-  <!-- Custom Scrollbar & Animations -->
   <style>
     ::selection {
       background-color: #6366f1;
       color: white;
     }
-
     ::-webkit-scrollbar {
       width: 8px;
     }
@@ -54,7 +47,6 @@
       background-color: #a5b4fc;
       border-radius: 10px;
     }
-
     @keyframes gradient-x {
       0%, 100% {
         background-position: 0% 50%;
@@ -63,7 +55,6 @@
         background-position: 100% 50%;
       }
     }
-
     .animate-gradient-x {
       background-size: 200% 200%;
       animation: gradient-x 5s ease infinite;
@@ -75,28 +66,30 @@
   <!-- Navbar -->
   <header class="sticky top-0 z-50 bg-white/60 dark:bg-gray-900/60 backdrop-blur-md shadow-sm">
     <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-      <a href="/" class="text-2xl font-bold text-primary tracking-tight hover:opacity-80 transition">QCOMM Auto</a>
+      <a href="{{ site.baseurl }}/" class="text-2xl font-bold text-primary tracking-tight hover:opacity-80 transition">QCOMM Auto</a>
 
       <!-- Desktop Nav -->
       <div class="hidden md:flex gap-6 text-sm font-medium">
-        <a href="/QAV_Frontend/" class="hover:text-primary transition duration-200">Home</a>
-        <a href="/QAV_Frontend/traf/" class="hover:text-primary transition duration-200">Traffic Data</a>
-        <a href="/QAV_Frontend/avgspeed/" class="hover:text-primary transition duration-200">Average Road Speeds</a>
-        <a href="/QAV_Frontend/route/" class="hover:text-primary transition duration-200">Find Best Route</a>
+        {% for page in site.header_pages %}
+          <a href="{{ site.baseurl }}{{ page | relative_url }}" class="hover:text-primary transition duration-200">
+            {{ page | split: "/" | last | split: "." | first | capitalize }}
+          </a>
+        {% endfor %}
       </div>
 
       <div class="flex items-center gap-4">
         <a href="login" class="hidden md:inline-block px-4 py-2 bg-primary text-white rounded-xl shadow-md hover:bg-secondary transition duration-300 text-sm">Sign In</a>
         <button id="theme-toggle" class="text-xl focus:outline-none">🌙</button>
 
-        <!-- Mobile Nav Button + Menu -->
+        <!-- Mobile Nav -->
         <div x-data="{ open: false }" class="relative md:hidden">
           <button @click="open = !open" class="text-2xl">☰</button>
           <div x-show="open" @click.outside="open = false" class="absolute right-0 top-14 bg-white dark:bg-gray-800 shadow-xl rounded-lg p-4 space-y-2 z-50">
-            <a href="/" class="block hover:text-primary">Home</a>
-            <a href="/traf/" class="block hover:text-primary">Traffic Data</a>
-            <a href="/avgspeed/" class="block hover:text-primary">Average Road Speeds</a>
-            <a href="/route/" class="block hover:text-primary">Find Best Route</a>
+            {% for page in site.header_pages %}
+              <a href="{{ site.baseurl }}{{ page | relative_url }}" class="block hover:text-primary">
+                {{ page | split: "/" | last | split: "." | first | capitalize }}
+              </a>
+            {% endfor %}
           </div>
         </div>
       </div>
@@ -118,25 +111,15 @@
     window.onload = function() {
       if (localStorage.getItem('theme') === 'dark') {
         document.documentElement.classList.add('dark');
-      } 
-      
-      else {
+      } else {
         document.documentElement.classList.remove('dark');
       }
     }
 
-
     const toggle = document.getElementById('theme-toggle');
     toggle.addEventListener('click', () => {
       document.documentElement.classList.toggle('dark');
-
-      if (document.documentElement.classList.contains('dark')) {
-        localStorage.setItem('theme', 'dark');
-      } 
-      
-      else {
-        localStorage.setItem('theme', 'light');
-      }
+      localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
     });
   </script>
 </body>
