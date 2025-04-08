@@ -2,7 +2,7 @@
 layout: post
 title: Readme
 toc: true
-permalink: /read/
+permalink: /Readme4yml/
 menu: nav/home.html
 ---
 
