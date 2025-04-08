@@ -45,8 +45,7 @@ menu: nav/home.html
   </div>
 
 
-  <div x-show="open" @click.outside="open = false" x-transition 
-       class="absolute z-10 mt-2 w-80 origin-top-right bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg p-4">
+  
     <div class="grid grid-cols-1 gap-3 text-sm text-gray-700 dark:text-gray-200">
       <a href="/QAV_Frontend/" class="block px-4 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition">
         🏠 Home
