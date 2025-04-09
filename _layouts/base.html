@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{{ page.title | default: "QCOMM Auto" }}</title>
 
-  <!-- Tailwind CSS CDN -->
+  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -18,20 +18,27 @@
           colors: {
             primary: '#4f46e5',
             secondary: '#6366f1',
-            accent: '#c084fc',
+            accent: '#a78bfa',
+            background: '#f9fafb',
+            darkbg: '#1f2937',
           },
           boxShadow: {
             soft: '0 2px 25px rgba(0, 0, 0, 0.05)',
+          },
+          transitionProperty: {
+            width: 'width',
           },
         },
       },
     };
   </script>
 
+  <!-- Fonts & Scripts -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
   <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
 
+  <!-- Custom Styles -->
   <style>
     ::selection {
       background-color: #6366f1;
@@ -48,12 +55,8 @@
       border-radius: 10px;
     }
     @keyframes gradient-x {
-      0%, 100% {
-        background-position: 0% 50%;
-      }
-      50% {
-        background-position: 100% 50%;
-      }
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
     }
     .animate-gradient-x {
       background-size: 200% 200%;
@@ -61,32 +64,39 @@
     }
   </style>
 </head>
-<body class="bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-800 text-gray-800 dark:text-gray-100 font-sans transition-colors duration-300">
+
+<body class="bg-gradient-to-br from-background to-gray-100 dark:from-darkbg dark:to-gray-900 text-gray-800 dark:text-gray-100 font-sans transition-colors duration-300">
 
   <!-- Navbar -->
-  <header class="sticky top-0 z-50 bg-white/60 dark:bg-gray-900/60 backdrop-blur-md shadow-sm">
+  <header class="sticky top-0 z-50 bg-white/70 dark:bg-gray-900/60 backdrop-blur-md shadow-sm transition-all duration-300">
     <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+<<<<<<< HEAD
+      <a href="/QAV_Frontend/" class="text-2xl font-bold text-primary tracking-tight hover:opacity-80 transition">QCOMM Auto</a>
+=======
       <a href="{{site.baseurl}}/" class="text-2xl font-bold text-primary tracking-tight hover:opacity-80 transition">QCOMM Auto</a>
+>>>>>>> 1fa35c87b4325fb892593cd2afb0a0217bbdf627
 
       <!-- Desktop Nav -->
-      <div class="hidden md:flex gap-6 text-sm font-medium">
+      <nav class="hidden md:flex gap-6 text-sm font-medium">
         {% for page in site.header_pages %}
           <a href="{{ page | relative_url }}" class="hover:text-primary transition duration-200">
             {{ page | split: "/" | last | split: "." | first | capitalize }}
           </a>
         {% endfor %}
-      </div>
+      </nav>
 
+      <!-- Actions -->
       <div class="flex items-center gap-4">
         <a href="login" class="hidden md:inline-block px-4 py-2 bg-primary text-white rounded-xl shadow-md hover:bg-secondary transition duration-300 text-sm">Sign In</a>
-        <button id="theme-toggle" class="text-xl focus:outline-none">🌙</button>
+        <button id="theme-toggle" class="text-xl focus:outline-none transition hover:scale-110">🌙</button>
 
         <!-- Mobile Nav -->
         <div x-data="{ open: false }" class="relative md:hidden">
           <button @click="open = !open" class="text-2xl">☰</button>
-          <div x-show="open" @click.outside="open = false" class="absolute right-0 top-14 bg-white dark:bg-gray-800 shadow-xl rounded-lg p-4 space-y-2 z-50">
+          <div x-show="open" x-transition @click.outside="open = false"
+               class="absolute right-0 top-14 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-xl rounded-lg p-4 space-y-2 z-50 w-40">
             {% for page in site.header_pages %}
-              <a href="{{ page | relative_url }}" class="block hover:text-primary">
+              <a href="{{ page | relative_url }}" class="block hover:text-primary transition">
                 {{ page | split: "/" | last | split: "." | first | capitalize }}
               </a>
             {% endfor %}
@@ -106,21 +116,28 @@
     © 2025 QCOMM Auto. Built by <span class="text-primary font-medium">Manas & Team</span> 🚀
   </footer>
 
-  <!-- Dark Mode Toggle -->
+  <!-- Dark Mode Script -->
   <script>
-    window.onload = function() {
+    const toggleBtn = document.getElementById('theme-toggle');
+    const html = document.documentElement;
+
+    function applyTheme() {
       if (localStorage.getItem('theme') === 'dark') {
-        document.documentElement.classList.add('dark');
+        html.classList.add('dark');
+        toggleBtn.textContent = '☀️';
       } else {
-        document.documentElement.classList.remove('dark');
+        html.classList.remove('dark');
+        toggleBtn.textContent = '🌙';
       }
     }
 
-    const toggle = document.getElementById('theme-toggle');
-    toggle.addEventListener('click', () => {
-      document.documentElement.classList.toggle('dark');
-      localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+    toggleBtn.addEventListener('click', () => {
+      const current = localStorage.getItem('theme') === 'dark';
+      localStorage.setItem('theme', current ? 'light' : 'dark');
+      applyTheme();
     });
+
+    window.onload = applyTheme;
   </script>
 </body>
 </html>
