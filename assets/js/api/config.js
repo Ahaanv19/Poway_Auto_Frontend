@@ -4,7 +4,7 @@ if (location.hostname === "localhost") {
 } else if (location.hostname === "127.0.0.1") {
         pythonURI = "http://127.0.0.1:8888";
 } else {
-        pythonURI = "https://litconnect.stu.nighthawkcodingsociety.com";
+        pythonURI = "http://127.0.0.1:8888";
 }
 export var javaURI;
 if (location.hostname === "localhost") {
