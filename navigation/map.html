@@ -7,78 +7,69 @@ nav: true
 ---
 
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <title>Directions Finder</title>
-  <style>
-    body {
-      font-family: sans-serif;
-      padding: 20px;
-      max-width: 600px;
-    }
-    input {
-      display: block;
-      width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-    }
-    button {
-      padding: 10px 20px;
-      cursor: pointer;
-    }
-    li {
-      margin-bottom: 10px;
-    }
-  </style>
+  <title>Simple Route Finder</title>
 </head>
 <body>
-  <h1>Get Directions</h1>
-  <input id="origin" placeholder="Enter starting address" />
-  <input id="destination" placeholder="Enter destination address" />
-  <button id="get-btn">Get Directions</button>
+  <h1>Find Best Route</h1>
 
-  <h2>Step-by-step:</h2>
-  <ul id="directions-list"></ul>
+  <label for="origin">Origin:</label>
+  <input type="text" id="origin" placeholder="Enter origin"><br><br>
+
+  <label for="destination">Destination:</label>
+  <input type="text" id="destination" placeholder="Enter destination"><br><br>
+
+  <button onclick="getRoutes()">Get Routes</button>
+
+  <div id="output"></div>
 
   <script>
-    document.getElementById("get-btn").onclick = () => {
-      const origin = document.getElementById("origin").value.trim();
-      const destination = document.getElementById("destination").value.trim();
+    async function getRoutes() {
+      const origin = document.getElementById('origin').value;
+      const destination = document.getElementById('destination').value;
+      const output = document.getElementById('output');
+      output.innerHTML = "Loading...";
 
-      if (!origin || !destination) {
-        alert("Please enter both origin and destination.");
-        return;
-      }
+      try {
+        const res = await fetch('http://localhost:8888/get_routes', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ origin, destination })
+        });
 
-      fetch('http://localhost:8888/get_routes', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ origin, destination })
-      })
-      .then(res => res.json())
-      .then(data => {
-        const list = document.getElementById("directions-list");
-        list.innerHTML = "";
+        const data = await res.json();
 
-        if (Array.isArray(data) && data.length > 0) {
-          data[0].details.forEach(step => {
-            const li = document.createElement("li");
-            li.innerHTML = step.instruction;
-            list.appendChild(li);
-          });
-        } else {
-          list.innerHTML = `<li>Error: ${data.error || 'Unknown error'}</li>`;
+        if (data.error) {
+          output.innerHTML = `<p>Error: ${data.error}</p>`;
+          return;
         }
-      })
-      .catch(err => {
-        console.error(err);
-        document.getElementById("directions-list").innerHTML = `<li>Error fetching directions.</li>`;
-      });
-    };
+
+        let html = '';
+        data.routes.forEach((route, index) => {
+          html += `<h2>Route ${index + 1}</h2>`;
+          html += `<p><strong>Distance:</strong> ${route.total_distance}</p>`;
+          html += `<p><strong>Duration:</strong> ${route.total_duration}</p>`;
+          html += `<ul>`;
+          route.steps.forEach((step, i) => {
+            html += `<li><strong>Step ${i + 1}:</strong> ${step.instruction} (Distance: ${step.distance}, Duration: ${step.duration})</li>`;
+          });
+          html += `</ul><hr>`;
+        });
+
+        output.innerHTML = html;
+
+      } catch (err) {
+        output.innerHTML = `<p>Error fetching data: ${err}</p>`;
+      }
+    }
   </script>
 </body>
 </html>
+
+
 
 
 
