@@ -9,65 +9,72 @@ nav: true
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Simple Route Finder</title>
+  <title>Simple Route Fetcher</title>
 </head>
 <body>
-  <h1>Find Best Route</h1>
 
-  <label for="origin">Origin:</label>
-  <input type="text" id="origin" placeholder="Enter origin"><br><br>
+  <h2>Get Driving Routes</h2>
 
-  <label for="destination">Destination:</label>
-  <input type="text" id="destination" placeholder="Enter destination"><br><br>
+  <label>
+    Origin: <input type="text" id="origin" value="San Francisco, CA">
+  </label><br><br>
 
-  <button onclick="getRoutes()">Get Routes</button>
+  <label>
+    Destination: <input type="text" id="destination" value="Las Vegas, NV">
+  </label><br><br>
 
-  <div id="output"></div>
+  <button onclick="fetchRoutes()">Fetch Routes</button>
+
+  <div id="result" style="margin-top: 20px;"></div>
 
   <script>
-    async function getRoutes() {
+    function fetchRoutes() {
       const origin = document.getElementById('origin').value;
       const destination = document.getElementById('destination').value;
-      const output = document.getElementById('output');
-      output.innerHTML = "Loading...";
+      const resultDiv = document.getElementById('result');
 
-      try {
-        const res = await fetch('http://127.0.0.1:8888/get_routes', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ origin, destination })
-        });
+      resultDiv.innerHTML = 'Loading...';
 
-        const data = await res.json();
-
-        if (data.error) {
-          output.innerHTML = `<p>Error: ${data.error}</p>`;
-          return;
-        }
-
-        let html = '';
-        data.routes.forEach((route, index) => {
-          html += `<h2>Route ${index + 1}</h2>`;
-          html += `<p><strong>Distance:</strong> ${route.total_distance}</p>`;
-          html += `<p><strong>Duration:</strong> ${route.total_duration}</p>`;
-          html += `<ul>`;
-          route.steps.forEach((step, i) => {
-            html += `<li><strong>Step ${i + 1}:</strong> ${step.instruction} (Distance: ${step.distance}, Duration: ${step.duration})</li>`;
+      fetch('http://localhost:8888/api/get_routes', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ origin, destination })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (Array.isArray(data)) {
+          resultDiv.innerHTML = '';
+          data.forEach((route, index) => {
+            const routeEl = document.createElement('div');
+            routeEl.innerHTML = `
+              <h3>Route ${index + 1}</h3>
+              <p><strong>Total Distance:</strong> ${route.total_distance}</p>
+              <p><strong>Total Duration:</strong> ${route.total_duration}</p>
+              <ol>
+                ${route.details.map(step => `
+                  <li>${step.instruction} (${step.distance}, ${step.duration})</li>
+                `).join('')}
+              </ol>
+              <hr>
+            `;
+            resultDiv.appendChild(routeEl);
           });
-          html += `</ul><hr>`;
-        });
-
-        output.innerHTML = html;
-
-      } catch (err) {
-        output.innerHTML = `<p>Error fetching data: ${err}</p>`;
-      }
+        } else {
+          resultDiv.innerHTML = `<p style="color:red;">Error: ${data.error}</p>`;
+        }
+      })
+      .catch(error => {
+        console.error(error);
+        resultDiv.innerHTML = '<p style="color:red;">Something went wrong while fetching routes.</p>';
+      });
     }
   </script>
+
 </body>
 </html>
+
 
 
 
