@@ -1,5 +1,50 @@
 import { pythonURI, javaURI, fetchOptions, login } from '../../assets/js/api/config.js';
 
+async function populateScores() {
+  const grid = document.getElementById('locations-grid');
+  grid.innerHTML = ''; // Clear existing content
+
+  let scores = await readScores();
+
+  scores.forEach(location => {
+    const square = document.createElement('button'); // Make it a button
+    square.className = 'location-square';
+    square.textContent = location.user_name; // Assuming "user_name" is the key in the JSON data
+    square.addEventListener('click', () => showPopup(location)); // Add click event to show popup
+    grid.appendChild(square);
+  });
+}
+
+function showPopup(location) {
+  // Create the popup container
+  const popup = document.createElement('div');
+  popup.className = 'popup';
+
+  // Create the popup content
+  popup.innerHTML = `
+    <div class="popup-content">
+      <button class="popup-close">&times;</button>
+      <p><strong>Name:</strong> ${location.user_name}</p>
+      <p><strong>Address:</strong> ${location.user_address}</p>
+      <button class="popup-delete">Delete</button>
+    </div>
+  `;
+
+  // Add event listener to close button
+  popup.querySelector('.popup-close').addEventListener('click', () => {
+    document.body.removeChild(popup);
+  });
+
+  // Add event listener to delete button
+  popup.querySelector('.popup-delete').addEventListener('click', async () => {
+    await deleteScores(location.id); // Assuming "id" is the key for the location ID
+    document.body.removeChild(popup); // Close the popup
+    populateScores(); // Refresh the grid
+  });
+
+  // Append the popup to the body
+  document.body.appendChild(popup);
+}
 
 async function readScores() {
     try {  
@@ -101,3 +146,7 @@ async function readScores() {
         alert('Error updating location: ' + error.message);
     }
   }
+
+
+
+document.addEventListener('DOMContentLoaded', populateScores);
