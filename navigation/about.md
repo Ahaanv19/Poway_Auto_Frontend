@@ -1,5 +1,5 @@
 ---
-layout: post 
+layout: base 
 title: About
 nav: true
 description: About the Planning and Devlopment Process
