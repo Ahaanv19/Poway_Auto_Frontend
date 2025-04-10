@@ -32,7 +32,7 @@ nav: true
       output.innerHTML = "Loading...";
 
       try {
-        const res = await fetch('http://localhost:8888/get_routes', {
+        const res = await fetch('http://127.0.0.1:8888/get_routes', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
