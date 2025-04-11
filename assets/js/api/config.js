@@ -12,7 +12,7 @@ if (location.hostname === "localhost") {
 } else if (location.hostname === "127.0.0.1") {
         javaURI = "http://127.0.0.1:8888"; //rey
 } else {
-        javaURI = "https://flocker-j.nighthawkcodingsociety.com";
+        javaURI = "https://autonomous.stu.nighthawkcodingsociety.com.stu.nighthawkcodingsociety.com";
 }
 
 export const fetchOptions = {
