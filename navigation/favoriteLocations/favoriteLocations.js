@@ -4,7 +4,7 @@ async function populateScores() {
   const grid = document.getElementById('locations-grid');
   grid.innerHTML = ''; // Clear existing content
 
-  let scores = await readScores();
+  let scores = await filterForUsername(await readScores());
 
   scores.forEach(location => {
     const square = document.createElement('button'); // Make it a button
@@ -13,6 +13,15 @@ async function populateScores() {
     square.addEventListener('click', () => showPopup(location)); // Add click event to show popup
     grid.appendChild(square);
   });
+}
+
+async function filterForUsername(scores) {
+  const currentUserResponse = await fetch(`${pythonURI}/api/user`, fetchOptions);
+  if (!currentUserResponse.ok) throw new Error('Failed to fetch current user');
+  const currentUser = await currentUserResponse.json();
+  let userName = currentUser.name;
+
+  return (scores.filter((entry) => String(entry.username) === String(userName)));
 }
 
 function showPopup(location) {
