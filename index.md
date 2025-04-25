@@ -12,7 +12,7 @@ menu: nav/home.html
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Best Route - Auto/title>
+  <title>Best Route - QCOMM Auto </title>
 
   <!-- External Stylesheets -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
