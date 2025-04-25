@@ -121,9 +121,6 @@ menu: nav/home.html
         <a href="/QAV_Frontend/route/" class="block px-4 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition">
           🧭 Find Best Route
         </a>
-        <a href="/QAV_Frontend/ahmad/" class="block px-4 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition">
-          🧭 Ahmad
-        </a>
         <a href="/QAV_Frontend/favoriteLocations/" class="block px-4 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition">
         🏠 Favorite Locations
         </a>

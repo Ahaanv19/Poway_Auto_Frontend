@@ -12,6 +12,7 @@ permalink: /favoriteLocations/
 
 <body>
   <div id="locations-grid"></div>
+  <button id="new-location-button" class="new-location-button">New</button>
 </body>
 
 <script type="module" src="{{site.baseurl}}/navigation/favoriteLocations/favoriteLocations.js"></script>
