@@ -1,52 +1,101 @@
-# Advanced Autonomous Vehicle Navigation System for San Diego
-
-The proposed **Autonomous Vehicle Navigation System** leverages real-time mapping, AI-driven traffic analysis, and predictive routing to optimize travel in San Diego. This system is designed to be intuitive for users, enabling them to input a start and end location to generate the most efficient route. The system integrates real-time traffic data to adjust routes dynamically, accounting for congestion, accidents, and other factors that could impact travel time. A simulation model will be included to visualize how real-world traffic conditions affect route selection and driving strategies.
-
----
-
-## Key Features of the System
-
-### 1. Real-Time Mapping Integration
-The system will integrate **high-resolution maps** of San Diego, providing an up-to-date representation of roads, intersections, and urban infrastructure. The mapping data will be continuously refreshed to ensure accuracy, and will be combined with **satellite imagery** to improve situational awareness. This real-time mapping will act as the foundation for the AI’s routing decisions.
-
-### 2. AI-Driven Traffic Analysis
-The AI-driven traffic analysis system will process real-time traffic data to predict congestion and adjust routes accordingly. It will use machine learning algorithms to continuously improve its predictions based on new data. This feature will ensure that the autonomous vehicle can react dynamically to traffic changes, accidents, and other delays.
-
-### 3. Predictive Routing
-The system will employ **predictive routing algorithms** to determine the best route based on real-time traffic conditions, historical data, and predictive traffic flow models. It will also factor in the vehicle’s ability to navigate congested roads, optimizing for both time and fuel efficiency.
-
-### 4. Simulation Model
-A **simulation model** will be integrated into the system to demonstrate how the vehicle’s AI adjusts routes based on dynamic traffic conditions. The simulation will allow for testing under various real-world scenarios to assess the system’s accuracy and reliability.
+# QCOMM Auto: Design Process  
+*Advanced Route Optimization and Adaptive Driving Experiences*
 
 ---
 
-## Project Timeline
+## Phase 1: Problem Discovery & Research
 
-### Phase 1: Research and Data Collection
-- **Data gathering**: Collection of real-time traffic data for San Diego from various sources.
-- **Mapping**: Integration of high-resolution mapping data and satellite imagery.
-- **Initial algorithm design**: Development of basic routing algorithms.
+### Objective  
+Understand the core challenges of autonomous vehicle navigation and user experience. Identify gaps in current route planning technologies and assess real-world conditions that impact routing and personalization.
 
-### Phase 2: AI Development and Traffic Analysis
-- **Traffic prediction models**: Development of machine learning models to predict traffic patterns.
-- **Integration with real-time data**: Synchronization of traffic data with predictive models.
-
-### Phase 3: Simulation and Testing
-- **Simulation testing**: Running simulations to test the effectiveness of the routing and traffic analysis algorithms.
-- **Iterative improvements**: Refining the system based on feedback from testing.
-
-### Phase 4: Final Deployment and Optimization
-- **System optimization**: Refining algorithms and AI models to ensure optimal performance in real-world conditions.
-- **User interface development**: Creating an intuitive interface for users to input start and end locations.
+### Key Activities  
+- Analyzed traffic inefficiencies using datasets from Poway’s Open Data Portal and Caltrans feeds  
+- Studied human driving behaviors and preferences through user interviews and surveys  
+- Evaluated existing solutions in autonomous driving and smart navigation systems  
 
 ---
 
-## Next Steps
+## Phase 2: System Architecture & Planning
 
-- Finalize the integration of AI-driven traffic analysis with predictive routing.
-- Implement real-time data synchronization with mapping tools.
-- Test the simulation model in various scenarios and adjust based on results.
-- Focus on refining the user experience, making the system as intuitive and seamless as possible.
+### Objective  
+Design a modular and scalable system architecture capable of ingesting real-time data, adapting to user behaviors, and supporting on-vehicle intelligence.
+
+### Key Components  
+- **Microservices Architecture**: Separated services for routing, UI, user preference tracking, and ML inference  
+- **Edge-AI Readiness**: Hardware selection (e.g., NVIDIA Jetson, Snapdragon) for low-latency processing  
+- **Secure Communication Layer**: JWT-authenticated APIs and encrypted sensor data streams  
+- **Docker + CI/CD Pipelines**: Infrastructure to support iterative development and cloud deployment  
+
+---
+
+## Phase 3: Route Optimization Engine
+
+### Objective  
+Develop a predictive routing system that calculates optimal paths in real-time, accounting for environmental and traffic conditions.
+
+### Core Features  
+- **Predictive Algorithms**: Use historical and real-time data to optimize ETA and fuel efficiency  
+- **Traffic Flow Modeling**: Ingest data from V2X (Vehicle-to-Everything) sensors and municipal sources  
+- **Multi-Objective Pathfinding**: Balance shortest route, energy usage, stops, and risk levels  
+
+---
+
+## Phase 4: User-Centric Experience Layer
+
+### Objective  
+Create a personalized driving experience by learning from user behavior and preferences.
+
+### Core Features  
+- **Favorite Locations & Recurring Routes**: Auto-prioritize user-preferred paths  
+- **Personalized Route Suggestions**: Account for weather, traffic, and avoidance rules (e.g. toll roads)  
+- **Context-Aware Driving Modes**: Customize driving style (cautious, assertive) per user profile  
+- **Integrated Dashboard**: Visual interface for route history, preferences, and recommendations  
+
+---
+
+## Phase 5: Machine Learning & Edge AI Integration
+
+### Objective  
+Enable intelligent decision-making on the vehicle itself using real-time inference and adaptive learning.
+
+### Core Features  
+- **On-Device Model Inference**: For routing, user behavior prediction, and obstacle avoidance  
+- **Federated Learning Pipelines**: Enable learning across fleets while maintaining data privacy  
+- **Model Retraining Workflows**: Incorporate new user data for continuous improvement  
+
+---
+
+## Phase 6: System Deployment & Scaling
+
+### Objective  
+Ensure that the system can be deployed reliably across environments and scale with project growth.
+
+### Deployment Stack  
+- **Containerized Services**: For modular updates and isolated environments  
+- **Edge Hardware Acceleration**: Snapdragon/NVIDIA Jetson for onboard processing  
+- **CI/CD Integration**: Automate testing, builds, and releases across dev clusters  
+- **Encrypted Communication Protocols**: Secure API channels and sandboxed service zones  
+
+---
+
+## Phase 7: Evaluation, Feedback, and Future Iterations
+
+### Objective  
+Continuously improve the system based on real-world use, driver feedback, and performance metrics.
+
+### Next Steps  
+- Conduct pilot testing with simulated and real road conditions  
+- Gather feedback on personalized features and UI accessibility  
+- Expand traffic data ingestion to include more city and state sources  
+- Improve long-term planning algorithms for multi-stop and recurrent travel scenarios  
+
+---
+
+## Vision and Impact
+
+Through this iterative design process, QCOMM Auto merges technical innovation with user-centric design to build the next generation of autonomous vehicle intelligence. Our goal is to create a safer, more responsive, and more enjoyable driving experience—by learning from both the road and the user.
+
+
 
 ---
 
