@@ -1,0 +1,249 @@
+---
+toc: true
+layout: post
+title: Daily Routine
+permalink: /routine/
+nav: true
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Persistent Full-Day Schedule</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background-color: #f0f2f5;
+    }
+    h2 {
+      margin-bottom: 10px;
+    }
+    form {
+      margin-bottom: 20px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    input, select, button {
+      padding: 10px;
+      font-size: 14px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      cursor: pointer;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      transition: background-color 0.2s ease;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .add-button {
+      background-color: #28a745;
+    }
+    .add-button:hover {
+      background-color: #218838;
+    }
+    .route-actions {
+      display: inline-flex;
+      gap: 5px;
+      margin-left: 10px;
+    }
+    .route-actions button {
+      background-color: #6c757d;
+      font-size: 12px;
+      padding: 5px 8px;
+    }
+    .route-actions button:hover {
+      background-color: #5a6268;
+    }
+    .route-actions .map-btn {
+      background-color: #17a2b8;
+    }
+    .route-actions .map-btn:hover {
+      background-color: #117a8b;
+    }
+    .route-actions .edit-btn {
+      background-color: #ffc107;
+      color: black;
+    }
+    .route-actions .edit-btn:hover {
+      background-color: #e0a800;
+    }
+    .route-actions .delete-btn {
+      background-color: #dc3545;
+    }
+    .route-actions .delete-btn:hover {
+      background-color: #c82333;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: #fff;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 10px;
+      vertical-align: top;
+    }
+    ul {
+      margin: 0;
+      padding-left: 20px;
+    }
+    .slot {
+      min-height: 40px;
+    }
+    .time-cell {
+      width: 120px;
+      background-color: #f9f9f9;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Daily Schedule</h2>
+
+  <form id="addItemForm">
+    <label for="timeSelect">Time:</label>
+    <select id="timeSelect"></select>
+    <input type="text" id="startInput" placeholder="Start location" required />
+    <input type="text" id="destinationInput" placeholder="Destination" required />
+    <button type="submit" class="add-button">➕ Add Route</button>
+  </form>
+
+  <table id="scheduleTable">
+    <thead>
+      <tr>
+        <th>Time</th>
+        <th>Routes</th>
+      </tr>
+    </thead>
+    <tbody id="scheduleBody"></tbody>
+  </table>
+
+  <script>
+    const scheduleBody = document.getElementById('scheduleBody');
+    const timeSelect = document.getElementById('timeSelect');
+    const addItemForm = document.getElementById('addItemForm');
+    const startInput = document.getElementById('startInput');
+    const destinationInput = document.getElementById('destinationInput');
+
+    function formatTime(hour) {
+      const suffix = hour >= 12 ? 'PM' : 'AM';
+      const hour12 = hour % 12 || 12;
+      return `${hour12}:00 ${suffix}`;
+    }
+
+    let scheduleData = JSON.parse(localStorage.getItem('dailySchedule')) || {};
+
+    function saveSchedule() {
+      localStorage.setItem('dailySchedule', JSON.stringify(scheduleData));
+    }
+
+    function createRouteElement(hour, route, index) {
+      const li = document.createElement('li');
+      li.textContent = `${route.start} → ${route.destination}`;
+
+      const actions = document.createElement('span');
+      actions.className = 'route-actions';
+
+      const mapBtn = document.createElement('button');
+      mapBtn.textContent = 'Map';
+      mapBtn.className = 'map-btn';
+      mapBtn.onclick = () => {
+        const url = `https://www.google.com/maps/dir/${encodeURIComponent(route.start)}/${encodeURIComponent(route.destination)}`;
+        window.open(url, '_blank');
+      };
+
+      const editBtn = document.createElement('button');
+      editBtn.textContent = 'Edit';
+      editBtn.className = 'edit-btn';
+      editBtn.onclick = () => {
+        startInput.value = route.start;
+        destinationInput.value = route.destination;
+        timeSelect.value = hour;
+        scheduleData[hour].splice(index, 1);
+        saveSchedule();
+        renderSchedule();
+      };
+
+      const deleteBtn = document.createElement('button');
+      deleteBtn.textContent = 'Delete';
+      deleteBtn.className = 'delete-btn';
+      deleteBtn.onclick = () => {
+        scheduleData[hour].splice(index, 1);
+        if (scheduleData[hour].length === 0) delete scheduleData[hour];
+        saveSchedule();
+        renderSchedule();
+      };
+
+      actions.appendChild(mapBtn);
+      actions.appendChild(editBtn);
+      actions.appendChild(deleteBtn);
+      li.appendChild(actions);
+      return li;
+    }
+
+    function renderSchedule() {
+      scheduleBody.innerHTML = '';
+
+      for (let hour = 0; hour < 24; hour++) {
+        const row = document.createElement('tr');
+        const timeCell = document.createElement('td');
+        const slotCell = document.createElement('td');
+
+        timeCell.textContent = formatTime(hour);
+        timeCell.className = 'time-cell';
+        slotCell.className = 'slot';
+        slotCell.id = `slot-${hour}`;
+
+        const ul = document.createElement('ul');
+        if (scheduleData[hour]) {
+          scheduleData[hour].forEach((route, index) => {
+            const li = createRouteElement(hour, route, index);
+            ul.appendChild(li);
+          });
+        }
+
+        slotCell.appendChild(ul);
+        row.appendChild(timeCell);
+        row.appendChild(slotCell);
+        scheduleBody.appendChild(row);
+      }
+    }
+
+    for (let hour = 0; hour < 24; hour++) {
+      const option = document.createElement('option');
+      option.value = hour;
+      option.textContent = formatTime(hour);
+      timeSelect.appendChild(option);
+    }
+
+    addItemForm.onsubmit = (e) => {
+      e.preventDefault();
+      const hour = timeSelect.value;
+      const start = startInput.value.trim();
+      const destination = destinationInput.value.trim();
+      if (!start || !destination) return;
+
+      const route = { start, destination };
+      if (!scheduleData[hour]) scheduleData[hour] = [];
+      scheduleData[hour].push(route);
+      saveSchedule();
+      renderSchedule();
+
+      startInput.value = '';
+      destinationInput.value = '';
+    };
+
+    renderSchedule();
+  </script>
+
+</body>
+</html>
