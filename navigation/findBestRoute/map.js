@@ -37,6 +37,11 @@ async function fetchRoutes() {
             const currentHour = new Date().getHours();
             const isAM = currentHour < 12;
 
+            // Clear any existing route layers on the map
+            if (routeLayer) {
+                map.removeLayer(routeLayer);
+            }
+
             data.forEach((route, index) => {
                 const routeEl = document.createElement('div');
                 const updatedDetails = route.details.map(step => {
@@ -77,14 +82,17 @@ async function fetchRoutes() {
                 // Draw route on map if coordinates are available
                 if (route.geometry) {
                     const coordinates = decodePolyline(route.geometry);
-                    routeLayer = L.polyline(coordinates, {
-                        color: getRouteColor(index),
+                    const routeColor = getRouteColor(index);
+
+                    // Add polyline to the map
+                    const polyline = L.polyline(coordinates, {
+                        color: routeColor,
                         weight: 5,
                         opacity: 0.7
                     }).addTo(map);
 
-                    // Fit map to show entire route
-                    map.fitBounds(routeLayer.getBounds());
+                    // Fit map to show the entire route
+                    map.fitBounds(polyline.getBounds());
                 }
             });
         } else {

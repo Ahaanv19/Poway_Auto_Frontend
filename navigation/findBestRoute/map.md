@@ -22,7 +22,7 @@ nav: true
       <label for="destination">Destination:</label>
       <input type="text" id="destination" placeholder="Enter destination">
     </div>
-    <button onclick="fetchRoutes()">Find Routes</button>
+    <button id="fetch_routes_btn">Find Routes</button>
   </div>
 
   <div id="map"></div>
