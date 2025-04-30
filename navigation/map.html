@@ -9,25 +9,132 @@ nav: true
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Simple Route Fetcher</title>
+  <title>Traffic-Aware Route Finder</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+  <style>
+    #map {
+      height: 400px;
+      margin: 20px 0;
+      border-radius: 10px;
+      border: 2px solid #add8e6;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .route-form {
+      margin: 20px 0;
+      padding: 20px;
+      background: #f8f9fa;
+      border-radius: 10px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .input-group {
+      margin-bottom: 15px;
+    }
+
+    .input-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+
+    button {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    #result {
+      margin-top: 20px;
+      padding: 15px;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+  </style>
 </head>
 <body>
+  <div class="route-form">
+    <h2>Traffic-Aware Route Finder</h2>
+    
+    <div class="input-group">
+      <label for="origin">Origin:</label>
+      <input type="text" id="origin" placeholder="Enter starting point">
+    </div>
 
-  <h2>Get Driving Routes</h2>
+    <div class="input-group">
+      <label for="destination">Destination:</label>
+      <input type="text" id="destination" placeholder="Enter destination">
+    </div>
 
-  <label>
-    Origin: <input type="text" id="origin" value="San Francisco, CA">
-  </label><br><br>
+    <button onclick="fetchRoutes()">Find Routes</button>
+  </div>
 
-  <label>
-    Destination: <input type="text" id="destination" value="Las Vegas, NV">
-  </label><br><br>
+  <div id="map"></div>
+  <div id="result"></div>
 
-  <button onclick="fetchRoutes()">Fetch Routes</button>
-
-  <div id="result" style="margin-top: 20px;"></div>
-
+  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
   <script>
+    let map;
+    let routeLayer;
+
+    // Initialize map
+    document.addEventListener('DOMContentLoaded', function() {
+      map = L.map('map');
+      
+      // Add the base map layer
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '© OpenStreetMap contributors'
+      }).addTo(map);
+
+      // Try to get user's location
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const { latitude, longitude } = position.coords;
+            map.setView([latitude, longitude], 13);
+            L.marker([latitude, longitude])
+              .addTo(map)
+              .bindPopup('Your Location')
+              .openPopup();
+
+            // Auto-fill origin with current location
+            reverseGeocode(latitude, longitude);
+          },
+          () => {
+            // Default view if location access is denied
+            map.setView([32.7157, -117.1611], 12); // San Diego coordinates
+          }
+        );
+      }
+    });
+
+    // Reverse geocoding function
+    function reverseGeocode(lat, lon) {
+      fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`)
+        .then(response => response.json())
+        .then(data => {
+          document.getElementById('origin').value = data.display_name;
+        })
+        .catch(error => console.error('Error:', error));
+    }
+
     function fetchRoutes() {
       const origin = document.getElementById('origin').value;
       const destination = document.getElementById('destination').value;
@@ -35,7 +142,12 @@ nav: true
 
       resultDiv.innerHTML = 'Loading...';
 
-      fetch('https://autonomous.stu.nighthawkcodingsociety.com.stu.nighthawkcodingsociety.com/api/get_routes', {
+      // Clear existing route layer
+      if (routeLayer) {
+        map.removeLayer(routeLayer);
+      }
+
+      fetch('https://autonomous.stu.nighthawkcodingsociety.com/api/get_routes', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -46,6 +158,8 @@ nav: true
       .then(data => {
         if (Array.isArray(data)) {
           resultDiv.innerHTML = '';
+          
+          // Display each route
           data.forEach((route, index) => {
             const routeEl = document.createElement('div');
             routeEl.innerHTML = `
@@ -60,6 +174,19 @@ nav: true
               <hr>
             `;
             resultDiv.appendChild(routeEl);
+
+            // Draw route on map if coordinates are available
+            if (route.geometry) {
+              const coordinates = decodePolyline(route.geometry);
+              routeLayer = L.polyline(coordinates, {
+                color: getRouteColor(index),
+                weight: 5,
+                opacity: 0.7
+              }).addTo(map);
+
+              // Fit map to show entire route
+              map.fitBounds(routeLayer.getBounds());
+            }
           });
         } else {
           resultDiv.innerHTML = `<p style="color:red;">Error: ${data.error}</p>`;
@@ -70,8 +197,51 @@ nav: true
         resultDiv.innerHTML = '<p style="color:red;">Something went wrong while fetching routes.</p>';
       });
     }
-  </script>
 
+    // Helper function to get different colors for different routes
+    function getRouteColor(index) {
+      const colors = ['#4CAF50', '#2196F3', '#FFC107', '#9C27B0', '#F44336'];
+      return colors[index % colors.length];
+    }
+
+    // Function to decode Google's encoded polyline format
+    function decodePolyline(encoded) {
+      if (!encoded) return [];
+      
+      let points = [];
+      let index = 0, len = encoded.length;
+      let lat = 0, lng = 0;
+
+      while (index < len) {
+        let shift = 0, result = 0;
+        
+        do {
+          let b = encoded.charCodeAt(index++) - 63;
+          result |= (b & 0x1f) << shift;
+          shift += 5;
+        } while (result & 0x20);
+        
+        let dlat = ((result & 1) ? ~(result >> 1) : (result >> 1));
+        lat += dlat;
+
+        shift = 0;
+        result = 0;
+        
+        do {
+          let b = encoded.charCodeAt(index++) - 63;
+          result |= (b & 0x1f) << shift;
+          shift += 5;
+        } while (result & 0x20);
+        
+        let dlng = ((result & 1) ? ~(result >> 1) : (result >> 1));
+        lng += dlng;
+
+        points.push([lat * 1e-5, lng * 1e-5]);
+      }
+
+      return points;
+    }
+  </script>
 </body>
 </html>
 
