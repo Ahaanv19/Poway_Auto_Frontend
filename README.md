@@ -1,99 +1,56 @@
-# QCOMM Auto: Design Process  
-*Advanced Route Optimization and Adaptive Driving Experiences*
+# QCOMM Auto
+### Advanced Route Optimization and Adaptive Driving Experiences
 
----
+Our team is leading the development of next-generation software solutions for Qualcomm's autonomous vehicle platform, with a focus on intelligent route planning, user-centric driving behavior, and adaptive learning. We engineer systems that harness real-time data streams, machine learning models, and edge-based computation to deliver a smarter, safer, and more personalized driving experience.
 
-## Phase 1: Problem Discovery & Research
+Real-Time Route Optimization
+At the core of our solution is a dynamic route optimization engine that processes live traffic conditions, road hazards, signal timing data, and GPS telemetry to determine the most efficient and safe paths for autonomous vehicles. By integrating predictive traffic models and geospatial analysis, we enable the system to anticipate congestion and reroute before delays occur.
 
-### Objective  
-Understand the core challenges of autonomous vehicle navigation and user experience. Identify gaps in current route planning technologies and assess real-world conditions that impact routing and personalization.
+#### Key components include:
 
-### Key Activities  
-- Analyzed traffic inefficiencies using datasets from Poway’s Open Data Portal and Caltrans feeds  
-- Studied human driving behaviors and preferences through user interviews and surveys  
-- Evaluated existing solutions in autonomous driving and smart navigation systems  
+Predictive Algorithms that evaluate historical and real-time data to optimize arrival time and fuel efficiency
 
----
+Traffic Flow Modeling using temporal datasets from city open data portals and V2X (vehicle-to-everything) sensors
 
-## Phase 2: System Architecture & Planning
+Multi-Objective Pathfinding balancing shortest distance, fewest stops, energy consumption, and risk reduction
 
-### Objective  
-Design a modular and scalable system architecture capable of ingesting real-time data, adapting to user behaviors, and supporting on-vehicle intelligence.
+User-Centric Experience Layer
+Beyond efficiency, our system personalizes the driving experience based on individual user behavior. We implement machine learning pipelines that continuously learn from user inputs to refine the system’s decision-making over time.
 
-### Key Components  
-- **Microservices Architecture**: Separated services for routing, UI, user preference tracking, and ML inference  
-- **Edge-AI Readiness**: Hardware selection (e.g., NVIDIA Jetson, Snapdragon) for low-latency processing  
-- **Secure Communication Layer**: JWT-authenticated APIs and encrypted sensor data streams  
-- **Docker + CI/CD Pipelines**: Infrastructure to support iterative development and cloud deployment  
+#### Features include:
 
----
+Favorite Locations and Recurring Routes, enabling the system to prioritize familiar paths or preferred drive times
 
-## Phase 3: Route Optimization Engine
+Personalized Route Suggestions that reflect user history, weather preferences, and avoidance patterns (e.g. toll roads, freeways)
 
-### Objective  
-Develop a predictive routing system that calculates optimal paths in real-time, accounting for environmental and traffic conditions.
+Context-Aware Driving Modes that adjust driving style (e.g. cautious vs. assertive) based on user-defined comfort levels or scenario types
 
-### Core Features  
-- **Predictive Algorithms**: Use historical and real-time data to optimize ETA and fuel efficiency  
-- **Traffic Flow Modeling**: Ingest data from V2X (Vehicle-to-Everything) sensors and municipal sources  
-- **Multi-Objective Pathfinding**: Balance shortest route, energy usage, stops, and risk levels  
+These personalized features are accessible through an integrated dashboard interface, allowing drivers to view route history, edit preferences, and receive proactive driving recommendations.
 
----
+#### Machine Learning and Edge AI Integration
+To support intelligent decision-making in real time, our architecture deploys trained models directly on the vehicle’s edge computing units. This ensures low-latency inference and high availability, even in low-connectivity environments.
 
-## Phase 4: User-Centric Experience Layer
+We implement:
 
-### Objective  
-Create a personalized driving experience by learning from user behavior and preferences.
+On-Device Model Inference for route ranking, behavior prediction, and obstacle detection
 
-### Core Features  
-- **Favorite Locations & Recurring Routes**: Auto-prioritize user-preferred paths  
-- **Personalized Route Suggestions**: Account for weather, traffic, and avoidance rules (e.g. toll roads)  
-- **Context-Aware Driving Modes**: Customize driving style (cautious, assertive) per user profile  
-- **Integrated Dashboard**: Visual interface for route history, preferences, and recommendations  
+Federated Learning Pipelines that allow vehicles to share insights without compromising user data
 
----
+Model Retraining Workflows that incorporate new data from each trip to improve personalization and performance
 
-## Phase 5: Machine Learning & Edge AI Integration
+System Architecture and Deployment
+Our platform is containerized and orchestrated for scalability across development and production environments. Key elements of the infrastructure include:
 
-### Objective  
-Enable intelligent decision-making on the vehicle itself using real-time inference and adaptive learning.
+Microservices Architecture for modular control over navigation, UI, learning, and sensor fusion
 
-### Core Features  
-- **On-Device Model Inference**: For routing, user behavior prediction, and obstacle avoidance  
-- **Federated Learning Pipelines**: Enable learning across fleets while maintaining data privacy  
-- **Model Retraining Workflows**: Incorporate new user data for continuous improvement  
+Dockerized Environments that streamline deployment and CI/CD pipelines across development clusters
 
----
+NVIDIA Jetson / Qualcomm Snapdragon Platforms for hardware acceleration of AI workloads at the edge
 
-## Phase 6: System Deployment & Scaling
+Secure Communication Protocols using encrypted APIs, JWT-based identity, and sandboxed processing zones
 
-### Objective  
-Ensure that the system can be deployed reliably across environments and scale with project growth.
-
-### Deployment Stack  
-- **Containerized Services**: For modular updates and isolated environments  
-- **Edge Hardware Acceleration**: Snapdragon/NVIDIA Jetson for onboard processing  
-- **CI/CD Integration**: Automate testing, builds, and releases across dev clusters  
-- **Encrypted Communication Protocols**: Secure API channels and sandboxed service zones  
-
----
-
-## Phase 7: Evaluation, Feedback, and Future Iterations
-
-### Objective  
-Continuously improve the system based on real-world use, driver feedback, and performance metrics.
-
-### Next Steps  
-- Conduct pilot testing with simulated and real road conditions  
-- Gather feedback on personalized features and UI accessibility  
-- Expand traffic data ingestion to include more city and state sources  
-- Improve long-term planning algorithms for multi-stop and recurrent travel scenarios  
-
----
-
-## Vision and Impact
-
-Through this iterative design process, QCOMM Auto merges technical innovation with user-centric design to build the next generation of autonomous vehicle intelligence. Our goal is to create a safer, more responsive, and more enjoyable driving experience—by learning from both the road and the user.
+Vision and Impact
+Through this project, we aim to push the boundaries of autonomous vehicle intelligence—merging technical rigor with human-centered design. By learning from both the road and the user, our system creates a symbiotic relationship between driver and machine, ultimately contributing to a safer, greener, and more adaptive future of transportation.
 
 
 
