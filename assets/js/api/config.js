@@ -4,7 +4,7 @@ if (location.hostname === "localhost") {
 } else if (location.hostname === "127.0.0.1") {
         pythonURI = "http://127.0.0.1:8888";
 } else {
-        pythonURI = "https://autonomous.stu.nighthawkcodingsociety.com.stu.nighthawkcodingsociety.com";
+        pythonURI = "https://autonomous.stu.nighthawkcodingsociety.com";
 }
 export var javaURI;
 if (location.hostname === "localhost") {
@@ -12,7 +12,7 @@ if (location.hostname === "localhost") {
 } else if (location.hostname === "127.0.0.1") {
         javaURI = "http://127.0.0.1:8888"; //rey
 } else {
-        javaURI = "https://autonomous.stu.nighthawkcodingsociety.com.stu.nighthawkcodingsociety.com";
+        javaURI = "https://autonomous.stu.nighthawkcodingsociety.com";
 }
 
 export const fetchOptions = {
