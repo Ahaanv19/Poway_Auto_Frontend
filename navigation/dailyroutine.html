@@ -6,108 +6,175 @@ permalink: /routine/
 nav: true
 ---
 
-<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Persistent Full-Day Schedule</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 20px;
-      background-color: #f0f2f5;
-    }
-    h2 {
-      margin-bottom: 10px;
-    }
-    form {
-      margin-bottom: 20px;
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      align-items: center;
-    }
-    input, select, button {
-      padding: 10px;
-      font-size: 14px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-    }
-    button {
-      cursor: pointer;
-      background-color: #007bff;
-      color: white;
-      border: none;
-      transition: background-color 0.2s ease;
-    }
-    button:hover {
-      background-color: #0056b3;
-    }
-    .add-button {
-      background-color: #28a745;
-    }
-    .add-button:hover {
-      background-color: #218838;
-    }
-    .route-actions {
-      display: inline-flex;
-      gap: 5px;
-      margin-left: 10px;
-    }
-    .route-actions button {
-      background-color: #6c757d;
-      font-size: 12px;
-      padding: 5px 8px;
-    }
-    .route-actions button:hover {
-      background-color: #5a6268;
-    }
-    .route-actions .map-btn {
-      background-color: #17a2b8;
-    }
-    .route-actions .map-btn:hover {
-      background-color: #117a8b;
-    }
-    .route-actions .edit-btn {
-      background-color: #ffc107;
-      color: black;
-    }
-    .route-actions .edit-btn:hover {
-      background-color: #e0a800;
-    }
-    .route-actions .delete-btn {
-      background-color: #dc3545;
-    }
-    .route-actions .delete-btn:hover {
-      background-color: #c82333;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      background-color: #fff;
-    }
-    th, td {
-      border: 1px solid #ccc;
-      padding: 10px;
-      vertical-align: top;
-    }
-    ul {
-      margin: 0;
-      padding-left: 20px;
-    }
-    .slot {
-      min-height: 40px;
-    }
-    .time-cell {
-      width: 120px;
-      background-color: #f9f9f9;
-    }
+    :root {
+  --primary: #6f42c1;
+  --primary-dark: #59359b;
+  --accent: #d63384;
+  --success: #198754;
+  --info: #0dcaf0;
+  --warning: #ffc107;
+  --danger: #dc3545;
+  --muted: #6c757d;
+  --light-bg: #f9fafc;
+  --dark-text: #212529;
+}
+
+body {
+  font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
+  background-color: var(--light-bg);
+  color: var(--dark-text);
+  padding: 2rem;
+  line-height: 1.6;
+}
+
+h2 {
+  font-size: 2.25rem;
+  margin-bottom: 1rem;
+  color: var(--primary);
+}
+
+form {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+input, select {
+  padding: 0.75rem;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  transition: 0.3s ease;
+}
+
+input:focus, select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 5px rgba(111, 66, 193, 0.3);
+}
+
+button {
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  color: white;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.add-button {
+  background: linear-gradient(to right, var(--primary), var(--accent));
+}
+
+.add-button:hover {
+  background: linear-gradient(to right, var(--primary-dark), #b42c6f);
+  transform: scale(1.03);
+}
+
+.route-actions {
+  display: inline-flex;
+  gap: 6px;
+  margin-left: 10px;
+}
+
+.route-actions button {
+  font-size: 0.85rem;
+  padding: 6px 10px;
+  border-radius: 8px;
+}
+
+.map-btn {
+  background-color: var(--info);
+}
+
+.map-btn:hover {
+  background-color: #0aa2c0;
+}
+
+.edit-btn {
+  background-color: var(--warning);
+  color: black;
+}
+
+.edit-btn:hover {
+  background-color: #e0a800;
+}
+
+.delete-btn {
+  background-color: var(--danger);
+}
+
+.delete-btn:hover {
+  background-color: #b02a37;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+th, td {
+  padding: 1rem;
+  border-bottom: 1px solid #eaeaea;
+}
+
+th {
+  background-color: #f0f1f4;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+ul {
+  margin: 0;
+  padding-left: 0;
+  list-style-type: none;
+}
+
+li {
+  background: #f4f6f9;
+  margin-bottom: 0.5rem;
+  padding: 0.75rem;
+  border-radius: 10px;
+  transition: background 0.3s ease;
+}
+
+li:hover {
+  background: #e2e6ea;
+}
+
+.time-cell {
+  font-weight: 600;
+  background-color: #f9f9f9;
+  width: 130px;
+}
+
+@media (max-width: 600px) {
+  .route-actions {
+    flex-direction: column;
+    gap: 4px;
+  }
+}
   </style>
 </head>
 <body>
 
-  <h2>Daily Schedule</h2>
+  <h2>🗓️ Daily Schedule</h2>
 
   <form id="addItemForm">
     <label for="timeSelect">Time:</label>
@@ -192,7 +259,6 @@ nav: true
 
     function renderSchedule() {
       scheduleBody.innerHTML = '';
-
       for (let hour = 0; hour < 24; hour++) {
         const row = document.createElement('tr');
         const timeCell = document.createElement('td');
