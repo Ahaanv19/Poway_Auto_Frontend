@@ -1,244 +1,201 @@
 import { pythonURI, javaURI, fetchOptions, login } from '../../assets/js/api/config.js';
 
-document.getElementById('new-location-button').addEventListener('click', () => {
-  showNewLocationPopup();
+document.getElementById('fetch_routes_btn').addEventListener('click', () => {
+    fetchRoutes();
 });
 
-function showNewLocationPopup() {
-  // Create the popup container
-  const popup = document.createElement('div');
-  popup.className = 'popup';
-
-  // Create the popup content
-  popup.innerHTML = `
-    <div class="popup-content">
-      <button class="popup-close">&times;</button>
-      <h2>Add New Location</h2>
-      <input type="text" id="new-location-name" placeholder="Enter name" />
-      <input type="text" id="new-location-address" placeholder="Enter address" />
-      <div>
-        <button class="popup-cancel">Cancel</button>
-        <button class="popup-submit">Submit</button>
-      </div>
-    </div>
-  `;
-
-  // Add event listener to close button
-  popup.querySelector('.popup-close').addEventListener('click', () => {
-    document.body.removeChild(popup);
-  });
-
-  // Add event listener to cancel button
-  popup.querySelector('.popup-cancel').addEventListener('click', () => {
-    document.body.removeChild(popup);
-  });
-
-  // Add event listener to submit button
-  popup.querySelector('.popup-submit').addEventListener('click', async () => {
-    const name = document.getElementById('new-location-name').value.trim();
-    const address = document.getElementById('new-location-address').value.trim();
-
-    if (name && address) {
-      await createScores(name, address); // Use the existing function to post data
-      document.body.removeChild(popup); // Close the popup
-      populateScores(); // Refresh the grid
-    } else {
-      alert('Please fill in both fields.');
+async function fetchRoadData() {
+    try {
+        const response = await fetch('https://opendata.sandag.org/resource/ewu3-gvdq.json');
+        return await response.json();
+    } catch (error) {
+        console.error('Error fetching road data:', error);
+        return [];
     }
-  });
-
-  // Append the popup to the body
-  document.body.appendChild(popup);
 }
 
-async function populateScores() {
-  const grid = document.getElementById('locations-grid');
-  grid.innerHTML = ''; // Clear existing content
+async function fetchRoutes() {
+    const origin = document.getElementById('origin').value;
+    const destination = document.getElementById('destination').value;
+    const resultDiv = document.getElementById('result');
 
-  let scores = await filterForUsername(await readScores());
+    resultDiv.innerHTML = 'Loading...';
 
-  scores.forEach(location => {
-    const square = document.createElement('button'); // Make it a button
-    square.className = 'location-square';
-    square.textContent = location.user_name; // Assuming "user_name" is the key in the JSON data
-    square.addEventListener('click', () => showPopup(location)); // Add click event to show popup
-    grid.appendChild(square);
-  });
-}
-
-async function filterForUsername(scores) {
-  const currentUserResponse = await fetch(`${pythonURI}/api/user`, fetchOptions);
-  if (!currentUserResponse.ok) throw new Error('Failed to fetch current user');
-  const currentUser = await currentUserResponse.json();
-  let userName = currentUser.name;
-
-  return (scores.filter((entry) => String(entry.username) === String(userName)));
-}
-
-function showPopup(location) {
-  // Create the popup container
-  const popup = document.createElement('div');
-  popup.className = 'popup';
-
-  // Create the popup content
-  popup.innerHTML = `
-    <div class="popup-content">
-      <button class="popup-close">&times;</button>
-      <p><strong>Name:</strong> <span id="location-name">${location.user_name}</span></p>
-      <p><strong>Address:</strong> <span id="location-address">${location.user_address}</span></p>
-      <div>
-        <button class="popup-delete">Delete</button>
-        <button class="popup-edit">Edit</button>
-      </div>
-    </div>
-  `;
-
-  // Add event listener to close button
-  popup.querySelector('.popup-close').addEventListener('click', () => {
-    document.body.removeChild(popup);
-  });
-
-  // Add event listener to delete button
-  popup.querySelector('.popup-delete').addEventListener('click', async () => {
-    await deleteScores(location.id); // Assuming "id" is the key for the location ID
-    document.body.removeChild(popup); // Close the popup
-    populateScores(); // Refresh the grid
-  });
-
-  // Add event listener to edit button
-  const editButton = popup.querySelector('.popup-edit');
-  editButton.addEventListener('click', () => {
-    const nameSpan = document.getElementById('location-name');
-    const addressSpan = document.getElementById('location-address');
-
-    if (editButton.textContent === 'Edit') {
-      // Change to editable fields
-      nameSpan.innerHTML = `<input type="text" id="edit-location-name" value="${location.user_name}" />`;
-      addressSpan.innerHTML = `<input type="text" id="edit-location-address" value="${location.user_address}" />`;
-      editButton.textContent = 'Submit'; // Change button text to "Submit"
-    } else {
-      // Submit the updated data
-      const updatedName = document.getElementById('edit-location-name').value.trim();
-      const updatedAddress = document.getElementById('edit-location-address').value.trim();
-
-      if (updatedName && updatedAddress) {
-        updateScores(location.id, updatedAddress, updatedName).then(() => {
-          document.body.removeChild(popup); // Close the popup
-          populateScores(); // Refresh the grid
-        }).catch(error => {
-          alert('Error updating location: ' + error.message);
+    try {
+        const roadData = await fetchRoadData();
+        const response = await fetch(`${pythonURI}/api/get_routes`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ origin, destination })
         });
-      } else {
-        alert('Please fill in both fields.');
+        const data = await response.json();
+
+        if (Array.isArray(data)) {
+            resultDiv.innerHTML = '';
+            const currentHour = new Date().getHours();
+            const isAM = currentHour < 12;
+
+            // Clear any existing route layers on the map
+            if (routeLayer) {
+                map.removeLayer(routeLayer);
+            }
+
+            data.forEach((route, index) => {
+                const routeEl = document.createElement('div');
+                const updatedDetails = route.details.map(step => {
+                    const matchingRoad = roadData.find(road =>
+                        road.street_name && step.instruction.includes(road.street_name)
+                    );
+
+                    if (matchingRoad) {
+                        const avgSpeed = isAM
+                            ? parseFloat(matchingRoad._2023_am_peak_period_mean)
+                            : parseFloat(matchingRoad._2023_pm_peak_period_mean);
+
+                        if (avgSpeed && !isNaN(avgSpeed)) {
+                            const distanceInMiles = parseFloat(step.distance.split(' ')[0]); // Assuming "X mi" format
+                            const updatedDuration = (distanceInMiles / avgSpeed) * 60; // Convert hours to minutes
+                            return {
+                                ...step,
+                                duration: `${updatedDuration.toFixed(2)} mins`
+                            };
+                        }
+                    }
+                    return step;
+                });
+
+                routeEl.innerHTML = `
+                    <h3>Route ${index + 1}</h3>
+                    <p><strong>Total Distance:</strong> ${route.total_distance}</p>
+                    <p><strong>Total Duration:</strong> ${route.total_duration}</p>
+                    <ol>
+                      ${updatedDetails.map(step => `
+                        <li>${step.instruction} (${step.distance}, ${step.duration})</li>
+                      `).join('')}
+                    </ol>
+                    <hr>
+                `;
+                resultDiv.appendChild(routeEl);
+
+                // Draw route on map if coordinates are available
+                if (route.geometry) {
+                    const coordinates = decodePolyline(route.geometry);
+                    const routeColor = getRouteColor(index);
+
+                    // Add polyline to the map
+                    const polyline = L.polyline(coordinates, {
+                        color: routeColor,
+                        weight: 5,
+                        opacity: 0.7
+                    }).addTo(map);
+
+                    // Fit map to show the entire route
+                    map.fitBounds(polyline.getBounds());
+                }
+            });
+        } else {
+            resultDiv.innerHTML = `<p style="color:red;">Error: ${data.error}</p>`;
+        }
+    } catch (error) {
+        console.error(error);
+        resultDiv.innerHTML = '<p style="color:red;">Something went wrong while fetching routes.</p>';
+    }
+}
+
+
+
+
+// Helper function to get different colors for different routes
+function getRouteColor(index) {
+    const colors = ['#4CAF50', '#2196F3', '#FFC107', '#9C27B0', '#F44336'];
+    return colors[index % colors.length];
+}
+
+// Function to decode Google's encoded polyline format
+function decodePolyline(encoded) {
+    if (!encoded) return [];
+
+    let points = [];
+    let index = 0, len = encoded.length;
+    let lat = 0, lng = 0;
+
+    while (index < len) {
+        let shift = 0, result = 0;
+
+        do {
+            let b = encoded.charCodeAt(index++) - 63;
+            result |= (b & 0x1f) << shift;
+            shift += 5;
+        } while (result & 0x20);
+
+        let dlat = ((result & 1) ? ~(result >> 1) : (result >> 1));
+        lat += dlat;
+
+        shift = 0;
+        result = 0;
+
+        do {
+            let b = encoded.charCodeAt(index++) - 63;
+            result |= (b & 0x1f) << shift;
+            shift += 5;
+        } while (result & 0x20);
+
+        let dlng = ((result & 1) ? ~(result >> 1) : (result >> 1));
+        lng += dlng;
+
+        points.push([lat * 1e-5, lng * 1e-5]);
+    }
+
+    return points;
+}
+
+
+
+
+// Reverse geocoding function
+function reverseGeocode(lat, lon) {
+    fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`)
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('origin').value = data.display_name;
+        })
+        .catch(error => console.error('Error:', error));
+}
+
+
+let map;
+let routeLayer;
+
+// Initialize map
+document.addEventListener('DOMContentLoaded', function() {
+  map = L.map('map');
+  
+  // Add the base map layer
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '© OpenStreetMap contributors'
+  }).addTo(map);
+
+  // Try to get user's location
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        map.setView([latitude, longitude], 13);
+        L.marker([latitude, longitude])
+          .addTo(map)
+          .bindPopup('Your Location')
+          .openPopup();
+
+        // Auto-fill origin with current location
+        reverseGeocode(latitude, longitude);
+      },
+      () => {
+        // Default view if location access is denied
+        map.setView([32.7157, -117.1611], 12); // San Diego coordinates
       }
-    }
-  });
-
-  // Append the popup to the body
-  document.body.appendChild(popup);
-}
-
-async function readScores() {
-  try {
-    const scoresResponse = await fetch(`${pythonURI}/api/saved_locations`, fetchOptions);
-    if (!scoresResponse.ok) throw new Error('Failed to fetch locations');
-    const scores = await scoresResponse.json();
-
-    return (scores);
-
-  } catch (error) {
-    console.error('Error fetching locations:', error);
-    alert('Error fetching locations: ' + error.message);
-    return null;
+    );
   }
-}
-
-
-async function createScores(inputName, inputAddress) {
-
-  const locationData = {
-    address: inputAddress,
-    name: inputName
-  };
-
-  try {
-    const response = await fetch(`${pythonURI}/api/saved_locations`, {
-      ...fetchOptions,
-      method: 'POST',
-      body: JSON.stringify(locationData),
-    });
-
-    if (!response.ok) {
-      throw new Error(`Failed to submit location: ${response.statusText}`);
-    }
-
-    const result = await response.json();
-    return (result);
-
-  } catch (error) {
-    console.error('Error submitting location:', error);
-    alert('Error submitting location: ' + error.message);
-    return null;
-  }
-}
-
-
-async function deleteScores(inputId) {
-
-  const scoreData = {
-    id: inputId
-  }
-
-  try {
-    const response = await fetch(`${pythonURI}/api/saved_locations`, {
-      ...fetchOptions,
-      method: 'DELETE',
-      body: JSON.stringify(scoreData),
-    });
-
-    if (!response.ok) {
-      throw new Error(`Failed to delete location: ${response.statusText}`);
-    }
-
-    const result = await response.json();
-    return (result);
-
-  }
-  catch (error) {
-    console.error('Error deleting location:', error);
-    alert('Error deleting location: ' + error.message);
-    return null;
-  }
-}
-
-async function updateScores(inputId, inputAddress, inputName) {
-  const scoreData = {
-    id: inputId,
-    address: inputAddress,
-    name: inputName
-  }
-
-  try {
-    const response = await fetch(`${pythonURI}/api/saved_locations`, {
-      ...fetchOptions,
-      method: 'PUT',
-      body: JSON.stringify(scoreData),
-    });
-
-    if (!response.ok) {
-      throw new Error(`Failed to update location: ${response.statusText}`);
-    }
-
-    const result = await response.json();
-    return (result);
-  }
-
-  catch (error) {
-    console.error('Error updating location:', error);
-    alert('Error updating location: ' + error.message);
-  }
-}
-
-
-
-document.addEventListener('DOMContentLoaded', populateScores);
+});
