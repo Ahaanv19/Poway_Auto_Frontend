@@ -1,3 +1,22 @@
+:root {
+  --primary: #7a5af8;
+  --primary-dark: #6b4de0;
+  --accent: #ff6f61; /* Accent color for gradient */
+  --card-bg: #ffffff;
+  --light-bg: #f5f6fa;
+  --text-color: #2f3542;
+  --shadow: 0 4px 14px rgba(0, 0, 0, 0.07);
+  --font-main: 'Segoe UI', 'Inter', sans-serif;
+}
+
+body {
+  margin: 0;
+  padding: 30px;
+  background-color: var(--light-bg);
+  font-family: var(--font-main);
+  color: var(--text-color);
+}
+
 #locations-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -44,7 +63,6 @@
 
 .popup-content {
   background-color: #fff;
-  /* White background for contrast */
   border-radius: 8px;
   padding: 20px;
   width: 300px;
@@ -52,21 +70,19 @@
   position: relative;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
   color: black;
-  /* Ensure text is black for visibility */
 }
 
 .popup-content h2 {
   margin: 0 0 10px;
   color: black;
-  /* Ensure the title text is black */
 }
 
 .popup-content p {
   margin: 10px 0 20px;
   color: black;
-  /* Ensure the address text is black */
 }
 
+/* Close button */
 .popup-content .popup-close {
   position: absolute;
   top: 10px;
@@ -76,13 +92,12 @@
   font-size: 20px;
   cursor: pointer;
   color: black;
-  /* Ensure the close button is black */
 }
 
+/* Delete button */
 .popup-content .popup-delete {
   background-color: #ff4d4d;
   color: white;
-  /* Keep the delete button text white */
   border: none;
   border-radius: 4px;
   padding: 10px 20px;
@@ -94,34 +109,7 @@
   background-color: #ff1a1a;
 }
 
-.popup-content .popup-close {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background: none;
-  border: none;
-  font-size: 20px;
-  cursor: pointer;
-  color: black;
-  /* Ensure the close button is black */
-}
-
-.popup-content .popup-delete {
-  background-color: #ff4d4d;
-  color: white;
-  /* Keep the delete button text white */
-  border: none;
-  border-radius: 4px;
-  padding: 10px 20px;
-  cursor: pointer;
-  font-size: 16px;
-}
-
-.popup-content .popup-delete:hover {
-  background-color: #ff1a1a;
-}
-
-
+/* New location button styles (with gradient and hover effect) */
 .new-location-button {
   display: block;
   margin: 20px auto;
@@ -129,17 +117,19 @@
   font-size: 16px;
   font-weight: bold;
   color: white;
-  background-color: #4CAF50;
-  /* Green background */
+  background: linear-gradient(to right, var(--primary), var(--accent));
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
 }
 
 .new-location-button:hover {
-  background-color: #45a049;
+  background: linear-gradient(to right, var(--primary-dark), #b42c6f);
+  transform: scale(1.03);
 }
 
+/* Input field styles in popup */
 .popup-content input {
   width: 90%;
   padding: 10px;
@@ -148,9 +138,9 @@
   border-radius: 5px;
 }
 
+/* Cancel button */
 .popup-content .popup-cancel {
   background-color: #ff4d4d;
-  /* Red background */
   color: white;
   border: none;
   border-radius: 4px;
@@ -164,9 +154,9 @@
   background-color: #ff1a1a;
 }
 
+/* Submit button */
 .popup-content .popup-submit {
   background-color: #4CAF50;
-  /* Green background */
   color: white;
   border: none;
   border-radius: 4px;
@@ -179,8 +169,9 @@
   background-color: #45a049;
 }
 
+/* Edit button */
 .popup-content .popup-edit {
-  background-color: #4CAF50; /* Green background */
+  background-color: #4CAF50;
   color: white;
   border: none;
   border-radius: 4px;

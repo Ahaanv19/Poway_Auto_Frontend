@@ -109,9 +109,6 @@ menu: nav/home.html
     <!-- Navigation Menu -->
     <nav class="px-6">
       <div class="grid grid-cols-1 gap-3 text-sm text-gray-700 dark:text-gray-200">
-        <a href="/QAV_Frontend/" class="block px-4 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition">
-          🏠 Home
-        </a>
         <a href="/QAV_Frontend/traf/" class="block px-4 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition">
           🚦 Traffic Data
         </a>
