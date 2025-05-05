@@ -1,92 +1,54 @@
-:root {
-    --primary: #7a5af8;
-    --primary-dark: #6b4de0;
-    --accent: #ff6f61; /* Define accent color */
-    --card-bg: #ffffff;
-    --light-bg: #f5f6fa;
-    --text-color: #2f3542;
-    --shadow: 0 4px 14px rgba(0, 0, 0, 0.07);
-    --font-main: 'Segoe UI', 'Inter', sans-serif;
-}
-
-body {
-    margin: 0;
-    padding: 30px;
-    background-color: var(--light-bg);
-    font-family: var(--font-main);
-    color: var(--text-color);
-}
-
-h2 {
-    font-size: 2rem;
-    color: var(--primary);
-    margin-bottom: 20px;
+#map {
+    height: 400px;
+    margin: 20px 0;
+    border-radius: 10px;
+    border: 2px solid #add8e6;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .route-form {
-    max-width: 600px;
-    margin: 0 auto 25px auto;
-    background-color: var(--card-bg);
-    padding: 25px 30px;
-    border-radius: 16px;
-    box-shadow: var(--shadow);
+    margin: 20px 0;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .input-group {
-    margin-bottom: 16px;
-    display: flex;
-    flex-direction: column;
+    margin-bottom: 15px;
 }
 
 .input-group label {
-    font-weight: 600;
-    margin-bottom: 8px;
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
 }
 
 .input-group input {
-    padding: 12px 14px;
-    border-radius: 12px;
-    border: 1px solid #ccc;
-    transition: border-color 0.2s ease-in-out;
-}
-
-.input-group input:focus {
-    outline: none;
-    border-color: var(--primary);
-    box-shadow: 0 0 6px rgba(122, 90, 248, 0.25);
-}
-
-    button#fetch_routes_btn {
-    background: linear-gradient(to right, var(--primary), var(--accent));
-    color: white;
-    border: none;
-    padding: 12px 18px;
-    font-size: 1rem;
-    font-weight: 600;
-    border-radius: 12px;
-    cursor: pointer;
-    transition: background 0.3s ease, transform 0.2s ease;
-}
-
-    button#fetch_routes_btn:hover {
-    background: linear-gradient(to right, var(--primary-dark), #b42c6f);
-    transform: scale(1.03);
-}
-
-#map {
-    height: 400px;
     width: 100%;
-    max-width: 1000px;
-    margin: 0 auto 25px auto;
-    border-radius: 16px;
-    box-shadow: var(--shadow);
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+button:hover {
+    background-color: #45a049;
 }
 
 #result {
-    max-width: 1000px;
-    margin: 0 auto;
-    padding: 20px;
-    background-color: var(--card-bg);
-    border-radius: 16px;
-    box-shadow: var(--shadow);
+    margin-top: 20px;
+    padding: 15px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
