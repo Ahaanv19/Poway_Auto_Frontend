@@ -7,7 +7,7 @@ permalink: /about/
 menu: nav/home.html
 ---
 
-# Our Development Journey: Building the Autonomous Vehicle Navigation System
+## Our Development Journey: Building the Autonomous Vehicle Navigation System
 
 The journey of developing an **AI-driven autonomous vehicle navigation system** for optimizing travel in San Diego has been an exciting and rewarding experience. The project aims to provide real-time traffic analysis, predictive routing, and a simulation model to improve travel efficiency for commuters. Below, I will walk you through the stages of our development process, from conceptualization to execution.
 
