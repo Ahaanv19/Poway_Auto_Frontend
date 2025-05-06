@@ -112,12 +112,6 @@ menu: nav/home.html
         <a href="/QAV_Frontend/" class="block px-4 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition">
           🏠 Home
         </a>
-        <a href="/QAV_Frontend/traf/" class="block px-4 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition">
-          🚦 Traffic Data
-        </a>
-        <a href="/QAV_Frontend/avgspeed/" class="block px-4 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition">
-          🛣️ Average Road Speeds
-        </a>
         <a href="/QAV_Frontend/route/" class="block px-4 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition">
           🧭 Find Best Route
         </a>
