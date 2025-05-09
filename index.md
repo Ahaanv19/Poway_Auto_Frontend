@@ -12,7 +12,7 @@ menu: nav/home.html
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Best Route - QCOM Auto </title>
+  <title>Best Route - Poway Auto </title>
 
   <!-- External Stylesheets -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
@@ -79,7 +79,7 @@ menu: nav/home.html
       <!-- Text Content -->
       <div class="flex-1 text-center md:text-left space-y-8">
         <h1 class="text-5xl md:text-6xl font-extrabold bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent animate-gradient-x">
-          Drive the Future <br> with QCOM Auto
+          Drive the Future <br> with Poway Auto
         </h1>
         <p class="text-lg text-gray-600 dark:text-gray-300 max-w-xl">
           Where autonomy meets intelligence. Built by engineers, driven by innovation.
