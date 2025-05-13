@@ -1,21 +1,18 @@
 import { pythonURI, javaURI, fetchOptions, login } from '../../assets/js/api/config.js';
 
 let map;
-let routeLayer = L.layerGroup(); // Initialize as a Leaflet layer group
+let routeLayer = L.layerGroup();
 
 document.addEventListener('DOMContentLoaded', function () {
   map = L.map('map');
 
-  // Add base map tiles
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
     attribution: '© OpenStreetMap contributors'
   }).addTo(map);
 
-  // Add the route layer group to the map
   routeLayer.addTo(map);
 
-  // Try to get user's location
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(
       (position) => {
@@ -26,18 +23,15 @@ document.addEventListener('DOMContentLoaded', function () {
           .bindPopup('Your Location')
           .openPopup();
 
-        // Auto-fill origin with current location
         reverseGeocode(latitude, longitude);
       },
       () => {
-        // Default view if location access is denied
-        map.setView([32.7157, -117.1611], 12); // San Diego
+        map.setView([32.7157, -117.1611], 12); // Default: San Diego
       }
     );
   }
 });
 
-// Fetch road data once at the top
 let cachedRoadData = [];
 
 async function fetchRoadData() {
@@ -57,6 +51,7 @@ document.getElementById('fetch_routes_btn').addEventListener('click', () => {
 async function fetchRoutes() {
   const origin = document.getElementById('origin').value;
   const destination = document.getElementById('destination').value;
+  const mode = document.getElementById('mode').value;
   const resultDiv = document.getElementById('result');
 
   resultDiv.innerHTML = 'Loading...';
@@ -71,8 +66,9 @@ async function fetchRoutes() {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ origin, destination })
+      body: JSON.stringify({ origin, destination, mode })
     });
+
     const data = await response.json();
 
     if (Array.isArray(data)) {
@@ -80,7 +76,6 @@ async function fetchRoutes() {
       const currentHour = new Date().getHours();
       const isAM = currentHour < 12;
 
-      // Clear any existing routes from the map
       routeLayer.clearLayers();
 
       data.forEach((route, index) => {
@@ -104,6 +99,7 @@ async function fetchRoutes() {
               };
             }
           }
+
           return step;
         });
 
@@ -120,7 +116,6 @@ async function fetchRoutes() {
         `;
         resultDiv.appendChild(routeEl);
 
-        // Draw the route if geometry is provided
         if (route.geometry) {
           const coordinates = decodePolyline(route.geometry);
           const routeColor = getRouteColor(index);
@@ -131,8 +126,8 @@ async function fetchRoutes() {
             opacity: 0.7
           });
 
-          routeLayer.addLayer(polyline); // Add to route group
-          map.fitBounds(polyline.getBounds()); // Adjust map view
+          routeLayer.addLayer(polyline);
+          map.fitBounds(polyline.getBounds());
         }
       });
     } else {
@@ -144,13 +139,11 @@ async function fetchRoutes() {
   }
 }
 
-// Helper to get different colors
 function getRouteColor(index) {
   const colors = ['#4CAF50', '#2196F3', '#FFC107', '#9C27B0', '#F44336'];
   return colors[index % colors.length];
 }
 
-// Decode polyline format
 function decodePolyline(encoded) {
   if (!encoded) return [];
 
@@ -187,7 +180,6 @@ function decodePolyline(encoded) {
   return points;
 }
 
-// Reverse geocode current location
 function reverseGeocode(lat, lon) {
   fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`)
     .then(response => response.json())
@@ -196,6 +188,8 @@ function reverseGeocode(lat, lon) {
     })
     .catch(error => console.error('Error:', error));
 }
+
+
 
 
 

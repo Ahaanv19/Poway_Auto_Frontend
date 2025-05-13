@@ -22,6 +22,15 @@ nav: true
       <label for="destination">Destination:</label>
       <input type="text" id="destination" placeholder="Enter destination">
     </div>
+    <div class="input-group">
+      <label for="mode">Transport Mode:</label>
+      <select id="mode">
+        <option value="driving">Driving</option>
+        <option value="walking">Walking</option>
+        <option value="bus">Bus</option>
+        <option value="train">Train</option>
+      </select>
+    </div>
     <button id="fetch_routes_btn">Find Routes</button>
   </div>
 
@@ -31,6 +40,7 @@ nav: true
 <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
 <script type="module" src="{{site.baseurl}}/navigation/findBestRoute/map.js"></script>
 <script type="module" src="{{site.baseurl}}/assets/js/api/config.js"></script>
+
 
 
 
