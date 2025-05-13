@@ -12,6 +12,8 @@ nav: true
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Persistent Full-Day Schedule</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -103,6 +105,12 @@ nav: true
       width: 120px;
       background-color: #f9f9f9;
     }
+    #map {
+      height: 400px;
+      margin-top: 30px;
+      border: 2px solid #ccc;
+      border-radius: 10px;
+    }
   </style>
 </head>
 <body>
@@ -127,6 +135,16 @@ nav: true
     <tbody id="scheduleBody"></tbody>
   </table>
 
+  <button onclick="updateCurrentHourRoute()" style="margin: 10px 0; padding: 10px 20px; font-size: 14px;">
+    Show Current Hour Route
+  </button>
+
+  <div id="map"></div>
+
+  <!-- JS includes -->
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
+
   <script>
     const scheduleBody = document.getElementById('scheduleBody');
     const timeSelect = document.getElementById('timeSelect');
@@ -134,13 +152,13 @@ nav: true
     const startInput = document.getElementById('startInput');
     const destinationInput = document.getElementById('destinationInput');
 
+    let scheduleData = JSON.parse(localStorage.getItem('dailySchedule')) || {};
+
     function formatTime(hour) {
       const suffix = hour >= 12 ? 'PM' : 'AM';
       const hour12 = hour % 12 || 12;
       return `${hour12}:00 ${suffix}`;
     }
-
-    let scheduleData = JSON.parse(localStorage.getItem('dailySchedule')) || {};
 
     function saveSchedule() {
       localStorage.setItem('dailySchedule', JSON.stringify(scheduleData));
@@ -243,6 +261,74 @@ nav: true
     };
 
     renderSchedule();
+
+    // ========== Leaflet Map Setup ==========
+    const map = L.map('map').setView([37.7749, -122.4194], 10); // Default to SF
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+    }).addTo(map);
+
+    let currentRouteControl = null;
+
+    async function geocodePlace(place) {
+      const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(place)}`);
+      const data = await response.json();
+      return data[0]; // Best result
+    }
+
+    async function drawRoute(startName, destName) {
+      try {
+        const [start, dest] = await Promise.all([
+          geocodePlace(startName),
+          geocodePlace(destName)
+        ]);
+
+        if (!start || !dest) {
+          alert("Could not find one or both locations. Please check your input.");
+          return;
+        }
+
+        if (currentRouteControl) {
+          map.removeControl(currentRouteControl);
+        }
+
+        const startLatLng = L.latLng(parseFloat(start.lat), parseFloat(start.lon));
+        const destLatLng = L.latLng(parseFloat(dest.lat), parseFloat(dest.lon));
+
+        currentRouteControl = L.Routing.control({
+          waypoints: [startLatLng, destLatLng],
+          routeWhileDragging: false,
+          addWaypoints: false,
+          draggableWaypoints: false,
+          show: false
+        }).addTo(map);
+
+        map.fitBounds(L.latLngBounds([startLatLng, destLatLng]), { padding: [50, 50] });
+
+      } catch (error) {
+        console.error("Routing error:", error);
+        alert("An error occurred while trying to display the route.");
+      }
+    }
+
+    function updateCurrentHourRoute() {
+      const now = new Date();
+      const currentHour = now.getHours();
+      const routes = scheduleData[currentHour];
+
+      if (routes && routes.length > 0) {
+        const { start, destination } = routes[0];
+        drawRoute(start, destination);
+      } else if (currentRouteControl) {
+        map.removeControl(currentRouteControl);
+        currentRouteControl = null;
+      }
+    }
+
+    updateCurrentHourRoute();
+    setInterval(updateCurrentHourRoute, 60 * 1000); // update every minute
+
   </script>
 
 </body>
