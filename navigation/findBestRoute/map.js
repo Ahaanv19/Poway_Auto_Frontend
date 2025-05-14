@@ -1,193 +1,82 @@
-import { pythonURI, javaURI, fetchOptions, login } from '../../assets/js/api/config.js';
+import { pythonURI } from '../../assets/js/api/config.js';
+import polyline from 'https://cdn.skypack.dev/@mapbox/polyline';
 
-let map;
-let routeLayer = L.layerGroup();
+const apiUrl = `${pythonURI}/api/get_routes`;
 
-document.addEventListener('DOMContentLoaded', function () {
-  map = L.map('map');
+const map = L.map('map').setView([32.7157, -117.1611], 12);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '&copy; OpenStreetMap contributors',
+}).addTo(map);
 
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19,
-    attribution: '© OpenStreetMap contributors'
-  }).addTo(map);
+let polylines = [];
 
-  routeLayer.addTo(map);
-
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const { latitude, longitude } = position.coords;
-        map.setView([latitude, longitude], 13);
-        L.marker([latitude, longitude])
-          .addTo(map)
-          .bindPopup('Your Location')
-          .openPopup();
-
-        reverseGeocode(latitude, longitude);
-      },
-      () => {
-        map.setView([32.7157, -117.1611], 12); // Default: San Diego
-      }
-    );
-  }
-});
-
-let cachedRoadData = [];
-
-async function fetchRoadData() {
-  try {
-    const response = await fetch('https://opendata.sandag.org/resource/ewu3-gvdq.json');
-    cachedRoadData = await response.json();
-  } catch (error) {
-    console.error('Error fetching road data:', error);
-    cachedRoadData = [];
-  }
+if (navigator.geolocation) {
+  navigator.geolocation.getCurrentPosition(position => {
+    const lat = position.coords.latitude;
+    const lon = position.coords.longitude;
+    map.setView([lat, lon], 13);
+  });
 }
 
-document.getElementById('fetch_routes_btn').addEventListener('click', () => {
-  fetchRoutes();
-});
-
-async function fetchRoutes() {
+document.getElementById('fetch_routes_btn').addEventListener('click', async () => {
   const origin = document.getElementById('origin').value;
   const destination = document.getElementById('destination').value;
-  const mode = document.getElementById('mode').value;
+  const mode = document.getElementById('mode').value || 'driving';
+
+  if (!origin || !destination) {
+    alert('Please enter both origin and destination.');
+    return;
+  }
+
+  const response = await fetch(apiUrl, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ origin, destination, mode }),
+  });
+
+  const routes = await response.json();
   const resultDiv = document.getElementById('result');
+  resultDiv.innerHTML = '';
 
-  resultDiv.innerHTML = 'Loading...';
-
-  if (cachedRoadData.length === 0) {
-    await fetchRoadData();
+  if (!Array.isArray(routes)) {
+    resultDiv.innerHTML = `<p>Error: ${routes.error || 'No routes found'}</p>`;
+    return;
   }
 
-  try {
-    const response = await fetch(`${pythonURI}/api/get_routes`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ origin, destination, mode })
+  polylines.forEach(p => map.removeLayer(p));
+  polylines = [];
+
+  routes.forEach((route, idx) => {
+    const header = document.createElement('h4');
+    header.textContent = `Route ${idx + 1} - ${route.total_distance} - Est. Time: ${route.traffic_adjusted_duration || route.total_duration}`;
+    resultDiv.appendChild(header);
+
+    const ul = document.createElement('ul');
+    route.details.forEach(step => {
+      const li = document.createElement('li');
+      li.innerHTML = `${step.instruction} - ${step.distance} (${step.duration})`;
+      ul.appendChild(li);
     });
+    resultDiv.appendChild(ul);
 
-    const data = await response.json();
-
-    if (Array.isArray(data)) {
-      resultDiv.innerHTML = '';
-      const currentHour = new Date().getHours();
-      const isAM = currentHour < 12;
-
-      routeLayer.clearLayers();
-
-      data.forEach((route, index) => {
-        const routeEl = document.createElement('div');
-        const updatedDetails = route.details.map(step => {
-          const matchingRoad = cachedRoadData.find(road =>
-            road.street_name && step.instruction.includes(road.street_name)
-          );
-
-          if (matchingRoad) {
-            const avgSpeed = isAM
-              ? parseFloat(matchingRoad._2023_am_peak_period_mean)
-              : parseFloat(matchingRoad._2023_pm_peak_period_mean);
-
-            if (avgSpeed && !isNaN(avgSpeed)) {
-              const distanceInMiles = parseFloat(step.distance.split(' ')[0]);
-              const updatedDuration = (distanceInMiles / avgSpeed) * 60;
-              return {
-                ...step,
-                duration: `${updatedDuration.toFixed(2)} mins`
-              };
-            }
-          }
-
-          return step;
-        });
-
-        routeEl.innerHTML = `
-          <h3>Route ${index + 1}</h3>
-          <p><strong>Total Distance:</strong> ${route.total_distance}</p>
-          <p><strong>Total Duration:</strong> ${route.total_duration}</p>
-          <ol>
-            ${updatedDetails.map(step => `
-              <li>${step.instruction} (${step.distance}, ${step.duration})</li>
-            `).join('')}
-          </ol>
-          <hr>
-        `;
-        resultDiv.appendChild(routeEl);
-
-        if (route.geometry) {
-          const coordinates = decodePolyline(route.geometry);
-          const routeColor = getRouteColor(index);
-
-          const polyline = L.polyline(coordinates, {
-            color: routeColor,
-            weight: 5,
-            opacity: 0.7
-          });
-
-          routeLayer.addLayer(polyline);
-          map.fitBounds(polyline.getBounds());
-        }
-      });
-    } else {
-      resultDiv.innerHTML = `<p style="color:red;">Error: ${data.error}</p>`;
+    if (route.geometry) {
+      const decoded = polyline.decode(route.geometry);
+      const polylineLayer = L.polyline(decoded, {
+        color: idx === 0 ? 'blue' : 'gray',
+        weight: 4,
+        opacity: 0.8,
+      }).addTo(map);
+      polylines.push(polylineLayer);
+      if (idx === 0) map.fitBounds(polylineLayer.getBounds());
     }
-  } catch (error) {
-    console.error(error);
-    resultDiv.innerHTML = '<p style="color:red;">Something went wrong while fetching routes.</p>';
-  }
-}
+  });
+});
 
-function getRouteColor(index) {
-  const colors = ['#4CAF50', '#2196F3', '#FFC107', '#9C27B0', '#F44336'];
-  return colors[index % colors.length];
-}
 
-function decodePolyline(encoded) {
-  if (!encoded) return [];
 
-  let points = [];
-  let index = 0, lat = 0, lng = 0;
 
-  while (index < encoded.length) {
-    let b, shift = 0, result = 0;
 
-    do {
-      b = encoded.charCodeAt(index++) - 63;
-      result |= (b & 0x1f) << shift;
-      shift += 5;
-    } while (b >= 0x20);
 
-    let dlat = (result & 1) ? ~(result >> 1) : (result >> 1);
-    lat += dlat;
-
-    shift = 0;
-    result = 0;
-
-    do {
-      b = encoded.charCodeAt(index++) - 63;
-      result |= (b & 0x1f) << shift;
-      shift += 5;
-    } while (b >= 0x20);
-
-    let dlng = (result & 1) ? ~(result >> 1) : (result >> 1);
-    lng += dlng;
-
-    points.push([lat * 1e-5, lng * 1e-5]);
-  }
-
-  return points;
-}
-
-function reverseGeocode(lat, lon) {
-  fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`)
-    .then(response => response.json())
-    .then(data => {
-      document.getElementById('origin').value = data.display_name;
-    })
-    .catch(error => console.error('Error:', error));
-}
 
 
 
