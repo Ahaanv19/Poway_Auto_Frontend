@@ -15,7 +15,7 @@ nav: true
   <div class="route-form">
     <h2>Traffic-Aware Route Finder</h2>
     <p style="font-size: 14px; color: gray;">
-      Route estimates are dynamically adjusted using real traffic data from San Diego's dataset.
+      Route estimates are dynamically adjusted using real traffic data from Poway's dataset.
     </p>
     <div class="input-group">
       <label for="origin">Origin:</label>
