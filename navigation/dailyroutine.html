@@ -65,12 +65,6 @@ nav: true
     .route-actions button:hover {
       background-color: #5a6268;
     }
-    .route-actions .map-btn {
-      background-color: #17a2b8;
-    }
-    .route-actions .map-btn:hover {
-      background-color: #117a8b;
-    }
     .route-actions .edit-btn {
       background-color: #ffc107;
       color: black;
@@ -171,14 +165,6 @@ nav: true
       const actions = document.createElement('span');
       actions.className = 'route-actions';
 
-      const mapBtn = document.createElement('button');
-      mapBtn.textContent = 'Map';
-      mapBtn.className = 'map-btn';
-      mapBtn.onclick = () => {
-        const url = `https://www.google.com/maps/dir/${encodeURIComponent(route.start)}/${encodeURIComponent(route.destination)}`;
-        window.open(url, '_blank');
-      };
-
       const editBtn = document.createElement('button');
       editBtn.textContent = 'Edit';
       editBtn.className = 'edit-btn';
@@ -201,7 +187,6 @@ nav: true
         renderSchedule();
       };
 
-      actions.appendChild(mapBtn);
       actions.appendChild(editBtn);
       actions.appendChild(deleteBtn);
       li.appendChild(actions);
@@ -263,6 +248,7 @@ nav: true
     renderSchedule();
 
     // ========== Leaflet Map Setup ==========
+
     const map = L.map('map').setView([37.7749, -122.4194], 10); // Default to SF
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
