@@ -109,9 +109,6 @@ menu: nav/home.html
     <!-- Navigation Menu -->
     <nav class="px-6">
       <div class="grid grid-cols-1 gap-3 text-sm text-gray-700 dark:text-gray-200">
-        <a href="/QAV_Frontend/" class="block px-4 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition">
-          🏠 Home
-        </a>
         <a href="/QAV_Frontend/route/" class="block px-4 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition">
           🧭 Find Best Route
         </a>
@@ -128,16 +125,16 @@ menu: nav/home.html
     <section class="bg-white dark:bg-gray-900 py-12 border-t border-gray-200 dark:border-gray-700">
       <div class="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-3 text-center gap-8 px-6">
         <div>
-          <h3 class="text-3xl font-bold text-primary">99.99%</h3>
-          <p class="text-gray-600 dark:text-gray-300">System Uptime</p>
+          <h3 class="text-3xl font-bold text-primary">100%</h3>
+          <p class="text-gray-600 dark:text-gray-300">Deployed</p>
         </div>
         <div>
-          <h3 class="text-3xl font-bold text-primary">+120</h3>
-          <p class="text-gray-600 dark:text-gray-300">Autonomous Features</p>
+          <h3 class="text-3xl font-bold text-primary">Faster</h3>
+          <p class="text-gray-600 dark:text-gray-300">Than Google Maps</p>
         </div>
         <div>
-          <h3 class="text-3xl font-bold text-primary">∞</h3>
-          <p class="text-gray-600 dark:text-gray-300">Innovation Potential</p>
+          <h3 class="text-3xl font-bold text-primary">Extremely</h3>
+          <p class="text-gray-600 dark:text-gray-300">Convenient and Easy-to-Use</p>
         </div>
       </div>
     </section>
