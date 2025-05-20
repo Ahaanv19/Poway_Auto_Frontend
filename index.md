@@ -110,13 +110,13 @@ menu: nav/home.html
     <nav class="px-6">
       <div class="grid grid-cols-1 gap-3 text-sm text-gray-700 dark:text-gray-200">
         <a href="/QAV_Frontend/route/" class="block px-4 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition">
-          🧭 Find Best Route
+        🗺️ Find Best Route
         </a>
         <a href="/QAV_Frontend/favoriteLocations/" class="block px-4 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition">
-        🏠 Favorite Locations
+        ⭐ Favorite Locations
         </a>
         <a href="/QAV_Frontend/routine/" class="block px-4 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition">
-        🏠 Daily Routine
+        📅 Daily Routine
         </a>
       </div>
     </nav>
@@ -125,16 +125,13 @@ menu: nav/home.html
     <section class="bg-white dark:bg-gray-900 py-12 border-t border-gray-200 dark:border-gray-700">
       <div class="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-3 text-center gap-8 px-6">
         <div>
-          <h3 class="text-3xl font-bold text-primary">100%</h3>
-          <p class="text-gray-600 dark:text-gray-300">Deployed</p>
+          <h3 class="text-3xl font-bold text-primary">Connected</h3>
         </div>
         <div>
-          <h3 class="text-3xl font-bold text-primary">Faster</h3>
-          <p class="text-gray-600 dark:text-gray-300">Than Google Maps</p>
+          <h3 class="text-3xl font-bold text-primary">Efficient</h3>
         </div>
         <div>
-          <h3 class="text-3xl font-bold text-primary">Extremely</h3>
-          <p class="text-gray-600 dark:text-gray-300">Convenient and Easy-to-Use</p>
+          <h3 class="text-3xl font-bold text-primary">Convenient</h3>
         </div>
       </div>
     </section>
