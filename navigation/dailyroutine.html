@@ -18,98 +18,147 @@ nav: true
     body {
       font-family: Arial, sans-serif;
       padding: 20px;
-      background-color: #f0f2f5;
+      margin: 0;
+      background: linear-gradient(to bottom, #f7f9fc, #eef2f6);
+      color: #333;
     }
+
     h2 {
-      margin-bottom: 10px;
-    }
-    form {
       margin-bottom: 20px;
+      color: #7C3AED;
+    }
+
+    form {
+      background-color: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      margin-bottom: 30px;
       display: flex;
-      gap: 10px;
       flex-wrap: wrap;
+      gap: 15px;
       align-items: center;
     }
+
+    label {
+      font-weight: bold;
+      color: #0055ff;
+    }
+
     input, select, button {
       padding: 10px;
       font-size: 14px;
       border: 1px solid #ccc;
-      border-radius: 5px;
+      border-radius: 8px;
     }
+
     button {
       cursor: pointer;
-      background-color: #007bff;
+      background-color: #9333EA;
       color: white;
       border: none;
       transition: background-color 0.2s ease;
     }
+
     button:hover {
-      background-color: #0056b3;
+      background-color: #7C3AED;
     }
+
     .add-button {
-      background-color: #28a745;
+      background-color: #9333EA;
     }
+
     .add-button:hover {
-      background-color: #218838;
+      background-color: #7C3AED;
     }
+
     .route-actions {
       display: inline-flex;
       gap: 5px;
       margin-left: 10px;
     }
+
     .route-actions button {
-      background-color: #6c757d;
       font-size: 12px;
-      padding: 5px 8px;
+      padding: 6px 10px;
+      border-radius: 6px;
     }
-    .route-actions button:hover {
-      background-color: #5a6268;
-    }
-    .route-actions .map-btn {
-      background-color: #17a2b8;
-    }
-    .route-actions .map-btn:hover {
-      background-color: #117a8b;
-    }
+
     .route-actions .edit-btn {
       background-color: #ffc107;
       color: black;
     }
+
     .route-actions .edit-btn:hover {
       background-color: #e0a800;
     }
+
     .route-actions .delete-btn {
       background-color: #dc3545;
+      color: white;
     }
+
     .route-actions .delete-btn:hover {
       background-color: #c82333;
     }
+
     table {
       width: 100%;
       border-collapse: collapse;
-      background-color: #fff;
+      background-color: #ede9fe;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
     }
+
     th, td {
-      border: 1px solid #ccc;
-      padding: 10px;
+      border: 1px solid #dcdcdc;
+      padding: 12px;
       vertical-align: top;
     }
+
+    th {
+      background-color: #f4f0ff;
+      color: #7C3AED;
+    }
+
     ul {
       margin: 0;
       padding-left: 20px;
     }
+
     .slot {
       min-height: 40px;
     }
+
     .time-cell {
       width: 120px;
-      background-color: #f9f9f9;
+      background-color: #f3f3f3;
+      font-weight: bold;
+      color: #333;
     }
+
     #map {
       height: 400px;
       margin-top: 30px;
       border: 2px solid #ccc;
-      border-radius: 10px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .primary-action-btn {
+      background-color: #9333EA;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 20px;
+      font-size: 14px;
+      transition: background-color 0.2s ease;
+      margin: 15px 0;
+    }
+
+    .primary-action-btn:hover {
+      background-color: #7C3AED;
     }
   </style>
 </head>
@@ -135,7 +184,7 @@ nav: true
     <tbody id="scheduleBody"></tbody>
   </table>
 
-  <button onclick="updateCurrentHourRoute()" style="margin: 10px 0; padding: 10px 20px; font-size: 14px;">
+  <button onclick="updateCurrentHourRoute()" class="primary-action-btn">
     Show Current Hour Route
   </button>
 
@@ -171,14 +220,6 @@ nav: true
       const actions = document.createElement('span');
       actions.className = 'route-actions';
 
-      const mapBtn = document.createElement('button');
-      mapBtn.textContent = 'Map';
-      mapBtn.className = 'map-btn';
-      mapBtn.onclick = () => {
-        const url = `https://www.google.com/maps/dir/${encodeURIComponent(route.start)}/${encodeURIComponent(route.destination)}`;
-        window.open(url, '_blank');
-      };
-
       const editBtn = document.createElement('button');
       editBtn.textContent = 'Edit';
       editBtn.className = 'edit-btn';
@@ -201,7 +242,6 @@ nav: true
         renderSchedule();
       };
 
-      actions.appendChild(mapBtn);
       actions.appendChild(editBtn);
       actions.appendChild(deleteBtn);
       li.appendChild(actions);
@@ -263,6 +303,7 @@ nav: true
     renderSchedule();
 
     // ========== Leaflet Map Setup ==========
+
     const map = L.map('map').setView([37.7749, -122.4194], 10); // Default to SF
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {

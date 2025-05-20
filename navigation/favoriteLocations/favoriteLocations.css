@@ -6,9 +6,9 @@
 }
 
 .location-square {
-  background-color: #f0f0f0;
-  border: 1px solid #ccc;
-  border-radius: 8px;
+  background-color: #ede9fe; /* purple-100 background */
+  border: 2px solid #7C3AED; /* accent border */
+  border-radius: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -17,15 +17,15 @@
   font-weight: bold;
   width: 150px;
   height: 150px;
-  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 20px rgba(124, 58, 237, 0.1);
   transition: transform 0.2s, box-shadow 0.2s;
-  color: black !important;
+  color: #1f2937;
   cursor: pointer;
 }
 
 .location-square:hover {
   transform: scale(1.05);
-  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 10px 25px rgba(124, 58, 237, 0.2);
 }
 
 /* Popup styles */
@@ -43,101 +43,26 @@
 }
 
 .popup-content {
-  background-color: #fff;
-  /* White background for contrast */
-  border-radius: 8px;
-  padding: 20px;
-  width: 300px;
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 24px;
+  width: 320px;
   text-align: center;
   position: relative;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-  color: black;
-  /* Ensure text is black for visibility */
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
+  color: #1f2937;
 }
 
 .popup-content h2 {
-  margin: 0 0 10px;
-  color: black;
-  /* Ensure the title text is black */
+  margin-bottom: 12px;
+  color: #1f2937;
+  font-size: 20px;
+  font-weight: 700;
 }
 
 .popup-content p {
   margin: 10px 0 20px;
-  color: black;
-  /* Ensure the address text is black */
-}
-
-.popup-content .popup-close {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background: none;
-  border: none;
-  font-size: 20px;
-  cursor: pointer;
-  color: black;
-  /* Ensure the close button is black */
-}
-
-.popup-content .popup-delete {
-  background-color: #ff4d4d;
-  color: white;
-  /* Keep the delete button text white */
-  border: none;
-  border-radius: 4px;
-  padding: 10px 20px;
-  cursor: pointer;
-  font-size: 16px;
-}
-
-.popup-content .popup-delete:hover {
-  background-color: #ff1a1a;
-}
-
-.popup-content .popup-close {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background: none;
-  border: none;
-  font-size: 20px;
-  cursor: pointer;
-  color: black;
-  /* Ensure the close button is black */
-}
-
-.popup-content .popup-delete {
-  background-color: #ff4d4d;
-  color: white;
-  /* Keep the delete button text white */
-  border: none;
-  border-radius: 4px;
-  padding: 10px 20px;
-  cursor: pointer;
-  font-size: 16px;
-}
-
-.popup-content .popup-delete:hover {
-  background-color: #ff1a1a;
-}
-
-
-.new-location-button {
-  display: block;
-  margin: 20px auto;
-  padding: 10px 20px;
-  font-size: 16px;
-  font-weight: bold;
-  color: white;
-  background-color: #4CAF50;
-  /* Green background */
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.new-location-button:hover {
-  background-color: #45a049;
+  color: #374151;
 }
 
 .popup-content input {
@@ -145,51 +70,71 @@
   padding: 10px;
   margin: 10px 0;
   border: 1px solid #ccc;
-  border-radius: 5px;
+  border-radius: 8px;
+  font-size: 15px;
 }
 
+/* Buttons */
+.popup-content .popup-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #1f2937;
+}
+
+.popup-content .popup-delete,
 .popup-content .popup-cancel {
-  background-color: #ff4d4d;
-  /* Red background */
+  background-color: #0055ff;
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
   padding: 10px 20px;
   cursor: pointer;
-  font-size: 16px;
-  margin-right: 10px;
+  font-size: 15px;
 }
 
+.popup-content .popup-delete:hover,
 .popup-content .popup-cancel:hover {
-  background-color: #ff1a1a;
+  background-color: #0055ff;
 }
 
-.popup-content .popup-submit {
-  background-color: #4CAF50;
-  /* Green background */
-  color: white;
-  border: none;
-  border-radius: 4px;
-  padding: 10px 20px;
-  cursor: pointer;
-  font-size: 16px;
-}
-
-.popup-content .popup-submit:hover {
-  background-color: #45a049;
-}
-
+.popup-content .popup-submit,
 .popup-content .popup-edit {
-  background-color: #4CAF50; /* Green background */
+  background-color: #9333EA; /* Tailwind purple-600 */
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
   padding: 10px 20px;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 15px;
   margin-left: 10px;
 }
 
+.popup-content .popup-submit:hover,
 .popup-content .popup-edit:hover {
-  background-color: #45a049;
+  background-color: #7C3AED; /* Tailwind purple-500 */
+}
+
+/* Add New Location Button */
+.new-location-button {
+  display: block;
+  margin: 30px auto 10px;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: bold;
+  color: white;
+  background-color: #9333EA;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.25s ease, transform 0.15s ease;
+}
+
+.new-location-button:hover {
+  background-color: #7C3AED;
+  transform: translateY(-1px);
 }
