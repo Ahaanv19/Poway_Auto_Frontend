@@ -2,6 +2,7 @@
 layout: base
 title: Best Route
 search_exclude: true
+permalink: /home/
 nav: true
 hide: true
 menu: nav/home.html
@@ -109,6 +110,9 @@ menu: nav/home.html
     <!-- Navigation Menu -->
     <nav class="px-6">
       <div class="grid grid-cols-1 gap-3 text-sm text-gray-700 dark:text-gray-200">
+        <a href="/QAV_Frontend/verify/" class="block px-4 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition">
+        ✅ Location Vefication
+        </a>
         <a href="/QAV_Frontend/route/" class="block px-4 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition">
         🗺️ Find Best Route
         </a>
@@ -117,9 +121,6 @@ menu: nav/home.html
         </a>
         <a href="/QAV_Frontend/routine/" class="block px-4 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition">
         📅 Daily Routine
-        </a>
-        <a href="/QAV_Frontend/verify/" class="block px-4 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition">
-        ✅ Location Vefication
         </a>
       </div>
     </nav>
