@@ -78,7 +78,7 @@ nav: true
     <input type="text" id="address" placeholder="Address" required>
 
     <button type="submit">Submit</button>
-    <button type="button" id="adminView">View All (Admin Only)</button>
+    <button type="button" id="viewEntries">View All Entries</button>
 
     <div id="message"></div>
   </form>
@@ -94,14 +94,13 @@ nav: true
       cache: 'default',
       credentials: 'include',
       headers: {
-        'Content-Type': 'application/json',
-        'X-Origin': 'client'
+        'Content-Type': 'application/json'
       }
     };
 
     const form = document.getElementById('entryForm');
     const entries = document.getElementById('entries');
-    const adminViewBtn = document.getElementById('adminView');
+    const viewEntriesBtn = document.getElementById('viewEntries');
     const message = document.getElementById('message');
 
     // Submit form
@@ -127,8 +126,8 @@ nav: true
       }
     });
 
-    // Admin View
-    adminViewBtn.addEventListener('click', async () => {
+    // Public View
+    viewEntriesBtn.addEventListener('click', async () => {
       entries.innerHTML = '';
       message.textContent = '';
 
@@ -136,11 +135,7 @@ nav: true
       const data = await res.json();
 
       if (!res.ok) {
-        if (res.status === 403) {
-          message.textContent = 'Access denied. Admins only.';
-        } else {
-          message.textContent = data.error || 'An error occurred.';
-        }
+        message.textContent = data.error || 'Unable to fetch entries.';
         return;
       }
 
@@ -157,22 +152,10 @@ nav: true
         entries.appendChild(div);
       });
     });
-
-    // Optional: Disable admin view if not admin (client hint only)
-    const checkRole = async () => {
-      const res = await fetch(`${API_BASE}/userinfo`, fetchOptions);
-      if (!res.ok) return;
-      const user = await res.json();
-      if (user.role?.toLowerCase() !== 'admin') {
-        adminViewBtn.disabled = true;
-        adminViewBtn.textContent = 'Admin Only (Restricted)';
-      }
-    };
-
-    checkRole();
   </script>
 </body>
 </html>
+
 
 
 
