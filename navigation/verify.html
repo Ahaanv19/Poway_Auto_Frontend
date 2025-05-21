@@ -1,0 +1,145 @@
+---
+toc: true
+layout: post
+title: Verify Location
+permalink: /verify/
+nav: true
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Submit Info</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      padding: 30px;
+    }
+
+    form, .entries-container {
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      max-width: 500px;
+      margin: auto;
+    }
+
+    input, button {
+      display: block;
+      width: 100%;
+      margin-top: 10px;
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      background-color: #00796b;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #005b4f;
+    }
+
+    .entry {
+      margin-top: 10px;
+      padding: 10px;
+      background: #f0f0f0;
+      border-left: 4px solid #00796b;
+    }
+
+    #message {
+      color: red;
+      margin-top: 10px;
+    }
+
+  </style>
+</head>
+<body>
+
+  <form id="entryForm">
+    <h2>Submit Your Information</h2>
+
+    <input type="text" id="name" placeholder="Name" required>
+    <input type="email" id="email" placeholder="Email" required>
+    <input type="text" id="address" placeholder="Address" required>
+
+    <button type="submit">Submit</button>
+    <button type="button" id="adminView">View All (Admin Only)</button>
+
+    <div id="message"></div>
+  </form>
+
+  <div class="entries-container" id="entries"></div>
+
+  <script type="module">
+    import { pythonURI, fetchOptions } from './assets/js/api/config.js';
+
+    const form = document.getElementById('entryForm');
+    const entries = document.getElementById('entries');
+    const adminViewBtn = document.getElementById('adminView');
+    const message = document.getElementById('message');
+
+    // Handle form submission
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const name = document.getElementById('name').value;
+      const email = document.getElementById('email').value;
+      const address = document.getElementById('address').value;
+
+      const res = await fetch(`${pythonURI}/api/entries`, {
+        ...fetchOptions,
+        method: 'POST',
+        body: JSON.stringify({ name, email, address })
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        message.textContent = data.error || 'Failed to submit entry.';
+      } else {
+        message.textContent = 'Entry submitted successfully!';
+        form.reset();
+      }
+    });
+
+    // Handle admin view
+    adminViewBtn.addEventListener('click', async () => {
+      entries.innerHTML = '';
+      message.textContent = '';
+
+      const res = await fetch(`${pythonURI}/api/entries`, fetchOptions);
+      const data = await res.json();
+
+      if (!res.ok) {
+        message.textContent = data.error || 'Access denied.';
+        return;
+      }
+
+      if (!data.length) {
+        entries.innerHTML = '<p>No entries found.</p>';
+        return;
+      }
+
+      entries.innerHTML = '<h3>All Entries</h3>';
+      data.forEach(entry => {
+        const div = document.createElement('div');
+        div.className = 'entry';
+        div.innerHTML = `<strong>${entry.name}</strong><br>${entry.email}<br>${entry.address}`;
+        entries.appendChild(div);
+      });
+    });
+  </script>
+</body>
+</html>
+
+
+
+
