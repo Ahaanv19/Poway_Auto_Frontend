@@ -6,7 +6,6 @@ permalink: /verify/
 nav: true
 ---
 
-<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -59,7 +58,6 @@ nav: true
       color: red;
       margin-top: 10px;
     }
-
   </style>
 </head>
 <body>
@@ -80,14 +78,25 @@ nav: true
   <div class="entries-container" id="entries"></div>
 
   <script type="module">
-    import { pythonURI, fetchOptions } from './assets/js/api/config.js';
+    const API_BASE = 'https://autonomous.stu.nighthawkcodingsociety.com/api';
+
+    const fetchOptions = {
+      method: 'GET',
+      mode: 'cors',
+      cache: 'default',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Origin': 'client'
+      }
+    };
 
     const form = document.getElementById('entryForm');
     const entries = document.getElementById('entries');
     const adminViewBtn = document.getElementById('adminView');
     const message = document.getElementById('message');
 
-    // Handle form submission
+    // Submit form
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
 
@@ -95,7 +104,7 @@ nav: true
       const email = document.getElementById('email').value;
       const address = document.getElementById('address').value;
 
-      const res = await fetch(`${pythonURI}/api/entries`, {
+      const res = await fetch(`${API_BASE}/entries`, {
         ...fetchOptions,
         method: 'POST',
         body: JSON.stringify({ name, email, address })
@@ -110,12 +119,12 @@ nav: true
       }
     });
 
-    // Handle admin view
+    // Admin View
     adminViewBtn.addEventListener('click', async () => {
       entries.innerHTML = '';
       message.textContent = '';
 
-      const res = await fetch(`${pythonURI}/api/entries`, fetchOptions);
+      const res = await fetch(`${API_BASE}/entries`, fetchOptions);
       const data = await res.json();
 
       if (!res.ok) {
@@ -139,6 +148,7 @@ nav: true
   </script>
 </body>
 </html>
+
 
 
 
