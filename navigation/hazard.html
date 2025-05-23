@@ -9,146 +9,99 @@ nav: true
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Hazard Alert Map</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Leaflet CSS -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-    <style>
-        body {
-            margin: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f0f2f5;
-        }
-
-        .container {
-            max-width: 1000px;
-            margin: 30px auto;
-            padding: 20px;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 0 16px rgba(0, 0, 0, 0.2);
-        }
-
-        h2 {
-            text-align: center;
-            color: #333;
-        }
-
-        #map {
-            height: 500px;
-            width: 100%;
-            border-radius: 8px;
-        }
-
-        .form-group {
-            margin-top: 20px;
-        }
-
-        label {
-            font-weight: bold;
-        }
-
-        input, textarea {
-            width: 100%;
-            padding: 10px;
-            margin-top: 8px;
-            border-radius: 8px;
-            border: 1px solid #ccc;
-        }
-
-        button {
-            margin-top: 16px;
-            padding: 12px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            width: 100%;
-            font-size: 16px;
-        }
-
-        button:hover {
-            background-color: #0056b3;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>Hazard Reporter</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <div class="container">
-        <h2>Crowdsourced Hazard Alerts</h2>
-        <div id="map"></div>
-        <div class="form-group">
-            <label for="description">Hazard Description</label>
-            <textarea id="description" rows="3" placeholder="Describe the hazard..."></textarea>
-        </div>
-        <button onclick="reportHazard()">Report Hazard at Map Center</button>
-    </div>
+<body class="bg-gray-100 text-gray-800">
 
-    <!-- Leaflet JS -->
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    <script>
-        const pythonURI = "https://autonomous.stu.nighthawkcodingsociety.com";
-        const fetchOptions = {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json"
-            }
-        };
+  <div class="max-w-4xl mx-auto p-6">
+    <h1 class="text-3xl font-bold text-center mb-4">🚧 Crowdsourced Hazard Alerts</h1>
+    
+    <div id="map" class="w-full h-96 rounded-lg shadow-lg mb-6"></div>
 
-        let map = L.map('map').setView([32.9628, -117.0359], 13);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; OpenStreetMap contributors'
-        }).addTo(map);
+    <form id="hazardForm" class="bg-white p-4 rounded shadow-md space-y-4">
+      <h2 class="text-xl font-semibold">Report a New Hazard</h2>
+      <input type="text" id="description" placeholder="Description (e.g. pothole, flooding)" class="w-full p-2 border border-gray-300 rounded" required>
+      <input type="number" id="latitude" placeholder="Latitude" class="w-full p-2 border border-gray-300 rounded" required>
+      <input type="number" id="longitude" placeholder="Longitude" class="w-full p-2 border border-gray-300 rounded" required>
+      <button type="submit" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded">Submit Hazard</button>
+    </form>
 
-        function reportHazard() {
-            const center = map.getCenter();
-            const description = document.getElementById("description").value.trim();
-            if (!description) {
-                alert("Please enter a description for the hazard.");
-                return;
-            }
+    <p id="responseMessage" class="mt-4 text-center text-green-600"></p>
+  </div>
 
-            fetch(pythonURI + "/api/hazards", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    latitude: center.lat,
-                    longitude: center.lng,
-                    description: description
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                alert("✅ Hazard reported successfully.");
-                loadHazards(); // Reload markers
-            })
-            .catch(err => {
-                console.error("Error reporting hazard:", err);
-                alert("❌ Failed to report hazard.");
-            });
+  <script type="module">
+    // ✅ HARDCODED CONFIG
+    const pythonURI = "https://autonomous.stu.nighthawkcodingsociety.com";
+    const fetchOptions = {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      credentials: "include"
+    };
+
+    const map = L.map('map').setView([32.9628, -117.0359], 13); // Poway center
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    // ✅ LOAD ALL HAZARDS
+    async function loadHazards() {
+      try {
+        const res = await fetch(`${pythonURI}/api/hazards`, fetchOptions);
+        if (!res.ok) throw new Error(`Status ${res.status}`);
+        const data = await res.json();
+        data.forEach(hazard => {
+          const { latitude, longitude, description } = hazard;
+          L.marker([latitude, longitude])
+            .addTo(map)
+            .bindPopup(`<strong>Hazard:</strong> ${description}`);
+        });
+      } catch (err) {
+        console.error("Error loading hazards:", err);
+        document.getElementById("responseMessage").textContent = "Error loading hazards. Try again later.";
+      }
+    }
+
+    loadHazards();
+
+    // ✅ REPORT NEW HAZARD
+    document.getElementById("hazardForm").addEventListener("submit", async e => {
+      e.preventDefault();
+      const lat = parseFloat(document.getElementById("latitude").value);
+      const lng = parseFloat(document.getElementById("longitude").value);
+      const description = document.getElementById("description").value;
+
+      try {
+        const res = await fetch(`${pythonURI}/api/hazards`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          credentials: "include",
+          body: JSON.stringify({ latitude: lat, longitude: lng, description })
+        });
+
+        if (!res.ok) {
+          const errText = await res.text();
+          throw new Error(`HTTP ${res.status}: ${errText}`);
         }
 
-        function loadHazards() {
-            fetch(pythonURI + "/api/hazards", fetchOptions)
-            .then(response => response.json())
-            .then(data => {
-                data.forEach(hazard => {
-                    L.marker([hazard.latitude, hazard.longitude])
-                        .addTo(map)
-                        .bindPopup(`<b>Hazard:</b> ${hazard.description}`);
-                });
-            })
-            .catch(err => {
-                console.error("Error loading hazards:", err);
-            });
-        }
-
-        loadHazards();
-    </script>
+        document.getElementById("responseMessage").textContent = "Hazard submitted successfully!";
+        L.marker([lat, lng])
+          .addTo(map)
+          .bindPopup(`<strong>Hazard:</strong> ${description}`)
+          .openPopup();
+        document.getElementById("hazardForm").reset();
+      } catch (err) {
+        console.error("Error reporting hazard:", err);
+        document.getElementById("responseMessage").textContent = "Error submitting hazard.";
+      }
+    });
+  </script>
 </body>
 </html>
-
-  
