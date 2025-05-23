@@ -106,26 +106,23 @@ menu: nav/home.html
       </div>
     </div>
 
-    <!-- Navigation Menu -->
-    <nav class="px-6">
-      <div class="grid grid-cols-1 gap-3 text-sm text-gray-700 dark:text-gray-200">
-        <a href="/QAV_Frontend/verify/" class="block px-4 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition">
-        ✅ Location Vefication
-        </a>
-        <a href="/QAV_Frontend/route/" class="block px-4 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition">
-        🗺️ Find Best Route
-        </a>
-        <a href="/QAV_Frontend/favoriteLocations/" class="block px-4 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition">
-        ⭐ Favorite Locations
-        </a>
-        <a href="/QAV_Frontend/routine/" class="block px-4 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition">
-        📅 Daily Routine
-        </a>
-        <a href="/QAV_Frontend/hazard/" class="block px-4 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition">
-        Report a Hazard in Poway
-        </a>
-      </div>
-    </nav>
+<!-- Simple Dropdown Menu -->
+<div class="relative inline-block text-left px-6 mt-4">
+  <details class="w-52">
+    <summary class="cursor-pointer bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-200 px-4 py-2 rounded-md shadow-md hover:bg-gray-100 dark:hover:bg-gray-800">
+      📌 Poway Auto Menu
+    </summary>
+    <div class="mt-2 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-md shadow-lg text-sm text-gray-700 dark:text-gray-200">
+      <a href="/QAV_Frontend/verify/" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-800">✅ Location Verification</a>
+      <a href="/QAV_Frontend/route/" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-800">🗺️ Find Best Route</a>
+      <a href="/QAV_Frontend/favoriteLocations/" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-800">⭐ Favorite Locations</a>
+      <a href="/QAV_Frontend/routine/" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-800">📅 Daily Routine</a>
+      <a href="/QAV_Frontend/hazard/" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-800">⚠️ Report a Hazard</a>
+    </div>
+  </details>
+</div>
+
+
 
     <!-- Stats Section -->
     <section class="bg-white dark:bg-gray-900 py-12 border-t border-gray-200 dark:border-gray-700">
