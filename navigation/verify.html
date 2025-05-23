@@ -68,6 +68,8 @@ nav: true
         const latitude = position.coords.latitude;
         const longitude = position.coords.longitude;
 
+        console.log("Sending lat/lng:", latitude, longitude); // Debug log
+
         try {
           const response = await fetch('https://autonomous.stu.nighthawkcodingsociety.com/api/verify_location', {
             method: 'POST',
@@ -84,15 +86,20 @@ nav: true
           }
 
         } catch (err) {
-          resultDiv.innerHTML = `<span style="color: red;">Error verifying location.</span>`;
+          console.error("Error during location verify:", err);
+          resultDiv.innerHTML = `<span style="color: red;">❌ Error verifying location.</span>`;
         }
 
-      }, () => {
+      }, (error) => {
+        console.error("Geolocation error:", error);
         resultDiv.innerHTML = "❌ Unable to retrieve your location.";
       });
     }
   </script>
 </body>
+
+
+
 
 
 
