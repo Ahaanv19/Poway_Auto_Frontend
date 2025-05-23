@@ -55,6 +55,8 @@ nav: true
   </div>
 
   <script>
+    const API_BASE = "https://autonomous.stu.nighthawkcodingsociety.com";
+
     function getLocation() {
       const resultDiv = document.getElementById('result');
       resultDiv.innerHTML = "🔍 Getting your location...";
@@ -69,7 +71,7 @@ nav: true
         const longitude = position.coords.longitude;
 
         try {
-          const response = await fetch('/api/verify_location', {
+          const response = await fetch(`${API_BASE}/api/verify_location`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ latitude, longitude })
@@ -93,6 +95,7 @@ nav: true
     }
   </script>
 </body>
+
 
 
 
