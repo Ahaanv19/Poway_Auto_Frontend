@@ -1,0 +1,55 @@
+---
+toc: true
+title: Report Hazards 
+layout: post
+permalink: /hazard/
+nav: true
+---
+
+<div class="hazard-form">
+    <h2>Report a Road Hazard</h2>
+    <input type="text" id="type" placeholder="Hazard Type (e.g. accident)">
+    <input type="text" id="note" placeholder="Additional notes (optional)">
+    <button onclick="submitHazard()">Report Hazard</button>
+  </div>
+  
+  <div id="map" style="height: 400px;"></div>
+  
+  <script>
+  async function submitHazard() {
+    if (!navigator.geolocation) return alert("Geolocation not supported.");
+  
+    navigator.geolocation.getCurrentPosition(async (pos) => {
+      const lat = pos.coords.latitude;
+      const lng = pos.coords.longitude;
+      const type = document.getElementById("type").value;
+      const note = document.getElementById("note").value;
+  
+      const res = await fetch("https://autonomous.stu.nighthawkcodingsociety.com/api/hazard/report", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ latitude: lat, longitude: lng, type, note })
+      });
+  
+      const msg = await res.json();
+      alert(msg.message || "Error reporting hazard");
+      loadHazards();  // Refresh map
+    });
+  }
+  
+  async function loadHazards() {
+    const res = await fetch("https://autonomous.stu.nighthawkcodingsociety.com/api/hazard/all");
+    const hazards = await res.json();
+  
+    hazards.forEach(h => {
+      const marker = L.marker([h.latitude, h.longitude])
+        .addTo(map)
+        .bindPopup(`<b>${h.type}</b><br>${h.note || ''}`);
+    });
+  }
+  
+  const map = L.map('map').setView([32.9628, -117.0359], 13);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+  loadHazards();
+  </script>
+  
