@@ -6,50 +6,149 @@ permalink: /hazard/
 nav: true
 ---
 
-<div class="hazard-form">
-    <h2>Report a Road Hazard</h2>
-    <input type="text" id="type" placeholder="Hazard Type (e.g. accident)">
-    <input type="text" id="note" placeholder="Additional notes (optional)">
-    <button onclick="submitHazard()">Report Hazard</button>
-  </div>
-  
-  <div id="map" style="height: 400px;"></div>
-  
-  <script>
-  async function submitHazard() {
-    if (!navigator.geolocation) return alert("Geolocation not supported.");
-  
-    navigator.geolocation.getCurrentPosition(async (pos) => {
-      const lat = pos.coords.latitude;
-      const lng = pos.coords.longitude;
-      const type = document.getElementById("type").value;
-      const note = document.getElementById("note").value;
-  
-      const res = await fetch("https://autonomous.stu.nighthawkcodingsociety.com/api/hazard/report", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ latitude: lat, longitude: lng, type, note })
-      });
-  
-      const msg = await res.json();
-      alert(msg.message || "Error reporting hazard");
-      loadHazards();  // Refresh map
-    });
-  }
-  
-  async function loadHazards() {
-    const res = await fetch("https://autonomous.stu.nighthawkcodingsociety.com/api/hazard/all");
-    const hazards = await res.json();
-  
-    hazards.forEach(h => {
-      const marker = L.marker([h.latitude, h.longitude])
-        .addTo(map)
-        .bindPopup(`<b>${h.type}</b><br>${h.note || ''}`);
-    });
-  }
-  
-  const map = L.map('map').setView([32.9628, -117.0359], 13);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-  loadHazards();
-  </script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Hazard Alert Map</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 30px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 0 16px rgba(0, 0, 0, 0.2);
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        #map {
+            height: 500px;
+            width: 100%;
+            border-radius: 8px;
+        }
+
+        .form-group {
+            margin-top: 20px;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-top: 8px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            margin-top: 16px;
+            padding: 12px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Crowdsourced Hazard Alerts</h2>
+        <div id="map"></div>
+        <div class="form-group">
+            <label for="description">Hazard Description</label>
+            <textarea id="description" rows="3" placeholder="Describe the hazard..."></textarea>
+        </div>
+        <button onclick="reportHazard()">Report Hazard at Map Center</button>
+    </div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        const pythonURI = "https://autonomous.stu.nighthawkcodingsociety.com";
+        const fetchOptions = {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        };
+
+        let map = L.map('map').setView([32.9628, -117.0359], 13);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        function reportHazard() {
+            const center = map.getCenter();
+            const description = document.getElementById("description").value.trim();
+            if (!description) {
+                alert("Please enter a description for the hazard.");
+                return;
+            }
+
+            fetch(pythonURI + "/api/hazards", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    latitude: center.lat,
+                    longitude: center.lng,
+                    description: description
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert("✅ Hazard reported successfully.");
+                loadHazards(); // Reload markers
+            })
+            .catch(err => {
+                console.error("Error reporting hazard:", err);
+                alert("❌ Failed to report hazard.");
+            });
+        }
+
+        function loadHazards() {
+            fetch(pythonURI + "/api/hazards", fetchOptions)
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(hazard => {
+                    L.marker([hazard.latitude, hazard.longitude])
+                        .addTo(map)
+                        .bindPopup(`<b>Hazard:</b> ${hazard.description}`);
+                });
+            })
+            .catch(err => {
+                console.error("Error loading hazards:", err);
+            });
+        }
+
+        loadHazards();
+    </script>
+</body>
+</html>
+
   
