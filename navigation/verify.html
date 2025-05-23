@@ -49,15 +49,13 @@ nav: true
 
 <body>
   <div class="verify-container">
-    <h2>Verifying Your Location...</h2>
+    <h2>Verifying Your Location</h2>
     <button onclick="getLocation()">Verify with GPS</button>
     <div class="result" id="result"></div>
   </div>
 
   <script>
-    const API_BASE = "https://autonomous.stu.nighthawkcodingsociety.com";
-
-    function getLocation() {
+    async function getLocation() {
       const resultDiv = document.getElementById('result');
       resultDiv.innerHTML = "🔍 Getting your location...";
 
@@ -71,7 +69,7 @@ nav: true
         const longitude = position.coords.longitude;
 
         try {
-          const response = await fetch(`${API_BASE}/api/verify_location`, {
+          const response = await fetch('https://autonomous.stu.nighthawkcodingsociety.com/api/verify_location', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ latitude, longitude })
@@ -95,6 +93,7 @@ nav: true
     }
   </script>
 </body>
+
 
 
 
