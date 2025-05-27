@@ -1,100 +1,106 @@
 ---
 toc: true
-title: Crowdsourcing Traffic Incident Reporter
+title: Traffic Incident Reporter
 layout: post
 permalink: /hazard/
 nav: true
 ---
 
-<!-- report.html -->
 <div class="report-container">
-    <h2>Crowd Sourcing Live Traffic Incident Reporter</h2>
-    <textarea id="description" placeholder="Describe the incident..."></textarea>
-    <input id="location" placeholder="Enter location (e.g., Poway Rd & Espola Rd)" />
-    <button onclick="reportIncident()">Report</button>
-    <h3>Reported Incidents</h3>
+    <h2 class="title">🚦 Report Traffic Incident</h2>
+    <form id="incidentForm">
+      <input type="text" id="location" placeholder="Enter Street or Intersection" required>
+      <input type="text" id="type" placeholder="Type of Incident (e.g., accident, blockage)" required>
+      <textarea id="details" placeholder="Optional details..." rows="3"></textarea>
+      <button type="submit">Submit Incident</button>
+    </form>
+    <div id="statusMessage"></div>
+  </div>
+  
+  <hr>
+  
+  <div class="incidents-display">
+    <h3>📍 Recent Incidents</h3>
     <ul id="incidentList"></ul>
   </div>
   
-  <script>
-    const API_BASE = 'https://autonomous.stu.nighthawkcodingsociety.com/api';
-  
-    async function reportIncident() {
-      const description = document.getElementById("description").value;
-      const location = document.getElementById("location").value;
-  
-      const response = await fetch(`${API_BASE}/report_incident`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ description, location })
-      });
-  
-      const data = await response.json();
-      alert(data.message);
-      loadIncidents();
-    }
-  
-    async function loadIncidents() {
-      const response = await fetch(`${API_BASE}/incidents`);
-      const data = await response.json();
-  
-      const list = document.getElementById("incidentList");
-      list.innerHTML = '';
-      data.forEach(incident => {
-        const item = document.createElement("li");
-        item.textContent = `${incident.description} @ ${incident.location}`;
-        list.appendChild(item);
-      });
-    }
-  
-    document.addEventListener('DOMContentLoaded', loadIncidents);
-  </script>
-  
   <style>
-    .report-container {
+    .report-container, .incidents-display {
       max-width: 600px;
-      margin: auto;
+      margin: 20px auto;
+      background: #f9f9f9;
       padding: 20px;
-      background: #f1f1f1;
       border-radius: 12px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+      font-family: Arial, sans-serif;
     }
   
-    textarea, input {
+    input, textarea {
       width: 100%;
-      margin-top: 10px;
+      margin: 8px 0;
       padding: 10px;
-      font-size: 16px;
-      border-radius: 8px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
     }
   
     button {
-      margin-top: 10px;
-      padding: 12px;
-      width: 100%;
-      background: #007bff;
+      background-color: #007bff;
       color: white;
-      font-size: 16px;
       border: none;
-      border-radius: 8px;
+      padding: 12px;
+      border-radius: 6px;
       cursor: pointer;
     }
   
     button:hover {
-      background: #0056b3;
+      background-color: #0056b3;
     }
   
     ul {
-      margin-top: 20px;
-      padding: 0;
-      list-style: none;
+      list-style-type: none;
+      padding-left: 0;
     }
   
     li {
-      background: #fff;
-      margin-bottom: 10px;
+      margin: 8px 0;
+      background: #eee;
       padding: 10px;
-      border-left: 5px solid #007bff;
-      border-radius: 4px;
+      border-radius: 8px;
     }
   </style>
+  
+  <script>
+  document.getElementById('incidentForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const location = document.getElementById('location').value;
+    const type = document.getElementById('type').value;
+    const details = document.getElementById('details').value;
+  
+    const res = await fetch('https://autonomous.stu.nighthawkcodingsociety.com/api/incidents', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ location, type, details })
+    });
+  
+    const data = await res.json();
+    document.getElementById('statusMessage').innerText = data.message || 'Incident reported.';
+    document.getElementById('incidentForm').reset();
+    loadIncidents(); // refresh list
+  });
+  
+  async function loadIncidents() {
+    const res = await fetch('https://autonomous.stu.nighthawkcodingsociety.com/api/incidents');
+    const data = await res.json();
+  
+    const list = document.getElementById('incidentList');
+    list.innerHTML = '';
+    data.forEach((incident) => {
+      list.innerHTML += `<li><strong>${incident.type}</strong> at <em>${incident.location}</em><br>${incident.details || ''}</li>`;
+    });
+  }
+  
+  loadIncidents();
+  </script>
+  
+  
   
