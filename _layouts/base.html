@@ -106,7 +106,7 @@
         <a href="{{site.baseurl}}/logout"
           class="hidden md:inline-block px-4 py-2 bg-primary text-white rounded-xl shadow-md hover:bg-secondary transition duration-300 text-sm">Logout</a>
         <script type="module">
-          import { pythonURI, javaURI, fetchOptions, login } from '../QAV_Frontend/assets/js/api/config.js';
+          import { pythonURI, javaURI, fetchOptions, login } from '{{site.baseurl}}/assets/js/api/config.js';
           window.onload = async function () {
             // Dark mode logic
             const toggleBtn = document.getElementById('theme-toggle');
