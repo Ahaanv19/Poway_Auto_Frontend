@@ -74,9 +74,9 @@ nav: true
     }
 
     .route-actions {
-      display: inline-flex;
+      display: flex;
       gap: 5px;
-      margin-left: 10px;
+      margin-top: 8px;
     }
 
     .route-actions button {
@@ -125,12 +125,46 @@ nav: true
 
     ul {
       margin: 0;
-      padding-left: 20px;
+      padding: 0;
       list-style: none;
+    }
+
+    li {
+      background: white;
+      margin-bottom: 10px;
+      padding: 12px;
+      border-radius: 10px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+      cursor: grab;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    li:active {
+      cursor: grabbing;
+    }
+
+    .sortable-chosen {
+      opacity: 0.8;
+      transform: scale(1.02);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    }
+
+    .sortable-ghost {
+      opacity: 0.5;
+      border: 2px dashed #7C3AED;
+      background-color: #f4ebff;
     }
 
     .slot {
       min-height: 40px;
+      padding: 5px;
+      border-radius: 8px;
+      transition: background-color 0.2s;
+    }
+
+    .slot.drag-over {
+      background-color: #f0f4ff;
+      outline: 2px dashed #7C3AED;
     }
 
     .time-cell {
