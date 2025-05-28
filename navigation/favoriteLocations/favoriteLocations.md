@@ -1,6 +1,6 @@
 ---
 layout: base
-title: Favoite Locations
+title: Favorite Locations
 hide: true
 menu: nav/home.html
 permalink: /favoriteLocations/
