@@ -29,6 +29,21 @@ nav: true
       color: #7C3AED;
     }
 
+    .trip-link {
+      display: inline-block;
+      margin-bottom: 20px;
+      padding: 10px 20px;
+      background-color: #4F46E5;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: bold;
+    }
+
+    .trip-link:hover {
+      background-color: #4338CA;
+    }
+
     form {
       background-color: white;
       padding: 20px;
@@ -202,6 +217,8 @@ nav: true
 
   <h2>Daily Schedule</h2>
 
+  <a href="{{ site.baseurl }}/route/" class="trip-link">View Your Trip Directions</a>
+
   <form id="addItemForm">
     <label for="timeSelect">Time:</label>
     <select id="timeSelect"></select>
@@ -365,8 +382,10 @@ nav: true
     renderSchedule();
     enableDragAndDrop();
 
-    // Map and Routing
-    const map = L.map('map').setView([37.7749, -122.4194], 10);
+    // ========== Leaflet Map Setup ==========
+
+    const map = L.map('map').setView([37.7749, -122.4194], 10); // Default to SF
+
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
     }).addTo(map);
@@ -427,8 +446,11 @@ nav: true
     }
 
     updateCurrentHourRoute();
-    setInterval(updateCurrentHourRoute, 60 * 1000); // refresh hourly route
+    setInterval(updateCurrentHourRoute, 60 * 1000); // update every minute
+
   </script>
 
 </body>
 </html>
+
+
