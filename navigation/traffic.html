@@ -76,7 +76,7 @@ nav: true
     const type = document.getElementById('type').value;
     const details = document.getElementById('details').value;
   
-    const res = await fetch('https://autonomous.opencodingsociety.com//api/incidents', {
+    const res = await fetch('https://autonomous.opencodingsociety.com/api/incidents', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ location, type, details })
@@ -89,7 +89,7 @@ nav: true
   });
   
   async function loadIncidents() {
-    const res = await fetch('https://autonomous.stu.nighthawkcodingsociety.com/api/incidents');
+    const res = await fetch('https://autonomous.opencodingsociety.com/api/incidents');
     const data = await res.json();
   
     const list = document.getElementById('incidentList');
