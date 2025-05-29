@@ -23,7 +23,7 @@ nav: true
       border-radius: 8px;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
       max-width: 500px;
-      margin: 20px auto;
+      margin: auto;
     }
 
     input, button {
@@ -62,17 +62,15 @@ nav: true
 </head>
 <body>
 
-  <!-- Entry Submission Form -->
   <form id="entryForm">
-    <h2>Submit Your Information for Account Qualification</h2>
-    <p>You will be emailed within 3 business days if you live in Poway and qualify for an account.</p>
+    <h2>Submit Your Information for Account Qualification. You will be emailed within 3 business days if you live in Poway, and qualify for an account</h2>
 
     <input type="text" id="name" placeholder="Name" required>
     <input type="email" id="email" placeholder="Email" required>
     <input type="text" id="address" placeholder="Address" required>
 
     <button type="submit">Submit</button>
-    <button type="button" id="viewEntries" style="display: none;">View All Entries</button>
+    <button type="button" id="viewEntries">View All Entries</button>
 
     <div id="message"></div>
   </form>
@@ -80,49 +78,34 @@ nav: true
   <div class="entries-container" id="entries"></div>
 
   <script type="module">
-    const API_BASE = 'https://autonomous.opencodingsociety.com/api';
-    const entryForm = document.getElementById('entryForm');
-    const viewEntriesBtn = document.getElementById('viewEntries');
+    const API_BASE = 'https://autonomous.opencodingsociety.com//api';
+
+    const fetchOptions = {
+      method: 'GET',
+      mode: 'cors',
+      cache: 'default',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    };
+
+    const form = document.getElementById('entryForm');
     const entries = document.getElementById('entries');
+    const viewEntriesBtn = document.getElementById('viewEntries');
     const message = document.getElementById('message');
 
-    let currentUser = null;
-
-    // Get current logged-in user
-    async function fetchUser() {
-      const res = await fetch(`${API_BASE}/me`, {
-        credentials: 'include'
-      });
-      if (res.ok) {
-        const data = await res.json();
-        currentUser = data.user;
-        setupForm();
-      } else {
-        message.textContent = 'Unable to load user session.';
-      }
-    }
-
-    // Setup form based on user role
-    function setupForm() {
-      document.getElementById('email').value = currentUser.email;
-      if (currentUser.role.toLowerCase() === 'user') {
-        document.getElementById('email').readOnly = true;
-      } else if (currentUser.role.toLowerCase() === 'admin') {
-        viewEntriesBtn.style.display = 'block';
-      }
-    }
-
     // Submit form
-    entryForm.addEventListener('submit', async (e) => {
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
+
       const name = document.getElementById('name').value;
       const email = document.getElementById('email').value;
       const address = document.getElementById('address').value;
 
       const res = await fetch(`${API_BASE}/entries`, {
+        ...fetchOptions,
         method: 'POST',
-        credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, email, address })
       });
 
@@ -131,21 +114,18 @@ nav: true
         message.textContent = data.error || 'Failed to submit entry.';
       } else {
         message.textContent = 'Entry submitted successfully!';
-        e.target.reset();
-        document.getElementById('email').value = currentUser.email;
+        form.reset();
       }
     });
 
-    // Admin: View all entries
+    // Public View
     viewEntriesBtn.addEventListener('click', async () => {
       entries.innerHTML = '';
       message.textContent = '';
 
-      const res = await fetch(`${API_BASE}/entries`, {
-        credentials: 'include'
-      });
-
+      const res = await fetch(`${API_BASE}/entries`, fetchOptions);
       const data = await res.json();
+
       if (!res.ok) {
         message.textContent = data.error || 'Unable to fetch entries.';
         return;
@@ -164,12 +144,28 @@ nav: true
         entries.appendChild(div);
       });
     });
-
-    // Initial call
-    fetchUser();
   </script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
