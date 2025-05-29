@@ -23,7 +23,7 @@ nav: true
       border-radius: 8px;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
       max-width: 500px;
-      margin: auto;
+      margin: 20px auto;
     }
 
     input, button {
@@ -62,8 +62,17 @@ nav: true
 </head>
 <body>
 
-  <form id="entryForm">
-    <h2>Submit Your Information for Account Qualification. You will be emailed within 3 business days if you live in Poway, and qualify for an account</h2>
+  <!-- Login Form -->
+  <form id="loginForm">
+    <h3>Login</h3>
+    <input type="email" id="loginEmail" placeholder="Enter your email" required>
+    <button type="submit">Login</button>
+  </form>
+
+  <!-- Entry Submission Form -->
+  <form id="entryForm" style="display: none;">
+    <h2>Submit Your Information for Account Qualification</h2>
+    <p>You will be emailed within 3 business days if you live in Poway and qualify for an account.</p>
 
     <input type="text" id="name" placeholder="Name" required>
     <input type="email" id="email" placeholder="Email" required>
@@ -78,7 +87,7 @@ nav: true
   <div class="entries-container" id="entries"></div>
 
   <script type="module">
-    const API_BASE = 'https://autonomous.opencodingsociety.com//api';
+    const API_BASE = 'https://autonomous.opencodingsociety.com/api';
 
     const fetchOptions = {
       method: 'GET',
@@ -90,13 +99,40 @@ nav: true
       }
     };
 
-    const form = document.getElementById('entryForm');
+    const loginForm = document.getElementById('loginForm');
+    const entryForm = document.getElementById('entryForm');
     const entries = document.getElementById('entries');
     const viewEntriesBtn = document.getElementById('viewEntries');
     const message = document.getElementById('message');
 
+    let currentUser = null;
+
+    // Login first
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('loginEmail').value;
+
+      const res = await fetch(`${API_BASE}/login`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        message.textContent = data.error || 'Login failed.';
+      } else {
+        currentUser = data.user;
+        message.textContent = `Logged in as ${currentUser.role}`;
+        loginForm.style.display = 'none';
+        entryForm.style.display = 'block';
+        document.getElementById('email').value = currentUser.email;
+      }
+    });
+
     // Submit form
-    form.addEventListener('submit', async (e) => {
+    entryForm.addEventListener('submit', async (e) => {
       e.preventDefault();
 
       const name = document.getElementById('name').value;
@@ -114,11 +150,12 @@ nav: true
         message.textContent = data.error || 'Failed to submit entry.';
       } else {
         message.textContent = 'Entry submitted successfully!';
-        form.reset();
+        e.target.reset();
+        document.getElementById('email').value = currentUser.email; // keep email filled
       }
     });
 
-    // Public View
+    // View entries (Admin only)
     viewEntriesBtn.addEventListener('click', async () => {
       entries.innerHTML = '';
       message.textContent = '';
@@ -147,6 +184,7 @@ nav: true
   </script>
 </body>
 </html>
+
 
 
 
