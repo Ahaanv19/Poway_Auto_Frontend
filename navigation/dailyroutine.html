@@ -29,6 +29,21 @@ nav: true
       color: #7C3AED;
     }
 
+    .trip-link {
+      display: inline-block;
+      margin-bottom: 20px;
+      padding: 10px 20px;
+      background-color: #4F46E5;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: bold;
+    }
+
+    .trip-link:hover {
+      background-color: #4338CA;
+    }
+
     form {
       background-color: white;
       padding: 20px;
@@ -51,18 +66,6 @@ nav: true
       font-size: 14px;
       border: 1px solid #ccc;
       border-radius: 8px;
-    }
-
-    /* Favorite dropdown styling */
-    #favoritesSelect {
-      background-color: #ede9fe;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      padding: 10px;
-      font-size: 14px;
-      color: #333;
-      cursor: pointer;
-      min-width: 160px;
     }
 
     button {
@@ -214,25 +217,17 @@ nav: true
 
   <h2>Daily Schedule</h2>
 
-  <form id="addItemForm" autocomplete="off">
+  <a href="{{ site.baseurl }}/route/" class="trip-link">Get Trip Directions</a>
+
+  <form id="addItemForm">
     <label for="timeSelect">Time:</label>
-    <select id="timeSelect" aria-label="Select time"></select>
-
-    <label for="favoritesSelect">Favorites:</label>
-    <select id="favoritesSelect" aria-label="Select favorite start location">
-      <option value="">-- Select Favorite --</option>
-    </select>
-
-    <label for="startInput">Start location:</label>
-    <input type="text" id="startInput" placeholder="Start location" required autocomplete="off" />
-
-    <label for="destinationInput">Destination:</label>
-    <input type="text" id="destinationInput" placeholder="Destination" required autocomplete="off" />
-
+    <select id="timeSelect"></select>
+    <input type="text" id="startInput" placeholder="Start location" required />
+    <input type="text" id="destinationInput" placeholder="Destination" required />
     <button type="submit" class="add-button">➕ Add Route</button>
   </form>
 
-  <table id="scheduleTable" aria-label="Daily schedule table">
+  <table id="scheduleTable">
     <thead>
       <tr>
         <th>Time</th>
@@ -243,7 +238,7 @@ nav: true
   </table>
 
   <button onclick="updateCurrentHourRoute()" class="primary-action-btn">
-    Show Current Hour Route
+    Show Current Hour Trip
   </button>
 
   <div id="map"></div>
@@ -257,29 +252,8 @@ nav: true
     const addItemForm = document.getElementById('addItemForm');
     const startInput = document.getElementById('startInput');
     const destinationInput = document.getElementById('destinationInput');
-    const favoritesSelect = document.getElementById('favoritesSelect');
 
     let scheduleData = JSON.parse(localStorage.getItem('dailySchedule')) || {};
-    let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
-
-    // Populate favorites dropdown
-    function renderFavorites() {
-      // Clear old options except the default placeholder
-      favoritesSelect.innerHTML = '<option value="">-- Select Favorite --</option>';
-      favorites.forEach(fav => {
-        const option = document.createElement('option');
-        option.value = fav;
-        option.textContent = fav;
-        favoritesSelect.appendChild(option);
-      });
-    }
-
-    // When user picks a favorite, fill the start input
-    favoritesSelect.addEventListener('change', () => {
-      if (favoritesSelect.value) {
-        startInput.value = favoritesSelect.value;
-      }
-    });
 
     function formatTime(hour) {
       const suffix = hour >= 12 ? 'PM' : 'AM';
@@ -291,40 +265,12 @@ nav: true
       localStorage.setItem('dailySchedule', JSON.stringify(scheduleData));
     }
 
-    function saveFavorites() {
-      localStorage.setItem('favorites', JSON.stringify(favorites));
-    }
-
     function createRouteElement(hour, route, index) {
       const li = document.createElement('li');
       li.textContent = `${route.start} → ${route.destination}`;
 
       const actions = document.createElement('span');
       actions.className = 'route-actions';
-
-      // Button to add start location to favorites
-      const favBtn = document.createElement('button');
-      favBtn.textContent = '★'; // star symbol
-      favBtn.title = 'Add start location to favorites';
-      favBtn.style.backgroundColor = '#ffd700';
-      favBtn.style.color = '#333';
-      favBtn.style.marginRight = '5px';
-      favBtn.style.borderRadius = '6px';
-      favBtn.style.border = 'none';
-      favBtn.style.padding = '6px 10px';
-      favBtn.style.fontSize = '12px';
-      favBtn.style.cursor = 'pointer';
-      favBtn.onclick = () => {
-        const loc = route.start.trim();
-        if (loc && !favorites.includes(loc)) {
-          favorites.push(loc);
-          saveFavorites();
-          renderFavorites();
-          alert(`Added "${loc}" to favorites.`);
-        } else if (favorites.includes(loc)) {
-          alert(`"${loc}" is already in favorites.`);
-        }
-      };
 
       const editBtn = document.createElement('button');
       editBtn.textContent = 'Edit';
@@ -351,7 +297,6 @@ nav: true
         enableDragAndDrop();
       };
 
-      actions.appendChild(favBtn);
       actions.appendChild(editBtn);
       actions.appendChild(deleteBtn);
       li.appendChild(actions);
@@ -399,7 +344,6 @@ nav: true
 
             if (!scheduleData[toHour]) scheduleData[toHour] = [];
             scheduleData[toHour].splice(evt.newIndex, 0, movedItem);
-
             if (scheduleData[fromHour].length === 0) delete scheduleData[fromHour];
 
             saveSchedule();
@@ -410,104 +354,103 @@ nav: true
       }
     }
 
-    // Populate the time dropdown (0–23)
-    function populateTimeDropdown() {
-      for (let hour = 0; hour < 24; hour++) {
-        const option = document.createElement('option');
-        option.value = hour;
-        option.textContent = formatTime(hour);
-        timeSelect.appendChild(option);
-      }
+    for (let hour = 0; hour < 24; hour++) {
+      const option = document.createElement('option');
+      option.value = hour;
+      option.textContent = formatTime(hour);
+      timeSelect.appendChild(option);
     }
 
-    addItemForm.addEventListener('submit', e => {
+    addItemForm.onsubmit = (e) => {
       e.preventDefault();
-
-      const hour = parseInt(timeSelect.value);
+      const hour = timeSelect.value;
       const start = startInput.value.trim();
       const destination = destinationInput.value.trim();
+      if (!start || !destination) return;
 
-      if (!start || !destination) {
-        alert('Please enter both start and destination locations.');
-        return;
-      }
-
+      const route = { start, destination };
       if (!scheduleData[hour]) scheduleData[hour] = [];
-      scheduleData[hour].push({ start, destination });
+      scheduleData[hour].push(route);
       saveSchedule();
       renderSchedule();
       enableDragAndDrop();
 
-      // Clear inputs but keep the same hour selected
       startInput.value = '';
       destinationInput.value = '';
-      favoritesSelect.value = '';
-    });
+    };
 
-    // Initialize Leaflet map
-    const map = L.map('map').setView([32.7157, -117.1611], 13); // San Diego coords
+    renderSchedule();
+    enableDragAndDrop();
+
+    // ========== Leaflet Map Setup ==========
+
+    const map = L.map('map').setView([37.7749, -122.4194], 10); // Default to SF
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '© OpenStreetMap contributors'
+      maxZoom: 19,
     }).addTo(map);
 
     let currentRouteControl = null;
 
-    function showRoute(start, destination) {
-      if (currentRouteControl) {
-        map.removeControl(currentRouteControl);
+    async function geocodePlace(place) {
+      const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(place)}`);
+      const data = await response.json();
+      return data[0];
+    }
+
+    async function drawRoute(startName, destName) {
+      try {
+        const [start, dest] = await Promise.all([
+          geocodePlace(startName),
+          geocodePlace(destName)
+        ]);
+
+        if (!start || !dest) {
+          alert("Could not find one or both locations.");
+          return;
+        }
+
+        if (currentRouteControl) map.removeControl(currentRouteControl);
+
+        const startLatLng = L.latLng(parseFloat(start.lat), parseFloat(start.lon));
+        const destLatLng = L.latLng(parseFloat(dest.lat), parseFloat(dest.lon));
+
+        currentRouteControl = L.Routing.control({
+          waypoints: [startLatLng, destLatLng],
+          routeWhileDragging: false,
+          addWaypoints: false,
+          draggableWaypoints: false,
+          show: false
+        }).addTo(map);
+
+        map.fitBounds(L.latLngBounds([startLatLng, destLatLng]), { padding: [50, 50] });
+
+      } catch (error) {
+        console.error("Routing error:", error);
+        alert("An error occurred while displaying the route.");
       }
-
-      currentRouteControl = L.Routing.control({
-        waypoints: [
-          L.latLng(0, 0), // dummy, replaced below
-          L.latLng(0, 0)
-        ],
-        routeWhileDragging: false,
-        addWaypoints: false,
-        draggableWaypoints: false,
-        fitSelectedRoutes: true
-      }).addTo(map);
-
-      // Use OSRM service for routing
-      fetch(`https://router.project-osrm.org/route/v1/driving/${encodeURIComponent(start)};${encodeURIComponent(destination)}?overview=full`)
-        .then(res => res.json())
-        .then(data => {
-          if (data.code === 'Ok' && data.routes.length > 0) {
-            const route = data.routes[0];
-            const coords = route.geometry.coordinates.map(c => [c[1], c[0]]);
-            if (currentRouteControl) {
-              currentRouteControl.setWaypoints([
-                L.latLng(coords[0][0], coords[0][1]),
-                L.latLng(coords[coords.length-1][0], coords[coords.length-1][1])
-              ]);
-            }
-          } else {
-            alert('Could not find a route for the selected locations.');
-          }
-        })
-        .catch(() => alert('Error fetching route data.'));
     }
 
     function updateCurrentHourRoute() {
       const now = new Date();
-      const hour = now.getHours();
+      const currentHour = now.getHours();
+      const routes = scheduleData[currentHour];
 
-      if (!scheduleData[hour] || scheduleData[hour].length === 0) {
-        alert(`No route scheduled for ${formatTime(hour)}.`);
-        return;
+      if (routes && routes.length > 0) {
+        const { start, destination } = routes[0];
+        drawRoute(start, destination);
+      } else if (currentRouteControl) {
+        map.removeControl(currentRouteControl);
+        currentRouteControl = null;
       }
-
-      // Show the first route for the current hour on the map
-      const route = scheduleData[hour][0];
-      showRoute(route.start, route.destination);
     }
 
-    // Init
-    populateTimeDropdown();
-    renderFavorites();
-    renderSchedule();
-    enableDragAndDrop();
+    updateCurrentHourRoute();
+    setInterval(updateCurrentHourRoute, 60 * 1000); // update every minute
+
   </script>
+
 </body>
 </html>
+
+
