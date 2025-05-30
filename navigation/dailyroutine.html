@@ -88,6 +88,15 @@ nav: true
       background-color: #7C3AED;
     }
 
+    .favorites-btn {
+      background-color: #10B981;
+      margin-top: -10px;
+    }
+
+    .favorites-btn:hover {
+      background-color: #059669;
+    }
+
     .route-actions {
       display: flex;
       gap: 5px;
@@ -222,8 +231,17 @@ nav: true
   <form id="addItemForm">
     <label for="timeSelect">Time:</label>
     <select id="timeSelect"></select>
-    <input type="text" id="startInput" placeholder="Start location" required />
-    <input type="text" id="destinationInput" placeholder="Destination" required />
+
+    <div>
+      <input type="text" id="startInput" placeholder="Start location" required />
+      <button type="button" class="favorites-btn">⭐ Favorites</button>
+    </div>
+
+    <div>
+      <input type="text" id="destinationInput" placeholder="Destination" required />
+      <button type="button" class="favorites-btn">⭐ Favorites</button>
+    </div>
+
     <button type="submit" class="add-button">➕ Add Route</button>
   </form>
 
