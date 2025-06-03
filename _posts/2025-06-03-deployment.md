@@ -237,3 +237,5 @@ server {
     }
 }
 ```
+
+<a href="https://github.com/Ahaanv19/Poway_Auto_Frontend/issues/24" target="_blank">Link to Issue</a>

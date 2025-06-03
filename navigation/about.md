@@ -5,74 +5,95 @@ nav: true
 description: About the Planning and Devlopment Process
 permalink: /about/
 menu: nav/home.html
+categories: [About/Ideation]
 ---
 
-## Our Development Journey: Building the Autonomous Vehicle Navigation System
+<section class="max-w-5xl mx-auto px-6 py-12 prose prose-lg dark:prose-invert">
+  <h1>About Poway Auto</h1>
 
-The journey of developing an **AI-driven autonomous vehicle navigation system** for optimizing travel in San Diego has been an exciting and rewarding experience. The project aims to provide real-time traffic analysis, predictive routing, and a simulation model to improve travel efficiency for commuters. Below, I will walk you through the stages of our development process, from conceptualization to execution.
+  <p>
+    <strong>Poway Auto</strong> is a full-stack intelligent routing platform designed to enhance daily commutes
+    in Poway, California through real-time data, community reporting, and AI-driven route optimization.
+    Our goal is to make transportation more efficient, reliable, and adaptive.
+  </p>
 
----
+  <h2>🌱 Our Development Journey</h2>
 
-## Initial Planning and Ideation
+  <p>
+    This project began as a vision to help commuters navigate traffic congestion using smarter tools.
+    Over time, it evolved into a complete routing system with real-time data visualization, predictive modeling,
+    and user-focused design. Here's how we built it:
+  </p>
 
-The first step in any successful project is brainstorming and organizing ideas. During the initial phase of our project, we used a collaborative approach to visualize our concepts and design the user experience. Tools like **[Figma's FigJam](https://www.figma.com/board/xwfhCP2XCuN0rcTtno0s83/Welcome-to-FigJam?node-id=0-1)** helped us sketch out our ideas, define user flows, and create a shared space for feedback. FigJam is a whiteboard tool that allows for easy collaboration and ideation, making it an ideal choice for our team during the early stages.
+  <h3>🧠 Phase 1: Ideation and Planning</h3>
+  <p>
+    Using <a href="https://www.figma.com/board/xwfhCP2XCuN0rcTtno0s83/Welcome-to-FigJam?node-id=0-1" target="_blank">Figma FigJam</a>,
+    we brainstormed features and created system diagrams for our platform. We focused on key user needs:
+    accurate travel times, customizable routines, and crowd-sourced hazard alerts.
+  </p>
 
-The team used this platform to map out the architecture of the navigation system, define key features, and create an initial prototype layout.
+  <h3>📋 Phase 2: Project Management</h3>
+  <p>
+    We used <a href="https://github.com/users/Ahaanv19/projects/1" target="_blank">GitHub Projects</a>
+    to divide development into milestones:
+  </p>
+  <ul>
+    <li><strong>Data Collection:</strong> Pulling real-time traffic feeds and Poway open data</li>
+    <li><strong>Modeling:</strong> Building an ML model to predict congestion based on patterns</li>
+    <li><strong>Frontend UI:</strong> Designing intuitive interfaces for input, feedback, and live maps</li>
+  </ul>
 
----
+  <h3>🗺️ Phase 3: Data + Mapping</h3>
+  <p>
+    We combined Leaflet maps with satellite overlays and built a real-time hazard display system.
+    Users can report hazards, and their input is stored and shared with others on the map.
+  </p>
 
-## Project Management and Workflow
+  <h3>🤖 Phase 4: Machine Learning Integration</h3>
+  <p>
+    Our predictive routing engine uses <code>scikit-learn</code> to analyze traffic trends and deliver
+    smarter routes based on time of day, historical congestion, and hazards. This ML layer powers the
+    smart decision-making behind every route generated.
+  </p>
 
-To ensure we stayed on track and met our deadlines, we organized the project using **[GitHub Projects](https://github.com/users/Ahaanv19/projects/1)**. Our project board allowed us to create tasks, assign deadlines, and track progress effectively. This tool helped us streamline our workflow and keep all team members aligned on what needed to be done at each stage.
+  <h3>🔄 Phase 5: Simulation & Testing</h3>
+  <p>
+    We ran scenario-based tests using synthetic and real data to refine our predictions.
+    This helped us ensure our backend logic was reliable under different traffic conditions.
+  </p>
 
-We used the project board to break down the tasks into smaller, manageable chunks, such as:
+  <h2>🚀 Current Features</h2>
+  <ul>
+    <li><strong>Smart Route Finder:</strong> Uses ML to suggest fastest paths</li>
+    <li><strong>Daily Routine Planner:</strong> Automates scheduling for recurring trips</li>
+    <li><strong>Live Hazard Reporter:</strong> Publicly viewable hazard pins on map</li>
+    <li><strong>Favorite Locations:</strong> Quick access to saved routes</li>
+  </ul>
 
-- **Data Collection**: Gathering real-time traffic data for San Diego.
-- **AI Algorithm Development**: Building the predictive traffic models.
-- **Simulation Integration**: Designing a simulation to visualize real-time traffic flow.
+  <h2>🧭 What’s Next?</h2>
+  <ol>
+    <li>Finalize UI for mobile and desktop users</li>
+    <li>Optimize backend response times</li>
+    <li>Integrate weather and event data for added accuracy</li>
+    <li>Prepare cloud deployment with Docker and CI/CD</li>
+  </ol>
 
-Having a clear and collaborative workflow ensured that we could make continuous progress and avoid unnecessary delays.
+  <h2>📎 Project Tools</h2>
+  <ul>
+    <li>Frontend: TailwindCSS, HTML, JavaScript, Leaflet</li>
+    <li>Backend: Flask, Python, REST APIs, SQLAlchemy</li>
+    <li>ML: Pandas, Scikit-learn, custom-trained models</li>
+    <li>Collaboration: GitHub, Figma, Google Docs</li>
+  </ul>
 
----
+  <h2>🌐 Links</h2>
+  <ul>
+    <li><a href="https://www.figma.com/board/xwfhCP2XCuN0rcTtno0s83/Welcome-to-FigJam?node-id=0-1" target="_blank">Figma Planning Board</a></li>
+    <li><a href="https://github.com/users/Ahaanv19/projects/1" target="_blank">GitHub Project Tracker</a></li>
+  </ul>
 
-## Development Process
-
-### Phase 1: Data Collection and Mapping
-
-At the outset, the focus was on collecting **real-time traffic data** and integrating it into a map of San Diego. We used APIs that provided traffic congestion, accidents, and other relevant data. This formed the base for our predictive routing system. For the mapping, we used high-resolution data combined with satellite imagery to create accurate, real-time road maps.
-
-### Phase 2: Building the AI Algorithms
-
-In this phase, we developed the **AI-driven traffic analysis** and **predictive routing algorithms**. Machine learning models were trained using historical traffic data to predict congestion patterns and adjust the routes accordingly. This predictive analysis was the core of our system, ensuring that the AI could recommend the most efficient route in real time.
-
-### Phase 3: Integration of Simulation
-
-Once the data and AI models were in place, we began integrating a **simulation model** to visualize how the system would perform in real-world conditions. The simulation allowed us to test various scenarios and refine our system to account for different traffic patterns and unexpected disruptions.
-
----
-
-## Testing and Iteration
-
-Throughout the development process, we constantly tested and refined our system. Each iteration brought improvements in how the AI predicted traffic, how quickly the system responded to changes in traffic conditions, and how efficiently the vehicle navigated through urban environments. We also focused on creating a seamless **user interface (UI)** that would make it easy for users to input their destination and receive optimized routes.
-
----
-
-## Next Steps and Final Deployment
-
-With the core system in place, we are now focused on the final stages of the project:
-
-1. **User Interface Development**: Designing a clean and intuitive UI for users to interact with the navigation system.
-2. **Optimization**: Fine-tuning the system to improve its speed and accuracy in predicting the best routes.
-3. **Deployment and Monitoring**: Ensuring that the system works reliably under different real-world conditions.
-
-We look forward to deploying the system for public use and continuously improving it based on feedback and additional data.
-
----
-
-## Conclusion
-
-The development of the autonomous vehicle navigation system has been a thrilling project, combining AI, real-time data, and innovative routing algorithms. With the help of tools like **[Figma FigJam](https://www.figma.com/board/xwfhCP2XCuN0rcTtno0s83/Welcome-to-FigJam?node-id=0-1)** and **[GitHub Projects - Ahaanv19](https://github.com/users/Ahaanv19/projects/1)**, we have been able to stay organized, collaborate efficiently, and build a robust system that could help make commuting in San Diego more efficient. We are excited for the next steps and will continue to improve and iterate on our solution as we move forward.
-
-Stay tuned for more updates as we move closer to our final deployment!
-
-
+  <p>
+    We’re excited to continue iterating and improving Poway Auto to meet the growing needs of our
+    community. Thanks for following our journey!
+  </p>
+</section>
