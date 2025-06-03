@@ -8,3 +8,5 @@
 
 <a href="https://github.com/Ahaanv19/Poway_Auto_Frontend/issues/28" target="_blank">Daily Routine Documentation</a>
 
+<a href="https://github.com/Ahaanv19/Poway_Auto_Frontend/issues/29" target="_blank">Technical Documntation</a>
+

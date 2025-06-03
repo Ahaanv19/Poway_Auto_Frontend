@@ -5,6 +5,7 @@ title: Deployment Guide
 description: A guide to our deployment
 permalink: /deployment/
 comments: true
+categories: [Installation & Setup]
 ---
 
 
