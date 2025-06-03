@@ -54,6 +54,7 @@ nav: true
       flex-wrap: wrap;
       gap: 15px;
       align-items: center;
+      position: relative;
     }
 
     label {
@@ -220,255 +221,354 @@ nav: true
     .primary-action-btn:hover {
       background-color: #7C3AED;
     }
+
+    .favorites-dropdown {
+      position: absolute;
+      background: white;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 10px;
+      margin-top: 5px;
+      z-index: 999;
+      width: 200px;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+
+    .favorites-dropdown div {
+      padding: 5px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .favorites-dropdown div:hover {
+      background-color: #f0f0f0;
+    }
+
+    .favorites-dropdown button {
+      background: none;
+      border: none;
+      color: red;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
 
-  <h2>Daily Schedule</h2>
+<h2>Daily Schedule</h2>
 
-  <a href="{{ site.baseurl }}/route/" class="trip-link">Get Trip Directions</a>
+<a href="{{ site.baseurl }}/route/" class="trip-link">Get Trip Directions</a>
 
-  <form id="addItemForm">
-    <label for="timeSelect">Time:</label>
-    <select id="timeSelect"></select>
+<form id="addItemForm">
+  <label for="timeSelect">Time:</label>
+  <select id="timeSelect"></select>
 
-    <div>
-      <input type="text" id="startInput" placeholder="Start location" required />
-      <button type="button" class="favorites-btn">⭐ Favorites</button>
-    </div>
+  <div>
+    <input type="text" id="startInput" placeholder="Start location" required />
+    <button type="button" class="favorites-btn" id="startFavBtn">⭐ Favorites</button>
+    <div id="startFavoritesDropdown" class="favorites-dropdown" style="display: none;"></div>
+  </div>
 
-    <div>
-      <input type="text" id="destinationInput" placeholder="Destination" required />
-      <button type="button" class="favorites-btn">⭐ Favorites</button>
-    </div>
+  <div>
+    <input type="text" id="destinationInput" placeholder="Destination" required />
+    <button type="button" class="favorites-btn" id="destFavBtn">⭐ Favorites</button>
+    <div id="destinationFavoritesDropdown" class="favorites-dropdown" style="display: none;"></div>
+  </div>
 
-    <button type="submit" class="add-button">➕ Add Route</button>
-  </form>
+  <button type="submit" class="add-button">➕ Add Route</button>
+</form>
 
-  <table id="scheduleTable">
-    <thead>
-      <tr>
-        <th>Time</th>
-        <th>Routes</th>
-      </tr>
-    </thead>
-    <tbody id="scheduleBody"></tbody>
-  </table>
+<table id="scheduleTable">
+  <thead>
+    <tr>
+      <th>Time</th>
+      <th>Routes</th>
+    </tr>
+  </thead>
+  <tbody id="scheduleBody"></tbody>
+</table>
 
-  <button onclick="updateCurrentHourRoute()" class="primary-action-btn">
-    Show Current Hour Trip
-  </button>
+<button onclick="updateCurrentHourRoute()" class="primary-action-btn">
+  Show Current Hour Trip
+</button>
 
-  <div id="map"></div>
+<div id="map"></div>
 
-  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-  <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
 
-  <script>
-    const scheduleBody = document.getElementById('scheduleBody');
-    const timeSelect = document.getElementById('timeSelect');
-    const addItemForm = document.getElementById('addItemForm');
-    const startInput = document.getElementById('startInput');
-    const destinationInput = document.getElementById('destinationInput');
+<script>
+  const scheduleBody = document.getElementById('scheduleBody');
+  const timeSelect = document.getElementById('timeSelect');
+  const addItemForm = document.getElementById('addItemForm');
+  const startInput = document.getElementById('startInput');
+  const destinationInput = document.getElementById('destinationInput');
 
-    let scheduleData = JSON.parse(localStorage.getItem('dailySchedule')) || {};
+  let scheduleData = JSON.parse(localStorage.getItem('dailySchedule')) || {};
 
-    function formatTime(hour) {
-      const suffix = hour >= 12 ? 'PM' : 'AM';
-      const hour12 = hour % 12 || 12;
-      return `${hour12}:00 ${suffix}`;
-    }
+  function formatTime(hour) {
+    const suffix = hour >= 12 ? 'PM' : 'AM';
+    const hour12 = hour % 12 || 12;
+    return `${hour12}:00 ${suffix}`;
+  }
 
-    function saveSchedule() {
-      localStorage.setItem('dailySchedule', JSON.stringify(scheduleData));
-    }
+  function saveSchedule() {
+    localStorage.setItem('dailySchedule', JSON.stringify(scheduleData));
+  }
 
-    function createRouteElement(hour, route, index) {
-      const li = document.createElement('li');
-      li.textContent = `${route.start} → ${route.destination}`;
+  function createRouteElement(hour, route, index) {
+    const li = document.createElement('li');
+    li.textContent = `${route.start} → ${route.destination}`;
 
-      const actions = document.createElement('span');
-      actions.className = 'route-actions';
+    const actions = document.createElement('span');
+    actions.className = 'route-actions';
 
-      const editBtn = document.createElement('button');
-      editBtn.textContent = 'Edit';
-      editBtn.className = 'edit-btn';
-      editBtn.onclick = () => {
-        startInput.value = route.start;
-        destinationInput.value = route.destination;
-        timeSelect.value = hour;
-        scheduleData[hour].splice(index, 1);
-        if (scheduleData[hour].length === 0) delete scheduleData[hour];
-        saveSchedule();
-        renderSchedule();
-        enableDragAndDrop();
-      };
-
-      const deleteBtn = document.createElement('button');
-      deleteBtn.textContent = 'Delete';
-      deleteBtn.className = 'delete-btn';
-      deleteBtn.onclick = () => {
-        scheduleData[hour].splice(index, 1);
-        if (scheduleData[hour].length === 0) delete scheduleData[hour];
-        saveSchedule();
-        renderSchedule();
-        enableDragAndDrop();
-      };
-
-      actions.appendChild(editBtn);
-      actions.appendChild(deleteBtn);
-      li.appendChild(actions);
-      return li;
-    }
-
-    function renderSchedule() {
-      scheduleBody.innerHTML = '';
-
-      for (let hour = 0; hour < 24; hour++) {
-        const row = document.createElement('tr');
-        const timeCell = document.createElement('td');
-        const slotCell = document.createElement('td');
-
-        timeCell.textContent = formatTime(hour);
-        timeCell.className = 'time-cell';
-        slotCell.className = 'slot';
-        slotCell.id = `slot-${hour}`;
-
-        const ul = document.createElement('ul');
-        if (scheduleData[hour]) {
-          scheduleData[hour].forEach((route, index) => {
-            const li = createRouteElement(hour, route, index);
-            ul.appendChild(li);
-          });
-        }
-
-        slotCell.appendChild(ul);
-        row.appendChild(timeCell);
-        row.appendChild(slotCell);
-        scheduleBody.appendChild(row);
-      }
-    }
-
-    function enableDragAndDrop() {
-      for (let hour = 0; hour < 24; hour++) {
-        const ul = document.getElementById(`slot-${hour}`).querySelector('ul');
-        Sortable.create(ul, {
-          group: 'shared',
-          animation: 150,
-          onEnd: function (evt) {
-            const fromHour = parseInt(evt.from.parentElement.id.split('-')[1]);
-            const toHour = parseInt(evt.to.parentElement.id.split('-')[1]);
-            const [movedItem] = scheduleData[fromHour].splice(evt.oldIndex, 1);
-
-            if (!scheduleData[toHour]) scheduleData[toHour] = [];
-            scheduleData[toHour].splice(evt.newIndex, 0, movedItem);
-            if (scheduleData[fromHour].length === 0) delete scheduleData[fromHour];
-
-            saveSchedule();
-            renderSchedule();
-            enableDragAndDrop();
-          }
-        });
-      }
-    }
-
-    for (let hour = 0; hour < 24; hour++) {
-      const option = document.createElement('option');
-      option.value = hour;
-      option.textContent = formatTime(hour);
-      timeSelect.appendChild(option);
-    }
-
-    addItemForm.onsubmit = (e) => {
-      e.preventDefault();
-      const hour = timeSelect.value;
-      const start = startInput.value.trim();
-      const destination = destinationInput.value.trim();
-      if (!start || !destination) return;
-
-      const route = { start, destination };
-      if (!scheduleData[hour]) scheduleData[hour] = [];
-      scheduleData[hour].push(route);
+    const editBtn = document.createElement('button');
+    editBtn.textContent = 'Edit';
+    editBtn.className = 'edit-btn';
+    editBtn.onclick = () => {
+      startInput.value = route.start;
+      destinationInput.value = route.destination;
+      timeSelect.value = hour;
+      scheduleData[hour].splice(index, 1);
+      if (scheduleData[hour].length === 0) delete scheduleData[hour];
       saveSchedule();
       renderSchedule();
       enableDragAndDrop();
-
-      startInput.value = '';
-      destinationInput.value = '';
     };
 
+    const deleteBtn = document.createElement('button');
+    deleteBtn.textContent = 'Delete';
+    deleteBtn.className = 'delete-btn';
+    deleteBtn.onclick = () => {
+      scheduleData[hour].splice(index, 1);
+      if (scheduleData[hour].length === 0) delete scheduleData[hour];
+      saveSchedule();
+      renderSchedule();
+      enableDragAndDrop();
+    };
+
+    actions.appendChild(editBtn);
+    actions.appendChild(deleteBtn);
+    li.appendChild(actions);
+    return li;
+  }
+
+  function renderSchedule() {
+    scheduleBody.innerHTML = '';
+
+    for (let hour = 0; hour < 24; hour++) {
+      const row = document.createElement('tr');
+      const timeCell = document.createElement('td');
+      const slotCell = document.createElement('td');
+
+      timeCell.textContent = formatTime(hour);
+      timeCell.className = 'time-cell';
+      slotCell.className = 'slot';
+      slotCell.id = `slot-${hour}`;
+
+      const ul = document.createElement('ul');
+      if (scheduleData[hour]) {
+        scheduleData[hour].forEach((route, index) => {
+          const li = createRouteElement(hour, route, index);
+          ul.appendChild(li);
+        });
+      }
+
+      slotCell.appendChild(ul);
+      row.appendChild(timeCell);
+      row.appendChild(slotCell);
+      scheduleBody.appendChild(row);
+    }
+  }
+
+  function enableDragAndDrop() {
+    for (let hour = 0; hour < 24; hour++) {
+      const ul = document.getElementById(`slot-${hour}`).querySelector('ul');
+      Sortable.create(ul, {
+        group: 'shared',
+        animation: 150,
+        onEnd: function (evt) {
+          const fromHour = parseInt(evt.from.parentElement.id.split('-')[1]);
+          const toHour = parseInt(evt.to.parentElement.id.split('-')[1]);
+          const [movedItem] = scheduleData[fromHour].splice(evt.oldIndex, 1);
+
+          if (!scheduleData[toHour]) scheduleData[toHour] = [];
+          scheduleData[toHour].splice(evt.newIndex, 0, movedItem);
+          if (scheduleData[fromHour].length === 0) delete scheduleData[fromHour];
+
+          saveSchedule();
+          renderSchedule();
+          enableDragAndDrop();
+        }
+      });
+    }
+  }
+
+  for (let hour = 0; hour < 24; hour++) {
+    const option = document.createElement('option');
+    option.value = hour;
+    option.textContent = formatTime(hour);
+    timeSelect.appendChild(option);
+  }
+
+  addItemForm.onsubmit = (e) => {
+    e.preventDefault();
+    const hour = timeSelect.value;
+    const start = startInput.value.trim();
+    const destination = destinationInput.value.trim();
+    if (!start || !destination) return;
+
+    const route = { start, destination };
+    if (!scheduleData[hour]) scheduleData[hour] = [];
+    scheduleData[hour].push(route);
+    saveSchedule();
     renderSchedule();
     enableDragAndDrop();
 
-    // ========== Leaflet Map Setup ==========
+    startInput.value = '';
+    destinationInput.value = '';
+  };
 
-    const map = L.map('map').setView([37.7749, -122.4194], 10); // Default to SF
+  renderSchedule();
+  enableDragAndDrop();
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 19,
-    }).addTo(map);
+  const map = L.map('map').setView([37.7749, -122.4194], 10);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
 
-    let currentRouteControl = null;
+  let currentRouteControl = null;
 
-    async function geocodePlace(place) {
-      const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(place)}`);
-      const data = await response.json();
-      return data[0];
-    }
+  async function geocodePlace(place) {
+    const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(place)}`);
+    const data = await response.json();
+    return data[0];
+  }
 
-    async function drawRoute(startName, destName) {
-      try {
-        const [start, dest] = await Promise.all([
-          geocodePlace(startName),
-          geocodePlace(destName)
-        ]);
+  async function drawRoute(startName, destName) {
+    try {
+      const [start, dest] = await Promise.all([
+        geocodePlace(startName),
+        geocodePlace(destName)
+      ]);
 
-        if (!start || !dest) {
-          alert("Could not find one or both locations.");
-          return;
-        }
-
-        if (currentRouteControl) map.removeControl(currentRouteControl);
-
-        const startLatLng = L.latLng(parseFloat(start.lat), parseFloat(start.lon));
-        const destLatLng = L.latLng(parseFloat(dest.lat), parseFloat(dest.lon));
-
-        currentRouteControl = L.Routing.control({
-          waypoints: [startLatLng, destLatLng],
-          routeWhileDragging: false,
-          addWaypoints: false,
-          draggableWaypoints: false,
-          show: false
-        }).addTo(map);
-
-        map.fitBounds(L.latLngBounds([startLatLng, destLatLng]), { padding: [50, 50] });
-
-      } catch (error) {
-        console.error("Routing error:", error);
-        alert("An error occurred while displaying the route.");
+      if (!start || !dest) {
+        alert("Could not find one or both locations.");
+        return;
       }
+
+      if (currentRouteControl) map.removeControl(currentRouteControl);
+
+      const startLatLng = L.latLng(parseFloat(start.lat), parseFloat(start.lon));
+      const destLatLng = L.latLng(parseFloat(dest.lat), parseFloat(dest.lon));
+
+      currentRouteControl = L.Routing.control({
+        waypoints: [startLatLng, destLatLng],
+        routeWhileDragging: false,
+        addWaypoints: false,
+        draggableWaypoints: false,
+        show: false
+      }).addTo(map);
+
+      map.fitBounds(L.latLngBounds([startLatLng, destLatLng]), { padding: [50, 50] });
+
+    } catch (error) {
+      console.error("Routing error:", error);
+      alert("An error occurred while displaying the route.");
     }
+  }
 
-    function updateCurrentHourRoute() {
-      const now = new Date();
-      const currentHour = now.getHours();
-      const routes = scheduleData[currentHour];
+  function updateCurrentHourRoute() {
+    const now = new Date();
+    const currentHour = now.getHours();
+    const routes = scheduleData[currentHour];
 
-      if (routes && routes.length > 0) {
-        const { start, destination } = routes[0];
-        drawRoute(start, destination);
-      } else if (currentRouteControl) {
-        map.removeControl(currentRouteControl);
-        currentRouteControl = null;
-      }
+    if (routes && routes.length > 0) {
+      const { start, destination } = routes[0];
+      drawRoute(start, destination);
+    } else if (currentRouteControl) {
+      map.removeControl(currentRouteControl);
+      currentRouteControl = null;
     }
+  }
 
-    updateCurrentHourRoute();
-    setInterval(updateCurrentHourRoute, 60 * 1000); // update every minute
+  updateCurrentHourRoute();
+  setInterval(updateCurrentHourRoute, 60 * 1000);
 
-  </script>
+  // ===== Favorites Functionality =====
+  const startFavBtn = document.getElementById('startFavBtn');
+  const destFavBtn = document.getElementById('destFavBtn');
+  const startDropdown = document.getElementById('startFavoritesDropdown');
+  const destDropdown = document.getElementById('destinationFavoritesDropdown');
+
+  function getFavorites() {
+    return JSON.parse(localStorage.getItem('favorites') || '[]');
+  }
+
+  function setFavorites(favs) {
+    localStorage.setItem('favorites', JSON.stringify(favs));
+  }
+
+  function renderFavorites(dropdown, input) {
+    const favs = getFavorites();
+    dropdown.innerHTML = '';
+    favs.forEach((fav, index) => {
+      const div = document.createElement('div');
+      div.textContent = fav;
+
+      div.onclick = () => {
+        input.value = fav;
+        dropdown.style.display = 'none';
+      };
+
+      const del = document.createElement('button');
+      del.textContent = '✖';
+      del.onclick = (e) => {
+        e.stopPropagation();
+        favs.splice(index, 1);
+        setFavorites(favs);
+        renderFavorites(dropdown, input);
+      };
+
+      div.appendChild(del);
+      dropdown.appendChild(div);
+    });
+
+    if (favs.length === 0) {
+      dropdown.innerHTML = '<em>No favorites yet.</em>';
+    }
+  }
+
+  startFavBtn.onclick = () => {
+    const val = startInput.value.trim();
+    const favs = getFavorites();
+    if (val && !favs.includes(val)) {
+      favs.push(val);
+      setFavorites(favs);
+    }
+    renderFavorites(startDropdown, startInput);
+    startDropdown.style.display = startDropdown.style.display === 'none' ? 'block' : 'none';
+    destDropdown.style.display = 'none';
+  };
+
+  destFavBtn.onclick = () => {
+    const val = destinationInput.value.trim();
+    const favs = getFavorites();
+    if (val && !favs.includes(val)) {
+      favs.push(val);
+      setFavorites(favs);
+    }
+    renderFavorites(destDropdown, destinationInput);
+    destDropdown.style.display = destDropdown.style.display === 'none' ? 'block' : 'none';
+    startDropdown.style.display = 'none';
+  };
+
+  window.addEventListener('click', (e) => {
+    if (!startFavBtn.contains(e.target)) startDropdown.style.display = 'none';
+    if (!destFavBtn.contains(e.target)) destDropdown.style.display = 'none';
+  });
+</script>
 
 </body>
 </html>
-
-
