@@ -7,100 +7,144 @@ nav: true
 ---
 
 <div class="report-container">
-    <h2 class="title">🚦 Report Traffic Incident</h2>
-    <form id="incidentForm">
-      <input type="text" id="location" placeholder="Enter Street or Intersection" required>
-      <input type="text" id="type" placeholder="Type of Incident (e.g., accident, blockage)" required>
-      <textarea id="details" placeholder="Optional details..." rows="3"></textarea>
-      <button type="submit">Submit Incident</button>
-    </form>
-    <div id="statusMessage"></div>
-  </div>
-  
-  <hr>
-  
-  <div class="incidents-display">
-    <h3>📍 Recent Incidents</h3>
-    <ul id="incidentList"></ul>
-  </div>
-  
-  <style>
-    .report-container, .incidents-display {
-      max-width: 600px;
-      margin: 20px auto;
-      background: #f9f9f9;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.1);
-      font-family: Arial, sans-serif;
-    }
-  
-    input, textarea {
-      width: 100%;
-      margin: 8px 0;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-    }
-  
-    button {
-      background-color: #007bff;
-      color: white;
-      border: none;
-      padding: 12px;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-  
-    button:hover {
-      background-color: #0056b3;
-    }
-  
-    ul {
-      list-style-type: none;
-      padding-left: 0;
-    }
-  
-    li {
-      margin: 8px 0;
-      background: #eee;
-      padding: 10px;
-      border-radius: 8px;
-    }
-  </style>
-  
-  <script>
-  document.getElementById('incidentForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const location = document.getElementById('location').value;
-    const type = document.getElementById('type').value;
-    const details = document.getElementById('details').value;
-  
+  <h2 class="title">🚦 Report Traffic Incident</h2>
+  <form id="incidentForm">
+    <input type="text" id="location" placeholder="Enter Street or Intersection" required>
+    <input type="text" id="type" placeholder="Type of Incident (e.g., accident, blockage)" required>
+    <textarea id="details" placeholder="Optional details..." rows="3"></textarea>
+    <button type="submit">Submit Incident</button>
+    <div class="form-feedback" id="formFeedback"></div>
+  </form>
+</div>
+
+<hr>
+
+<div class="incidents-display">
+  <h3>📍 Recent Incidents</h3>
+  <div id="loading" style="display: none;">Loading incidents...</div>
+  <ul id="incidentList"></ul>
+</div>
+
+<style>
+  .report-container, .incidents-display {
+    max-width: 600px;
+    margin: 20px auto;
+    background: #f9f9f9;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+    font-family: Arial, sans-serif;
+  }
+
+  input, textarea {
+    width: 100%;
+    margin: 8px 0;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+  }
+
+  button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+
+  button:hover {
+    background-color: #0056b3;
+  }
+
+  ul {
+    list-style-type: none;
+    padding-left: 0;
+  }
+
+  li {
+    margin: 8px 0;
+    background: #eee;
+    padding: 10px;
+    border-radius: 8px;
+  }
+
+  .form-feedback {
+    margin-top: 10px;
+    color: #d9534f;
+  }
+</style>
+
+<script>
+document.getElementById('incidentForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  const location = document.getElementById('location').value.trim();
+  const type = document.getElementById('type').value.trim();
+  const details = document.getElementById('details').value.trim();
+  const feedback = document.getElementById('formFeedback');
+
+  feedback.textContent = '';
+  feedback.style.color = '#d9534f';
+
+  if (!location || !type) {
+    feedback.textContent = "Location and type are required.";
+    return;
+  }
+
+  try {
     const res = await fetch('https://autonomous.opencodingsociety.com/api/incidents', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ location, type, details })
     });
-  
+
     const data = await res.json();
-    document.getElementById('statusMessage').innerText = data.message || 'Incident reported.';
-    document.getElementById('incidentForm').reset();
-    loadIncidents(); // refresh list
-  });
-  
-  async function loadIncidents() {
+
+    if (!res.ok) {
+      feedback.textContent = data.error || "Something went wrong.";
+    } else {
+      feedback.style.color = 'green';
+      feedback.textContent = data.message;
+      document.getElementById('incidentForm').reset();
+      loadIncidents();
+    }
+  } catch (err) {
+    feedback.textContent = "Server error. Please try again.";
+  }
+});
+
+async function loadIncidents() {
+  const loading = document.getElementById('loading');
+  const list = document.getElementById('incidentList');
+
+  list.innerHTML = '';
+  loading.style.display = 'block';
+
+  try {
     const res = await fetch('https://autonomous.opencodingsociety.com/api/incidents');
     const data = await res.json();
-  
-    const list = document.getElementById('incidentList');
-    list.innerHTML = '';
-    data.forEach((incident) => {
-      list.innerHTML += `<li><strong>${incident.type}</strong> at <em>${incident.location}</em><br>${incident.details || ''}</li>`;
-    });
+    loading.style.display = 'none';
+
+    if (data.length === 0) {
+      list.innerHTML = "<li>No incidents reported yet.</li>";
+    } else {
+      data.forEach((incident) => {
+        list.innerHTML += `<li>
+          <strong>${incident.type}</strong> at <em>${incident.location}</em><br>
+          ${incident.details || ''}
+        </li>`;
+      });
+    }
+  } catch (err) {
+    loading.style.display = 'none';
+    list.innerHTML = "<li>Error loading incidents. Please try again later.</li>";
   }
-  
-  loadIncidents();
-  </script>
+}
+
+loadIncidents();
+</script>
+
   
   
   
