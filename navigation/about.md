@@ -8,92 +8,62 @@ menu: nav/home.html
 categories: [About/Ideation]
 ---
 
+
 <section class="max-w-5xl mx-auto px-6 py-12 prose prose-lg dark:prose-invert">
   <h1>About Poway Auto</h1>
 
   <p>
-    <strong>Poway Auto</strong> is a full-stack intelligent routing platform designed to enhance daily commutes
-    in Poway, California through real-time data, community reporting, and AI-driven route optimization.
-    Our goal is to make transportation more efficient, reliable, and adaptive.
+    <strong>Poway Auto</strong> is an intelligent, community-driven navigation platform created to enhance commuting experiences in Poway, California.
+    Whether you're headed to school, work, or anywhere in between, Poway Auto helps you travel smarter by combining real-time traffic data,
+    AI-powered route suggestions, and live community hazard reports.
   </p>
 
-  <h2>🌱 Our Development Journey</h2>
-
+  <h2>Our Mission</h2>
   <p>
-    This project began as a vision to help commuters navigate traffic congestion using smarter tools.
-    Over time, it evolved into a complete routing system with real-time data visualization, predictive modeling,
-    and user-focused design. Here's how we built it:
+    Our mission is to reduce traffic frustration and improve road safety by delivering precise, adaptive, and sustainable navigation tools for everyday commuters.
+    We believe technology should respond to local needs — and that starts with empowering communities like Poway to co-create solutions that work for them.
   </p>
 
-  <h3>🧠 Phase 1: Ideation and Planning</h3>
+  <h2>Why Poway?</h2>
   <p>
-    Using <a href="https://www.figma.com/board/xwfhCP2XCuN0rcTtno0s83/Welcome-to-FigJam?node-id=0-1" target="_blank">Figma FigJam</a>,
-    we brainstormed features and created system diagrams for our platform. We focused on key user needs:
-    accurate travel times, customizable routines, and crowd-sourced hazard alerts.
+    Poway is a growing city with unique traffic patterns, school zones, and commuting demands. Existing apps often ignore small-town nuances — that's why we built
+    a platform tailored to local data, user input, and real-world road conditions here in our hometown.
   </p>
 
-  <h3>📋 Phase 2: Project Management</h3>
-  <p>
-    We used <a href="https://github.com/users/Ahaanv19/projects/1" target="_blank">GitHub Projects</a>
-    to divide development into milestones:
-  </p>
+  <h2>What Makes Poway Auto Different?</h2>
   <ul>
-    <li><strong>Data Collection:</strong> Pulling real-time traffic feeds and Poway open data</li>
-    <li><strong>Modeling:</strong> Building an ML model to predict congestion based on patterns</li>
-    <li><strong>Frontend UI:</strong> Designing intuitive interfaces for input, feedback, and live maps</li>
+    <li><strong>Hyperlocal Intelligence:</strong> Focused on Poway streets, hazards, and school routes</li>
+    <li><strong>Community Reporting:</strong> Drivers can report accidents, hazards, or delays in real time</li>
+    <li><strong>Smart Scheduling:</strong> Personalized routines to match your daily travel habits</li>
+    <li><strong>Predictive Routing:</strong> Uses AI to avoid traffic before it builds up</li>
   </ul>
 
-  <h3>🗺️ Phase 3: Data + Mapping</h3>
+  <h2>Who We Are</h2>
   <p>
-    We combined Leaflet maps with satellite overlays and built a real-time hazard display system.
-    Users can report hazards, and their input is stored and shared with others on the map.
+    Poway Auto was created by a student-led team passionate about transportation, machine learning, and civic innovation. We're combining computer science
+    with real-world problem-solving to build something that truly benefits our community.
   </p>
 
-  <h3>🤖 Phase 4: Machine Learning Integration</h3>
-  <p>
-    Our predictive routing engine uses <code>scikit-learn</code> to analyze traffic trends and deliver
-    smarter routes based on time of day, historical congestion, and hazards. This ML layer powers the
-    smart decision-making behind every route generated.
-  </p>
-
-  <h3>🔄 Phase 5: Simulation & Testing</h3>
-  <p>
-    We ran scenario-based tests using synthetic and real data to refine our predictions.
-    This helped us ensure our backend logic was reliable under different traffic conditions.
-  </p>
-
-  <h2>🚀 Current Features</h2>
   <ul>
-    <li><strong>Smart Route Finder:</strong> Uses ML to suggest fastest paths</li>
-    <li><strong>Daily Routine Planner:</strong> Automates scheduling for recurring trips</li>
-    <li><strong>Live Hazard Reporter:</strong> Publicly viewable hazard pins on map</li>
-    <li><strong>Favorite Locations:</strong> Quick access to saved routes</li>
+    <li><strong>Lead Developer:</strong> Ahaan Vaidyanathan</li>
+    <li><strong>Design & UX:</strong> Collaborative work on Figma</li>
+    <li><strong>Backend & AI:</strong> Flask, Scikit-learn, and REST API integration</li>
+    <li><strong>Testing & Feedback:</strong> Students, teachers, and local residents</li>
   </ul>
 
-  <h2>🧭 What’s Next?</h2>
-  <ol>
-    <li>Finalize UI for mobile and desktop users</li>
-    <li>Optimize backend response times</li>
-    <li>Integrate weather and event data for added accuracy</li>
-    <li>Prepare cloud deployment with Docker and CI/CD</li>
-  </ol>
+  <h2>Join Us</h2>
+  <p>
+    Whether you're a Powegian commuter, a curious developer, or just someone who wants to improve transportation in your community — we invite you to be part of our journey.
+    Report hazards, share feedback, or contribute ideas. Poway Auto is for everyone.
+  </p>
 
-  <h2>📎 Project Tools</h2>
+  <h2>Helpful Links</h2>
   <ul>
-    <li>Frontend: TailwindCSS, HTML, JavaScript, Leaflet</li>
-    <li>Backend: Flask, Python, REST APIs, SQLAlchemy</li>
-    <li>ML: Pandas, Scikit-learn, custom-trained models</li>
-    <li>Collaboration: GitHub, Figma, Google Docs</li>
-  </ul>
-
-  <h2>🌐 Links</h2>
-  <ul>
-    <li><a href="https://www.figma.com/board/xwfhCP2XCuN0rcTtno0s83/Welcome-to-FigJam?node-id=0-1" target="_blank">Figma Planning Board</a></li>
-    <li><a href="https://github.com/users/Ahaanv19/projects/1" target="_blank">GitHub Project Tracker</a></li>
+    <li><a href="https://github.com/users/Ahaanv19/projects/1" target="_blank">Project Board on GitHub</a></li>
+    <li><a href="https://www.figma.com/board/xwfhCP2XCuN0rcTtno0s83/Welcome-to-FigJam?node-id=0-1" target="_blank">Figma Design Workspace</a></li>
   </ul>
 
   <p>
-    We’re excited to continue iterating and improving Poway Auto to meet the growing needs of our
-    community. Thanks for following our journey!
+    Thank you for supporting local innovation. We're just getting started 🚗
   </p>
 </section>
