@@ -118,7 +118,7 @@ menu: nav/home.html
       <a href="{{site.baseurl}}/favoriteLocations/" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-800">⭐ Favorite Locations</a>
       <a href="{{site.baseurl}}/routine/" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-800">📅 Daily Routine</a>
       <a href="{{site.baseurl}}/hazard/" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-800">⚠️ Report a Hazard</a>
-      <a href="{{site.baseurl}}/tb/" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-800">Local Events in Poway</a>
+      <a href="{{site.baseurl}}/event/" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-800">🎫 Local Events in Poway</a>
     </div>
   </details>
 </div>
