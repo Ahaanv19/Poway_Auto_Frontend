@@ -115,7 +115,6 @@ menu: nav/home.html
     <div class="mt-2 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-md shadow-lg text-sm text-gray-700 dark:text-gray-200">
       <a href="{{site.baseurl}}/verify/" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-800">✅ Location Verification</a>
       <a href="{{site.baseurl}}/route/" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-800">🗺️ Find Best Route</a>
-      <a href="{{site.baseurl}}/favoriteLocations/" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-800">⭐ Favorite Locations</a>
       <a href="{{site.baseurl}}/routine/" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-800">📅 Daily Routine</a>
       <a href="{{site.baseurl}}/hazard/" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-800">⚠️ Report a Hazard</a>
       <a href="{{site.baseurl}}/event/" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-800">🎫 Local Events in Poway</a>
