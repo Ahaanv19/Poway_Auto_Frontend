@@ -543,31 +543,40 @@ nav: true
   startFavBtn.onclick = () => {
     const val = startInput.value.trim();
     const favs = getFavorites();
-    if (val && !favs.includes(val)) {
-      favs.push(val);
-      setFavorites(favs);
+
+    if (val) {
+      if (!favs.includes(val)) {
+        if (confirm(`Add "${val}" to favorites?`)) {
+          favs.push(val);
+          setFavorites(favs);
+        }
+      }
+      startDropdown.style.display = 'none';
+    } else {
+      renderFavorites(startDropdown, startInput);
+      startDropdown.style.display = startDropdown.style.display === 'none' ? 'block' : 'none';
+      destDropdown.style.display = 'none';
     }
-    renderFavorites(startDropdown, startInput);
-    startDropdown.style.display = startDropdown.style.display === 'none' ? 'block' : 'none';
-    destDropdown.style.display = 'none';
   };
 
   destFavBtn.onclick = () => {
     const val = destinationInput.value.trim();
     const favs = getFavorites();
-    if (val && !favs.includes(val)) {
-      favs.push(val);
-      setFavorites(favs);
-    }
-    renderFavorites(destDropdown, destinationInput);
-    destDropdown.style.display = destDropdown.style.display === 'none' ? 'block' : 'none';
-    startDropdown.style.display = 'none';
-  };
 
-  window.addEventListener('click', (e) => {
-    if (!startFavBtn.contains(e.target)) startDropdown.style.display = 'none';
-    if (!destFavBtn.contains(e.target)) destDropdown.style.display = 'none';
-  });
+    if (val) {
+      if (!favs.includes(val)) {
+        if (confirm(`Add "${val}" to favorites?`)) {
+          favs.push(val);
+          setFavorites(favs);
+        }
+      }
+      destDropdown.style.display = 'none';
+    } else {
+      renderFavorites(destDropdown, destinationInput);
+      destDropdown.style.display = destDropdown.style.display === 'none' ? 'block' : 'none';
+      startDropdown.style.display = 'none';
+    }
+  };
 </script>
 
 </body>
