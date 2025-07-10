@@ -280,6 +280,12 @@ nav: true
   <button type="submit" class="add-button">➕ Add Route</button>
 </form>
 
+<div style="display: flex; align-items: center; justify-content: center; gap: 10px; margin: 20px 0;">
+  <button id="prevDayBtn" class="primary-action-btn">←</button>
+  <span id="currentDayLabel" style="font-weight: bold; font-size: 18px;">Monday</span>
+  <button id="nextDayBtn" class="primary-action-btn">→</button>
+</div>
+
 <table id="scheduleTable">
   <thead>
     <tr>
@@ -306,7 +312,28 @@ nav: true
   const startInput = document.getElementById('startInput');
   const destinationInput = document.getElementById('destinationInput');
 
-  let scheduleData = JSON.parse(localStorage.getItem('dailySchedule')) || {};
+  const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+  let currentDayIndex = new Date().getDay() - 1; // JavaScript: Sunday is 0
+  if (currentDayIndex < 0) currentDayIndex = 6; // Wrap around to Saturday
+
+  const currentDayLabel = document.getElementById('currentDayLabel');
+  const prevDayBtn = document.getElementById('prevDayBtn');
+  const nextDayBtn = document.getElementById('nextDayBtn');
+
+  function getWeeklySchedule() {
+    return JSON.parse(localStorage.getItem('dailyScheduleByDay')) || {};
+  }
+
+  function setWeeklySchedule(schedule) {
+    localStorage.setItem('dailyScheduleByDay', JSON.stringify(schedule));
+  }
+
+  function getCurrentDayName() {
+    return daysOfWeek[currentDayIndex];
+  }
+
+  let weeklySchedule = getWeeklySchedule();
+  let scheduleData = weeklySchedule[getCurrentDayName()] || {};
 
   function formatTime(hour) {
     const suffix = hour >= 12 ? 'PM' : 'AM';
@@ -315,7 +342,8 @@ nav: true
   }
 
   function saveSchedule() {
-    localStorage.setItem('dailySchedule', JSON.stringify(scheduleData));
+    weeklySchedule[getCurrentDayName()] = scheduleData;
+    setWeeklySchedule(weeklySchedule);
   }
 
   function createRouteElement(hour, route, index) {
@@ -543,31 +571,61 @@ nav: true
   startFavBtn.onclick = () => {
     const val = startInput.value.trim();
     const favs = getFavorites();
-    if (val && !favs.includes(val)) {
-      favs.push(val);
-      setFavorites(favs);
+
+    if (val) {
+      if (!favs.includes(val)) {
+        if (confirm(`Add "${val}" to favorites?`)) {
+          favs.push(val);
+          setFavorites(favs);
+        }
+      }
+      startDropdown.style.display = 'none';
+    } else {
+      renderFavorites(startDropdown, startInput);
+      startDropdown.style.display = startDropdown.style.display === 'none' ? 'block' : 'none';
+      destDropdown.style.display = 'none';
     }
-    renderFavorites(startDropdown, startInput);
-    startDropdown.style.display = startDropdown.style.display === 'none' ? 'block' : 'none';
-    destDropdown.style.display = 'none';
   };
 
   destFavBtn.onclick = () => {
     const val = destinationInput.value.trim();
     const favs = getFavorites();
-    if (val && !favs.includes(val)) {
-      favs.push(val);
-      setFavorites(favs);
+
+    if (val) {
+      if (!favs.includes(val)) {
+        if (confirm(`Add "${val}" to favorites?`)) {
+          favs.push(val);
+          setFavorites(favs);
+        }
+      }
+      destDropdown.style.display = 'none';
+    } else {
+      renderFavorites(destDropdown, destinationInput);
+      destDropdown.style.display = destDropdown.style.display === 'none' ? 'block' : 'none';
+      startDropdown.style.display = 'none';
     }
-    renderFavorites(destDropdown, destinationInput);
-    destDropdown.style.display = destDropdown.style.display === 'none' ? 'block' : 'none';
-    startDropdown.style.display = 'none';
   };
 
-  window.addEventListener('click', (e) => {
-    if (!startFavBtn.contains(e.target)) startDropdown.style.display = 'none';
-    if (!destFavBtn.contains(e.target)) destDropdown.style.display = 'none';
-  });
+  function updateDayView() {
+    currentDayLabel.textContent = getCurrentDayName();
+    weeklySchedule = getWeeklySchedule();
+    scheduleData = weeklySchedule[getCurrentDayName()] || {};
+    renderSchedule();
+    enableDragAndDrop();
+  }
+
+  prevDayBtn.onclick = () => {
+    currentDayIndex = (currentDayIndex + 6) % 7;
+    updateDayView();
+  };
+
+  nextDayBtn.onclick = () => {
+    currentDayIndex = (currentDayIndex + 1) % 7;
+    updateDayView();
+  };
+
+  updateDayView(); // Initialize view on page load
+
 </script>
 
 </body>
