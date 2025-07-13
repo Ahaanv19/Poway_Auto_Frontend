@@ -16,7 +16,7 @@ nav: true
   <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
   <style>
-    body {
+   body {
       font-family: Arial, sans-serif;
       padding: 20px;
       margin: 0;
@@ -98,6 +98,20 @@ nav: true
       background-color: #059669;
     }
 
+    .favorites-dropdown {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: white;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      z-index: 10;
+      max-height: 200px;
+      overflow-y: auto;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
     .route-actions {
       display: flex;
       gap: 5px;
@@ -126,6 +140,15 @@ nav: true
 
     .route-actions .delete-btn:hover {
       background-color: #c82333;
+    }
+
+    .route-actions .navigate-btn {
+      background-color: #007bff;
+      color: white;
+    }
+
+    .route-actions .navigate-btn:hover {
+      background-color: #0056b3;
     }
 
     table {
@@ -206,74 +229,29 @@ nav: true
       border-radius: 12px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
-
-    .primary-action-btn {
-      background-color: #9333EA;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      padding: 10px 20px;
-      font-size: 14px;
-      transition: background-color 0.2s ease;
-      margin: 15px 0;
-    }
-
-    .primary-action-btn:hover {
-      background-color: #7C3AED;
-    }
-
-    .favorites-dropdown {
-      position: absolute;
-      background: white;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      padding: 10px;
-      margin-top: 5px;
-      z-index: 999;
-      width: 200px;
-      max-height: 200px;
-      overflow-y: auto;
-    }
-
-    .favorites-dropdown div {
-      padding: 5px;
-      cursor: pointer;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .favorites-dropdown div:hover {
-      background-color: #f0f0f0;
-    }
-
-    .favorites-dropdown button {
-      background: none;
-      border: none;
-      color: red;
-      cursor: pointer;
-    }
   </style>
 </head>
 <body>
 
 <h2>Daily Schedule</h2>
 
-<a href="{{ site.baseurl }}/route/" class="trip-link">Get Trip Directions</a>
+
 
 <form id="addItemForm">
   <label for="timeSelect">Time:</label>
   <select id="timeSelect"></select>
 
-  <div>
+  <div style="position: relative;">
     <input type="text" id="startInput" placeholder="Start location" required />
-    <button type="button" class="favorites-btn" id="startFavBtn">⭐ Favorites</button>
+    <button type="button" class="favorites-btn" id="addStartFavBtn">➕ Add to Favorites</button>
+    <button type="button" class="favorites-btn" id="showStartFavBtn">⭐ Favorites</button>
     <div id="startFavoritesDropdown" class="favorites-dropdown" style="display: none;"></div>
   </div>
 
-  <div>
+  <div style="position: relative;">
     <input type="text" id="destinationInput" placeholder="Destination" required />
-    <button type="button" class="favorites-btn" id="destFavBtn">⭐ Favorites</button>
+    <button type="button" class="favorites-btn" id="addDestFavBtn">➕ Add to Favorites</button>
+    <button type="button" class="favorites-btn" id="showDestFavBtn">⭐ Favorites</button>
     <div id="destinationFavoritesDropdown" class="favorites-dropdown" style="display: none;"></div>
   </div>
 
@@ -312,13 +290,25 @@ nav: true
   const startInput = document.getElementById('startInput');
   const destinationInput = document.getElementById('destinationInput');
 
+  const addStartFavBtn = document.getElementById('addStartFavBtn');
+  const addDestFavBtn = document.getElementById('addDestFavBtn');
+  const showStartFavBtn = document.getElementById('showStartFavBtn');
+  const showDestFavBtn = document.getElementById('showDestFavBtn');
+
+  const startFavoritesDropdown = document.getElementById('startFavoritesDropdown');
+  const destinationFavoritesDropdown = document.getElementById('destinationFavoritesDropdown');
+
   const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-  let currentDayIndex = new Date().getDay() - 1; // JavaScript: Sunday is 0
-  if (currentDayIndex < 0) currentDayIndex = 6; // Wrap around to Saturday
+  let currentDayIndex = new Date().getDay() - 1;
+  if (currentDayIndex < 0) currentDayIndex = 6;
 
   const currentDayLabel = document.getElementById('currentDayLabel');
   const prevDayBtn = document.getElementById('prevDayBtn');
   const nextDayBtn = document.getElementById('nextDayBtn');
+
+  function getCurrentDayName() {
+    return daysOfWeek[currentDayIndex];
+  }
 
   function getWeeklySchedule() {
     return JSON.parse(localStorage.getItem('dailyScheduleByDay')) || {};
@@ -328,9 +318,57 @@ nav: true
     localStorage.setItem('dailyScheduleByDay', JSON.stringify(schedule));
   }
 
-  function getCurrentDayName() {
-    return daysOfWeek[currentDayIndex];
+  function getFavorites(type) {
+    return JSON.parse(localStorage.getItem(`${type}Favorites`)) || [];
   }
+
+  function addFavorite(type, value) {
+    let favorites = getFavorites(type);
+    if (!favorites.includes(value)) {
+      favorites.push(value);
+      localStorage.setItem(`${type}Favorites`, JSON.stringify(favorites));
+      alert(`Added "${value}" to ${type} favorites.`);
+    }
+  }
+
+  function showFavorites(dropdown, type, inputEl) {
+    const favorites = getFavorites(type);
+    dropdown.innerHTML = '';
+    dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+    favorites.forEach(item => {
+      const div = document.createElement('div');
+      div.textContent = item;
+      div.style.cursor = 'pointer';
+      div.style.padding = '6px 10px';
+      div.style.borderBottom = '1px solid #eee';
+      div.onclick = () => {
+        inputEl.value = item;
+        dropdown.style.display = 'none';
+      };
+      dropdown.appendChild(div);
+    });
+    if (favorites.length === 0) {
+      dropdown.innerHTML = '<div style="padding: 8px; color: #666;">No favorites yet</div>';
+    }
+  }
+
+  addStartFavBtn.onclick = () => {
+    const val = startInput.value.trim();
+    if (val) addFavorite('start', val);
+  };
+
+  addDestFavBtn.onclick = () => {
+    const val = destinationInput.value.trim();
+    if (val) addFavorite('destination', val);
+  };
+
+  showStartFavBtn.onclick = () => {
+    showFavorites(startFavoritesDropdown, 'start', startInput);
+  };
+
+  showDestFavBtn.onclick = () => {
+    showFavorites(destinationFavoritesDropdown, 'destination', destinationInput);
+  };
 
   let weeklySchedule = getWeeklySchedule();
   let scheduleData = weeklySchedule[getCurrentDayName()] || {};
@@ -346,12 +384,40 @@ nav: true
     setWeeklySchedule(weeklySchedule);
   }
 
+  function loadDay(dayIndex) {
+    currentDayIndex = dayIndex;
+    currentDayLabel.textContent = getCurrentDayName();
+    weeklySchedule = getWeeklySchedule();
+    scheduleData = weeklySchedule[getCurrentDayName()] || {};
+    renderSchedule();
+    enableDragAndDrop();
+  }
+
+  prevDayBtn.onclick = () => {
+    currentDayIndex = (currentDayIndex - 1 + 7) % 7;
+    loadDay(currentDayIndex);
+  };
+
+  nextDayBtn.onclick = () => {
+    currentDayIndex = (currentDayIndex + 1) % 7;
+    loadDay(currentDayIndex);
+  };
+
   function createRouteElement(hour, route, index) {
     const li = document.createElement('li');
     li.textContent = `${route.start} → ${route.destination}`;
 
     const actions = document.createElement('span');
     actions.className = 'route-actions';
+
+    const navBtn = document.createElement('button');
+    navBtn.textContent = 'Navigate';
+    navBtn.className = 'navigate-btn';
+    navBtn.onclick = () => {
+      const url = `{{ site.baseurl }}/route/?origin=${encodeURIComponent(route.start)}&destination=${encodeURIComponent(route.destination)}&mode=driving`;
+      window.location.href = url;
+    };
+    actions.appendChild(navBtn);
 
     const editBtn = document.createElement('button');
     editBtn.textContent = 'Edit';
@@ -366,6 +432,7 @@ nav: true
       renderSchedule();
       enableDragAndDrop();
     };
+    actions.appendChild(editBtn);
 
     const deleteBtn = document.createElement('button');
     deleteBtn.textContent = 'Delete';
@@ -377,16 +444,14 @@ nav: true
       renderSchedule();
       enableDragAndDrop();
     };
-
-    actions.appendChild(editBtn);
     actions.appendChild(deleteBtn);
+
     li.appendChild(actions);
     return li;
   }
 
   function renderSchedule() {
     scheduleBody.innerHTML = '';
-
     for (let hour = 0; hour < 24; hour++) {
       const row = document.createElement('tr');
       const timeCell = document.createElement('td');
@@ -404,7 +469,6 @@ nav: true
           ul.appendChild(li);
         });
       }
-
       slotCell.appendChild(ul);
       row.appendChild(timeCell);
       row.appendChild(slotCell);
@@ -422,11 +486,9 @@ nav: true
           const fromHour = parseInt(evt.from.parentElement.id.split('-')[1]);
           const toHour = parseInt(evt.to.parentElement.id.split('-')[1]);
           const [movedItem] = scheduleData[fromHour].splice(evt.oldIndex, 1);
-
           if (!scheduleData[toHour]) scheduleData[toHour] = [];
           scheduleData[toHour].splice(evt.newIndex, 0, movedItem);
           if (scheduleData[fromHour].length === 0) delete scheduleData[fromHour];
-
           saveSchedule();
           renderSchedule();
           enableDragAndDrop();
@@ -448,20 +510,17 @@ nav: true
     const start = startInput.value.trim();
     const destination = destinationInput.value.trim();
     if (!start || !destination) return;
-
     const route = { start, destination };
     if (!scheduleData[hour]) scheduleData[hour] = [];
     scheduleData[hour].push(route);
     saveSchedule();
     renderSchedule();
     enableDragAndDrop();
-
     startInput.value = '';
     destinationInput.value = '';
   };
 
-  renderSchedule();
-  enableDragAndDrop();
+  loadDay(currentDayIndex);
 
   const map = L.map('map').setView([37.7749, -122.4194], 10);
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
@@ -480,17 +539,13 @@ nav: true
         geocodePlace(startName),
         geocodePlace(destName)
       ]);
-
       if (!start || !dest) {
         alert("Could not find one or both locations.");
         return;
       }
-
       if (currentRouteControl) map.removeControl(currentRouteControl);
-
       const startLatLng = L.latLng(parseFloat(start.lat), parseFloat(start.lon));
       const destLatLng = L.latLng(parseFloat(dest.lat), parseFloat(dest.lon));
-
       currentRouteControl = L.Routing.control({
         waypoints: [startLatLng, destLatLng],
         routeWhileDragging: false,
@@ -498,9 +553,7 @@ nav: true
         draggableWaypoints: false,
         show: false
       }).addTo(map);
-
       map.fitBounds(L.latLngBounds([startLatLng, destLatLng]), { padding: [50, 50] });
-
     } catch (error) {
       console.error("Routing error:", error);
       alert("An error occurred while displaying the route.");
@@ -511,7 +564,6 @@ nav: true
     const now = new Date();
     const currentHour = now.getHours();
     const routes = scheduleData[currentHour];
-
     if (routes && routes.length > 0) {
       const { start, destination } = routes[0];
       drawRoute(start, destination);
@@ -523,110 +575,10 @@ nav: true
 
   updateCurrentHourRoute();
   setInterval(updateCurrentHourRoute, 60 * 1000);
-
-  // ===== Favorites Functionality =====
-  const startFavBtn = document.getElementById('startFavBtn');
-  const destFavBtn = document.getElementById('destFavBtn');
-  const startDropdown = document.getElementById('startFavoritesDropdown');
-  const destDropdown = document.getElementById('destinationFavoritesDropdown');
-
-  function getFavorites() {
-    return JSON.parse(localStorage.getItem('favorites') || '[]');
-  }
-
-  function setFavorites(favs) {
-    localStorage.setItem('favorites', JSON.stringify(favs));
-  }
-
-  function renderFavorites(dropdown, input) {
-    const favs = getFavorites();
-    dropdown.innerHTML = '';
-    favs.forEach((fav, index) => {
-      const div = document.createElement('div');
-      div.textContent = fav;
-
-      div.onclick = () => {
-        input.value = fav;
-        dropdown.style.display = 'none';
-      };
-
-      const del = document.createElement('button');
-      del.textContent = '✖';
-      del.onclick = (e) => {
-        e.stopPropagation();
-        favs.splice(index, 1);
-        setFavorites(favs);
-        renderFavorites(dropdown, input);
-      };
-
-      div.appendChild(del);
-      dropdown.appendChild(div);
-    });
-
-    if (favs.length === 0) {
-      dropdown.innerHTML = '<em>No favorites yet.</em>';
-    }
-  }
-
-  startFavBtn.onclick = () => {
-    const val = startInput.value.trim();
-    const favs = getFavorites();
-
-    if (val) {
-      if (!favs.includes(val)) {
-        if (confirm(`Add "${val}" to favorites?`)) {
-          favs.push(val);
-          setFavorites(favs);
-        }
-      }
-      startDropdown.style.display = 'none';
-    } else {
-      renderFavorites(startDropdown, startInput);
-      startDropdown.style.display = startDropdown.style.display === 'none' ? 'block' : 'none';
-      destDropdown.style.display = 'none';
-    }
-  };
-
-  destFavBtn.onclick = () => {
-    const val = destinationInput.value.trim();
-    const favs = getFavorites();
-
-    if (val) {
-      if (!favs.includes(val)) {
-        if (confirm(`Add "${val}" to favorites?`)) {
-          favs.push(val);
-          setFavorites(favs);
-        }
-      }
-      destDropdown.style.display = 'none';
-    } else {
-      renderFavorites(destDropdown, destinationInput);
-      destDropdown.style.display = destDropdown.style.display === 'none' ? 'block' : 'none';
-      startDropdown.style.display = 'none';
-    }
-  };
-
-  function updateDayView() {
-    currentDayLabel.textContent = getCurrentDayName();
-    weeklySchedule = getWeeklySchedule();
-    scheduleData = weeklySchedule[getCurrentDayName()] || {};
-    renderSchedule();
-    enableDragAndDrop();
-  }
-
-  prevDayBtn.onclick = () => {
-    currentDayIndex = (currentDayIndex + 6) % 7;
-    updateDayView();
-  };
-
-  nextDayBtn.onclick = () => {
-    currentDayIndex = (currentDayIndex + 1) % 7;
-    updateDayView();
-  };
-
-  updateDayView(); // Initialize view on page load
-
 </script>
 
 </body>
 </html>
+
+
+
