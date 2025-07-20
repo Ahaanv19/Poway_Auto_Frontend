@@ -118,6 +118,7 @@ menu: nav/home.html
       <a href="{{site.baseurl}}/routine/" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-800">📅 Daily Routine</a>
       <a href="{{site.baseurl}}/hazard/" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-800">⚠️ Report a Hazard</a>
       <a href="{{site.baseurl}}/event/" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-800">🎫 Local Events in Poway</a>
+      <a href="{{site.baseurl}}/localbusinesses/" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-800">📈 Upcoming Poway Businesses</a>
     </div>
   </details>
 </div>

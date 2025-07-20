@@ -1,0 +1,176 @@
+---
+toc: true
+layout: post
+title: Local Businessses
+permalink: /localbusinesses/
+nav: true
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Business Cards</title>
+  <style>
+    :root {
+      --main-color: #6a1b9a; /* Deep purple */
+      --main-color-dark: #4a148c;
+      --text-dark: #2c2c2c;
+      --white: #ffffff;
+      --bg: #f3f0fa;
+      --shadow: 0 6px 14px rgba(0, 0, 0, 0.15);
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: var(--bg);
+      margin: 0;
+      padding: 40px 20px;
+      color: var(--text-dark);
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 30px;
+    }
+
+    .business-card {
+      background-color: var(--main-color);
+      border-radius: 20px;
+      color: white;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .title {
+      text-align: center;
+      font-size: 1.6rem;
+      font-weight: bold;
+      padding: 16px;
+      background: var(--main-color-dark);
+    }
+
+    .top-section {
+      display: flex;
+      flex: 1;
+      padding: 20px;
+      align-items: flex-start;
+      justify-content: space-between;
+      position: relative;
+    }
+
+    .cover-img {
+      width: 180px;
+      height: 180px;
+      object-fit: cover;
+      border-radius: 15px;
+      border: 3px solid white;
+    }
+
+    .visit-btn {
+      background: white;
+      color: var(--main-color-dark);
+      padding: 14px 20px;
+      border: none;
+      border-radius: 12px;
+      font-weight: bold;
+      font-size: 1rem;
+      text-decoration: none;
+      text-align: center;
+      transition: background 0.3s ease;
+      display: inline-block;
+      position: absolute;
+      right: 20px;
+      top: calc(50% - 25px); /* Vertically center button relative to cover image height */
+    }
+
+    .visit-btn:hover {
+      background-color: #e6e6f0;
+    }
+
+    .text-bubble {
+      background-color: white;
+      color: var(--text-dark);
+      border-radius: 20px;
+      margin: 0 20px 20px;
+      padding: 18px;
+      line-height: 1.6;
+      font-size: 0.96rem;
+      position: relative;
+    }
+
+    .text-bubble::before {
+      content: "";
+      position: absolute;
+      top: -10px;
+      left: 30px;
+      width: 20px;
+      height: 20px;
+      background: white;
+      transform: rotate(45deg);
+      border-radius: 4px;
+    }
+
+    @media (max-width: 500px) {
+      .top-section {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .cover-img {
+        width: 100%;
+        height: auto;
+      }
+
+      .visit-btn {
+        position: static;
+        margin-top: 15px;
+        width: 100%;
+      }
+
+      .text-bubble::before {
+        left: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+
+    <!-- Business Card 1 -->
+    <div class="business-card">
+      <div class="title">InnovateX Solutions</div>
+      <div class="top-section">
+        <img src="https://via.placeholder.com/180" alt="Cover" class="cover-img" />
+        <a href="https://innovatex.example.com" target="_blank" class="visit-btn">Visit Site</a>
+      </div>
+      <div class="text-bubble">
+        We reduce city grid energy usage by 40% and build predictive flood systems now used in 12+ countries. Featured in Forbes 30U30 and working with AI-empowered rural schools.
+      </div>
+    </div>
+
+    <!-- Business Card 2 -->
+    <div class="business-card">
+      <div class="title">EcoBloom Ventures</div>
+      <div class="top-section">
+        <img src="https://via.placeholder.com/180" alt="Cover" class="cover-img" />
+        <a href="https://ecobloom.example.com" target="_blank" class="visit-btn">Visit Site</a>
+      </div>
+      <div class="text-bubble">
+        Backing regenerative agriculture with 150+ microfarms and packaging tech. Won the 2024 Global Green Challenge and built a network of zero-waste regional stores.
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>
