@@ -1,7 +1,7 @@
 ---
 toc: true
-layout: post
-title: Local Businessses
+layout: base
+title: Local Businesses
 permalink: /localbusinesses/
 nav: true
 ---
@@ -11,10 +11,10 @@ nav: true
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Business Cards</title>
+  <title>Local Businesses</title>
   <style>
     :root {
-      --main-color: #6a1b9a; /* Deep purple */
+      --main-color: #6a1b9a;
       --main-color-dark: #4a148c;
       --text-dark: #2c2c2c;
       --white: #ffffff;
@@ -31,7 +31,7 @@ nav: true
     }
 
     .container {
-      max-width: 1000px;
+      max-width: 1100px;
       margin: auto;
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -42,8 +42,6 @@ nav: true
       background-color: var(--main-color);
       border-radius: 20px;
       color: white;
-      width: 100%;
-      aspect-ratio: 1 / 1;
       box-shadow: var(--shadow);
       display: flex;
       flex-direction: column;
@@ -52,7 +50,7 @@ nav: true
 
     .title {
       text-align: center;
-      font-size: 1.6rem;
+      font-size: 1.5rem;
       font-weight: bold;
       padding: 16px;
       background: var(--main-color-dark);
@@ -60,16 +58,17 @@ nav: true
 
     .top-section {
       display: flex;
-      flex: 1;
+      gap: 20px;
       padding: 20px;
-      align-items: flex-start;
+      align-items: center;
       justify-content: space-between;
-      position: relative;
+      flex-wrap: wrap;
     }
 
     .cover-img {
-      width: 180px;
-      height: 180px;
+      flex-shrink: 0;
+      width: 160px;
+      height: 160px;
       object-fit: cover;
       border-radius: 15px;
       border: 3px solid white;
@@ -78,18 +77,14 @@ nav: true
     .visit-btn {
       background: white;
       color: var(--main-color-dark);
-      padding: 14px 20px;
+      padding: 12px 18px;
       border: none;
       border-radius: 12px;
       font-weight: bold;
-      font-size: 1rem;
+      font-size: 0.95rem;
       text-decoration: none;
       text-align: center;
       transition: background 0.3s ease;
-      display: inline-block;
-      position: absolute;
-      right: 20px;
-      top: calc(50% - 25px); /* Vertically center button relative to cover image height */
     }
 
     .visit-btn:hover {
@@ -101,9 +96,9 @@ nav: true
       color: var(--text-dark);
       border-radius: 20px;
       margin: 0 20px 20px;
-      padding: 18px;
+      padding: 16px;
       line-height: 1.6;
-      font-size: 0.96rem;
+      font-size: 0.95rem;
       position: relative;
     }
 
@@ -119,10 +114,35 @@ nav: true
       border-radius: 4px;
     }
 
-    @media (max-width: 500px) {
+    /* Specific styling for wide image layout */
+    .wide-card {
+      padding-bottom: 10px;
+    }
+
+    .wide-img-wrapper {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      background-color: var(--white);
+    }
+
+    .cover-wide-img {
+      width: 100%;
+      max-height: 220px;
+      object-fit: cover;
+      border-bottom: 3px solid var(--main-color-dark);
+    }
+
+    .visit-btn-wrapper {
+      text-align: center;
+      padding: 15px 0 0;
+    }
+
+    @media (max-width: 600px) {
       .top-section {
         flex-direction: column;
         align-items: center;
+        text-align: center;
       }
 
       .cover-img {
@@ -131,13 +151,21 @@ nav: true
       }
 
       .visit-btn {
-        position: static;
-        margin-top: 15px;
         width: 100%;
+        margin-top: 15px;
+      }
+
+      .text-bubble {
+        margin: 20px;
       }
 
       .text-bubble::before {
         left: 20px;
+      }
+
+      .cover-wide-img {
+        max-height: none;
+        height: auto;
       }
     }
   </style>
@@ -148,25 +176,27 @@ nav: true
 
     <!-- Business Card 1 -->
     <div class="business-card">
-      <div class="title">InnovateX Solutions</div>
+      <div class="title">ActiveMed Integrative Health Center</div>
       <div class="top-section">
-        <img src="https://via.placeholder.com/180" alt="Cover" class="cover-img" />
-        <a href="https://innovatex.example.com" target="_blank" class="visit-btn">Visit Site</a>
+        <img class="cover-img" src="{{site.baseurl}}/images/bus.png" alt="ActiveMed Image">
+        <a href="https://activemedhealth.com/" target="_blank" class="visit-btn">Visit Site</a>
       </div>
       <div class="text-bubble">
-        We reduce city grid energy usage by 40% and build predictive flood systems now used in 12+ countries. Featured in Forbes 30U30 and working with AI-empowered rural schools.
+        We believe in a collaborative approach to healthcare. We offer acupuncture, massage therapy, functional medicine, physical therapy, and axon therapy.
       </div>
     </div>
 
-    <!-- Business Card 2 -->
-    <div class="business-card">
-      <div class="title">EcoBloom Ventures</div>
-      <div class="top-section">
-        <img src="https://via.placeholder.com/180" alt="Cover" class="cover-img" />
-        <a href="https://ecobloom.example.com" target="_blank" class="visit-btn">Visit Site</a>
+    <!-- Business Card 2: Wider Image Layout -->
+    <div class="business-card wide-card">
+      <div class="title">Digital One Printing</div>
+      <div class="wide-img-wrapper">
+        <img class="cover-wide-img" src="{{site.baseurl}}/images/Screenshot 2025-07-23 at 8.34.48 AM.png" alt="Digital One Image">
+      </div>
+      <div class="visit-btn-wrapper">
+        <a href="https://d1printing.net/" target="_blank" class="visit-btn">Visit Site</a>
       </div>
       <div class="text-bubble">
-        Backing regenerative agriculture with 150+ microfarms and packaging tech. Won the 2024 Global Green Challenge and built a network of zero-waste regional stores.
+        Digital One Printing is your premier one-stop Poway printshop that offers a wide range of services, has many years of experience and a tremendous reputation. Digital, Offset, Large Format, Posters, Banners, Trade show graphics, Signs, Promotional Products, Bindery and more.
       </div>
     </div>
 
@@ -174,3 +204,5 @@ nav: true
 
 </body>
 </html>
+
+
