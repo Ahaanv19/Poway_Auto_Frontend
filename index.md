@@ -1,6 +1,6 @@
 ---
 layout: base
-title: Best Route
+title: Home Page
 search_exclude: true
 nav: true
 hide: true
@@ -110,7 +110,7 @@ menu: nav/home.html
 <div class="relative inline-block text-left px-6 mt-4">
   <details class="w-52">
     <summary class="cursor-pointer bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-200 px-4 py-2 rounded-md shadow-md hover:bg-gray-100 dark:hover:bg-gray-800">
-      📌 Poway Auto Menu
+      📌 SD Auto Menu
     </summary>
     <div class="mt-2 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-md shadow-lg text-sm text-gray-700 dark:text-gray-200">
       <a href="{{site.baseurl}}/route/" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-800">🗺️ Find Best Route</a>
