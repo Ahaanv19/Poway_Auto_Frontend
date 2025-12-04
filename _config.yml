@@ -2,8 +2,8 @@ title: SD Auto
 description: "An online program to find the best and most optimible route for traveling in San Diego"
 owner_name: Ahaan Vaidyanathan
 github_username: Ahaanv19
-github_repo: "Poway_Auto_Frontend" 
-baseurl: "/Poway_Auto_Frontend"
+github_repo: "SD_Auto_Frontend" 
+baseurl: "/SD_Auto_Frontend"
 future: true
 remote_theme: jekyll/minima
 minima:
