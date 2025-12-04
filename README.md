@@ -1,10 +1,10 @@
 
 <section class="max-w-5xl mx-auto px-6 py-12 prose prose-lg dark:prose-invert">
-  <h1>About Poway Auto</h1>
+  <h1>About SD Auto</h1>
 
   <p>
-    <strong>Poway Auto</strong> is a full-stack intelligent routing platform designed to enhance daily commutes
-    in Poway, California through real-time data, community reporting, and AI-driven route optimization.
+    <strong>SD Auto</strong> is a full-stack intelligent routing platform designed to enhance daily commutes
+    in San Diego, California through real-time data, community reporting, and AI-driven route optimization.
     Our goal is to make transportation more efficient, reliable, and adaptive.
   </p>
 
@@ -29,7 +29,7 @@
     to divide development into milestones:
   </p>
   <ul>
-    <li><strong>Data Collection:</strong> Pulling real-time traffic feeds and Poway open data</li>
+    <li><strong>Data Collection:</strong> Pulling real-time traffic feeds and San Diego open data</li>
     <li><strong>Modeling:</strong> Building an ML model to predict congestion based on patterns</li>
     <li><strong>Frontend UI:</strong> Designing intuitive interfaces for input, feedback, and live maps</li>
   </ul>
@@ -93,7 +93,7 @@
   </ul>
 
   <p>
-    We’re excited to continue iterating and improving Poway Auto to meet the growing needs of our
+    We’re excited to continue iterating and improving SD Auto to meet the growing needs of our
     community. Thanks for following our journey!
   </p>
 </section>
