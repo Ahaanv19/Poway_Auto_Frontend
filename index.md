@@ -79,7 +79,7 @@ menu: nav/home.html
       <!-- Text Content -->
       <div class="flex-1 text-center md:text-left space-y-8">
         <h1 class="text-5xl md:text-6xl font-extrabold bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent animate-gradient-x">
-          Drive the Future <br> with Poway Auto
+          Drive the Future <br> with SD Auto
         </h1>
         <p class="text-lg text-gray-600 dark:text-gray-300 max-w-xl">
           Where autonomy meets intelligence. Built by engineers, driven by innovation.
@@ -116,7 +116,7 @@ menu: nav/home.html
       <a href="{{site.baseurl}}/route/" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-800">🗺️ Find Best Route</a>
       <a href="{{site.baseurl}}/routine/" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-800">📅 Daily Routine</a>
       <a href="{{site.baseurl}}/hazard/" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-800">⚠️ Report a Hazard</a>
-      <a href="{{site.baseurl}}/localbusinesses/" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-800">📈 Upcoming Poway Businesses</a>
+      <a href="{{site.baseurl}}/localbusinesses/" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-800">📈 Upcoming San Diego Businesses</a>
     </div>
   </details>
 </div>
