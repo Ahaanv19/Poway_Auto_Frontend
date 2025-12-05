@@ -85,10 +85,10 @@ menu: nav/home.html
           Where autonomy meets intelligence. Built by engineers, driven by innovation.
         </p>
         <div class="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
-          <a href="https://ahaanv19.github.io/Poway_Auto_Frontend/verify/" class="px-6 py-3 rounded-full text-white bg-primary hover:bg-secondary font-medium text-base shadow-lg transition transform hover:scale-105">
-            Get Started 🚗
+          <a href="https://ahaanv19.github.io/SD_Auto_Frontend/route/" class="px-6 py-3 rounded-full text-white bg-primary hover:bg-secondary font-medium text-base shadow-lg transition transform hover:scale-105">
+            Get Started 
           </a>
-          <a href="https://ahaanv19.github.io/Poway_Auto_Frontend/Readme4yml/" class="px-6 py-3 rounded-full border-2 border-primary text-primary hover:bg-primary hover:text-white font-medium text-base transition">
+          <a href="https://ahaanv19.github.io/SD_Auto_Frontend/Readme4yml/" class="px-6 py-3 rounded-full border-2 border-primary text-primary hover:bg-primary hover:text-white font-medium text-base transition">
             Learn More
           </a>
         </div>
